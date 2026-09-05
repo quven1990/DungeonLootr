@@ -11,12 +11,14 @@ export const metadata: Metadata = {
     title: 'Dungeon Lootr Wiki - Classes, Builds, Boss Rush, Drops & Guides',
     description:
       'Fast Dungeon Lootr answers, class routes, drop tools, Boss Rush planning, and build recommendations.',
+    images: ['/images/dungeon-lootr-hero.jpg'],
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Dungeon Lootr Wiki',
     description: 'Answer-first Dungeon Lootr guides, tools, and data.',
+    images: ['/images/dungeon-lootr-hero.jpg'],
   },
 };
 

@@ -26,35 +26,42 @@ const guides = [
 export default function Home() {
   return (
     <main>
-      <section className="site-shell hero-grid">
-        <div className="eyebrow">Dungeon Lootr Wiki</div>
-        <div className="hero-copy">
-          <div>
-            <p className="breadcrumb">Home / Fast answers / Current routes</p>
-            <h1>Dungeon Lootr Wiki: Classes, Builds, Boss Rush, Drops & Guides</h1>
-            <p className="serp-opening">
-              Dungeon Lootr is a class-based dungeon RPG where the fastest progression comes from understanding unlock routes, Boss Rush rewards, builds, Aspects, and drop farming.
-            </p>
-          </div>
-          <div className="quick-answer">
-            <span className="label">Quick Answer</span>
-            <p>
-              Start with the class directory if you are choosing a main, use the unlock guides when you already know your target, and open the drop calculator before committing to a long rare-item farm.
-            </p>
-            <div className="hero-actions">
-              <Link href="/classes/">Browse Classes</Link>
-              <Link href="/tools/drop-chance-calculator/" className="secondary">Open Drop Calculator</Link>
+      <section className="hero-stage">
+        <div className="site-shell hero-grid">
+          <div className="eyebrow">Dungeon Lootr Wiki</div>
+          <div className="hero-copy">
+            <div>
+              <p className="breadcrumb">Home / Fast answers / Current routes</p>
+              <h1>Dungeon Lootr Wiki: Classes, Builds, Boss Rush, Drops & Guides</h1>
+              <p className="serp-opening">
+                Dungeon Lootr is a class-based dungeon RPG where the fastest progression comes from understanding unlock routes, Boss Rush rewards, builds, Aspects, and drop farming.
+              </p>
+              <div className="hero-stat-row" aria-label="Site highlights">
+                <span>50 phase-one routes</span>
+                <span>15 class targets</span>
+                <span>Drop math tool</span>
+              </div>
+            </div>
+            <div className="quick-answer">
+              <span className="label">Quick Answer</span>
+              <p>
+                Start with the class directory if you are choosing a main, use the unlock guides when you already know your target, and open the drop calculator before committing to a long rare-item farm.
+              </p>
+              <div className="hero-actions">
+                <Link href="/classes/">Browse Classes</Link>
+                <Link href="/tools/drop-chance-calculator/" className="secondary">Open Drop Calculator</Link>
+              </div>
             </div>
           </div>
+          <aside className="hero-panel" aria-label="Recently verified">
+            <div className="panel-title">Recently verified</div>
+            <dl>
+              <div><dt>Patch</dt><dd>Community-tested</dd></div>
+              <div><dt>Priority</dt><dd>Boss Rush routes</dd></div>
+              <div><dt>Last checked</dt><dd>2026-09-05</dd></div>
+            </dl>
+          </aside>
         </div>
-        <aside className="hero-panel" aria-label="Recently verified">
-          <div className="panel-title">Recently verified</div>
-          <dl>
-            <div><dt>Patch</dt><dd>Community-tested</dd></div>
-            <div><dt>Priority</dt><dd>Boss Rush routes</dd></div>
-            <div><dt>Last checked</dt><dd>2026-09-05</dd></div>
-          </dl>
-        </aside>
       </section>
 
       <section className="site-shell search-band" aria-label="Search shortcuts">

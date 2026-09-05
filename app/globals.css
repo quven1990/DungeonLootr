@@ -1,16 +1,16 @@
 @import 'tailwindcss';
 
 :root {
-  --background: #08090d;
-  --panel: #11131a;
-  --panel-strong: #171a23;
-  --line: #2b3040;
-  --foreground: #f4f7fb;
-  --muted: #9ba7b9;
-  --accent: #4fd6a7;
-  --accent-2: #f4c95d;
-  --danger: #ff6b6b;
-  --rare: #b78cff;
+  --background: #05070a;
+  --panel: #10141b;
+  --panel-strong: #181d27;
+  --line: #353a45;
+  --foreground: #f8fbff;
+  --muted: #a8b3c2;
+  --accent: #39f1d2;
+  --accent-2: #f7c65a;
+  --danger: #ff4f66;
+  --rare: #b35cff;
   --font-geist-sans: Inter, ui-sans-serif, system-ui;
   --font-geist-mono: "SFMono-Regular", Consolas, monospace;
 }
@@ -34,8 +34,9 @@ html {
 body {
   margin: 0;
   background:
-    radial-gradient(circle at 20% 0%, rgba(79, 214, 167, 0.08), transparent 26rem),
-    linear-gradient(180deg, #0b0d13 0%, #08090d 42rem);
+    radial-gradient(circle at 10% 12%, rgba(57, 241, 210, 0.1), transparent 22rem),
+    radial-gradient(circle at 85% 4%, rgba(255, 79, 102, 0.12), transparent 24rem),
+    linear-gradient(180deg, #070a0f 0%, #05070a 42rem);
   color: var(--foreground);
   font-family: var(--font-geist-sans), Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
@@ -49,8 +50,8 @@ a {
   position: sticky;
   top: 0;
   z-index: 20;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  background: rgba(8, 9, 13, 0.88);
+  border-bottom: 1px solid rgba(247, 198, 90, 0.16);
+  background: rgba(5, 7, 10, 0.88);
   backdrop-filter: blur(16px);
 }
 
@@ -80,9 +81,9 @@ a {
   width: 34px;
   height: 34px;
   place-items: center;
-  border: 1px solid rgba(79, 214, 167, 0.5);
-  border-radius: 8px;
-  background: #121822;
+  border: 1px solid rgba(247, 198, 90, 0.72);
+  border-radius: 6px;
+  background: linear-gradient(145deg, #231a0b, #101820);
   color: var(--accent);
   font-family: var(--font-geist-mono), monospace;
 }
@@ -102,11 +103,36 @@ table a:hover,
   color: var(--accent);
 }
 
+.hero-stage {
+  position: relative;
+  isolation: isolate;
+  min-height: 610px;
+  border-bottom: 1px solid rgba(247, 198, 90, 0.18);
+  background-image:
+    linear-gradient(90deg, rgba(5, 7, 10, 0.98) 0%, rgba(5, 7, 10, 0.82) 36%, rgba(5, 7, 10, 0.36) 64%, rgba(5, 7, 10, 0.72) 100%),
+    linear-gradient(180deg, rgba(5, 7, 10, 0.1) 0%, rgba(5, 7, 10, 0.96) 100%),
+    url('/images/dungeon-lootr-hero.jpg');
+  background-position: center;
+  background-size: cover;
+}
+
+.hero-stage::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: linear-gradient(180deg, black, transparent 82%);
+}
+
 .hero-grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 300px;
   gap: 22px;
-  padding: 46px 0 24px;
+  padding: 54px 0 42px;
 }
 
 .hero-grid > .eyebrow {
@@ -117,7 +143,7 @@ table a:hover,
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(280px, 390px);
   gap: 22px;
-  align-items: stretch;
+  align-items: start;
 }
 
 .breadcrumb,
@@ -138,10 +164,11 @@ p {
 }
 
 h1 {
-  max-width: 780px;
+  max-width: 660px;
   margin-top: 12px;
-  font-size: clamp(34px, 5vw, 48px);
-  line-height: 1.04;
+  text-shadow: 0 8px 36px rgba(0, 0, 0, 0.72);
+  font-size: clamp(34px, 5vw, 58px);
+  line-height: 1.02;
   letter-spacing: 0;
 }
 
@@ -162,14 +189,41 @@ h2 {
 .hero-panel,
 .intent-card,
 .tool-preview {
-  border: 1px solid var(--line);
+  border: 1px solid rgba(247, 198, 90, 0.22);
   border-radius: 8px;
-  background: rgba(17, 19, 26, 0.9);
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.22);
+  background:
+    linear-gradient(180deg, rgba(28, 33, 44, 0.92), rgba(10, 13, 19, 0.92));
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.42), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.hero-stat-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+.hero-stat-row span {
+  border: 1px solid rgba(57, 241, 210, 0.28);
+  border-radius: 6px;
+  background: rgba(5, 12, 15, 0.72);
+  color: #dcfff7;
+  font-size: 13px;
+  font-weight: 850;
+  padding: 9px 12px;
 }
 
 .page-hero {
-  padding: 42px 0 18px;
+  width: min(1180px, calc(100% - 32px));
+  margin: 28px auto 0;
+  border: 1px solid rgba(247, 198, 90, 0.16);
+  border-radius: 8px;
+  background-image:
+    linear-gradient(90deg, rgba(5, 7, 10, 0.95), rgba(5, 7, 10, 0.7), rgba(5, 7, 10, 0.92)),
+    url('/images/dungeon-lootr-hero.jpg');
+  background-position: center;
+  background-size: cover;
+  padding: 34px;
 }
 
 .quick-answer.wide {
@@ -207,9 +261,9 @@ h2 {
 .data-note,
 .calculator,
 .engagement-panel {
-  border: 1px solid var(--line);
+  border: 1px solid rgba(247, 198, 90, 0.18);
   border-radius: 8px;
-  background: rgba(17, 19, 26, 0.86);
+  background: linear-gradient(180deg, rgba(18, 23, 31, 0.92), rgba(10, 13, 19, 0.92));
   padding: 20px;
 }
 
@@ -375,6 +429,7 @@ select {
 }
 
 .quick-answer {
+  align-self: start;
   padding: 22px;
 }
 
@@ -405,18 +460,18 @@ select {
   min-height: 42px;
   align-items: center;
   justify-content: center;
-  border: 1px solid rgba(79, 214, 167, 0.5);
+  border: 1px solid rgba(247, 198, 90, 0.7);
   border-radius: 8px;
-  background: var(--accent);
-  color: #06100c;
+  background: linear-gradient(180deg, #ffe08a, #e9a72e);
+  color: #180f02;
   font-size: 14px;
   font-weight: 850;
   padding: 0 14px;
 }
 
 .hero-actions .secondary {
-  background: transparent;
-  color: var(--accent);
+  background: rgba(8, 15, 18, 0.82);
+  color: #d9fff8;
 }
 
 .hero-panel {
@@ -460,9 +515,9 @@ dd {
   gap: 12px;
   align-items: center;
   padding: 12px;
-  border: 1px solid var(--line);
+  border: 1px solid rgba(247, 198, 90, 0.2);
   border-radius: 8px;
-  background: #0e1118;
+  background: linear-gradient(180deg, rgba(18, 22, 30, 0.95), rgba(10, 13, 19, 0.95));
 }
 
 .search-box {
@@ -510,8 +565,18 @@ dd {
 }
 
 .intent-card {
+  position: relative;
+  overflow: hidden;
   min-height: 160px;
   padding: 18px;
+}
+
+.intent-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 3px;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2), var(--danger));
 }
 
 .intent-card span,
@@ -535,7 +600,7 @@ table {
   width: 100%;
   min-width: 720px;
   border-collapse: collapse;
-  background: #0d1017;
+  background: #0b0f16;
 }
 
 th,
@@ -548,7 +613,7 @@ td {
 th {
   position: sticky;
   top: 0;
-  background: #151923;
+  background: linear-gradient(180deg, #1a202b, #111720);
   color: var(--muted);
   font-size: 13px;
   text-transform: uppercase;
