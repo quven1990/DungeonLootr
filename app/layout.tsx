@@ -3,6 +3,7 @@ import Link from 'next/link';
 import './globals.css';
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://dungeonlootr.top'),
   title: 'Dungeon Lootr Wiki - Classes, Builds, Boss Rush, Drops & Guides',
   description:
     'Dungeon Lootr guides for classes, builds, Boss Rush, drops, unlocks, Aspects, codes, and the latest update - built for fast answers, not filler.',

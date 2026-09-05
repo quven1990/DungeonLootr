@@ -6,6 +6,6 @@ export default function robots(): MetadataRoute.Robots {
       userAgent: '*',
       allow: '/',
     },
-    sitemap: 'https://dungeon-lootr-wiki.light-char-8947.chatgpt.site/sitemap.xml',
+    sitemap: 'https://dungeonlootr.top/sitemap.xml',
   };
 }

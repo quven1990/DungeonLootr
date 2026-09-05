@@ -2,7 +2,7 @@ import type { MetadataRoute } from 'next';
 import { classes, guides, seoEntries } from './data';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://dungeon-lootr-wiki.light-char-8947.chatgpt.site';
+  const baseUrl = 'https://dungeonlootr.top';
   const urls = [
     '/',
     ...seoEntries.map((entry) => entry.url),
