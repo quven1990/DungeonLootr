@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { Facts, NextSteps } from '../../components';
-import { classBySlug, classes } from '../../data';
+import { classBySlug, classes, guideBySlug } from '../../data';
 
 export function generateStaticParams() {
   return classes.map((item) => ({ slug: item.slug }));
@@ -21,6 +21,7 @@ export default async function BuildPage({ params }: { params: Promise<{ slug: st
   const { slug } = await params;
   const item = classBySlug(slug);
   if (!item) notFound();
+  const unlockGuide = guideBySlug(`how-to-get-${item.slug}`);
 
   return (
     <main>
@@ -60,7 +61,7 @@ export default async function BuildPage({ params }: { params: Promise<{ slug: st
             </div>
           </section>
           <NextSteps links={[
-            ['Need the class first? Unlock route', `/guides/how-to-get-${item.slug}/`],
+            ['Need the class first? Unlock route', unlockGuide ? `/guides/${unlockGuide.slug}/` : '/classes/'],
             ['Still missing drops? Calculate runs', '/tools/drop-chance-calculator/'],
           ]} />
         </div>

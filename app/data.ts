@@ -7,6 +7,19 @@ export type SeoEntry = {
   type: 'hub' | 'database' | 'tier' | 'entity' | 'howto' | 'build' | 'tool' | 'guide';
 };
 
+export type ClassEntry = {
+  slug: string;
+  name: string;
+  rarity: string;
+  obtain: string;
+  mode: string;
+  aspect: string;
+  confidence: 'verified' | 'probable' | 'conflicting' | 'unverified';
+  opening: string;
+  strengths: string[];
+  weaknesses: string[];
+};
+
 export const seoEntries: SeoEntry[] = [
   {
     url: '/classes/',
@@ -50,68 +63,36 @@ export const seoEntries: SeoEntry[] = [
   },
 ];
 
-export const classes = [
-  {
-    slug: 'cursed-king',
-    name: 'Cursed King',
-    rarity: 'Mythic',
-    obtain: 'Boss Rush route or Cursed Shrine Forge path',
-    mode: 'Boss Rush',
-    aspect: 'Burst or sustain Aspect',
-    confidence: 'probable',
-    opening: 'Cursed King is one of Dungeon Lootr’s strongest late-game classes, and the fastest route is through Boss Rush or the Cursed Shrine Forge path.',
-    strengths: ['High late-game ceiling', 'Strong Boss Rush value', 'Good investment target'],
-    weaknesses: ['Unlock path can be grind-heavy', 'Needs supporting stats to feel consistent'],
-  },
-  {
-    slug: 'sinister-trigger',
-    name: 'Sinister Trigger',
-    rarity: 'Mythic',
-    obtain: 'Late-game damage route',
-    mode: 'Dungeon clear',
-    aspect: 'Damage uptime Aspect',
-    confidence: 'probable',
-    opening: 'Sinister Trigger is a top damage-focused Dungeon Lootr class that shines when you build around its burst windows and fast clear potential.',
-    strengths: ['Fast clear pressure', 'Excellent burst windows', 'Flexible damage builds'],
-    weaknesses: ['Punishes missed rotations', 'Less forgiving while underbuilt'],
-  },
-  {
-    slug: 'honored-one',
-    name: 'Honored One',
-    rarity: 'Mythic',
-    obtain: 'Prerequisite progression chain',
-    mode: 'Solo',
-    aspect: 'Control or damage Aspect',
-    confidence: 'probable',
-    opening: 'Honored One is a key late-game Dungeon Lootr class and an important progression step for players chasing stronger unlock chains such as Unrestricted.',
-    strengths: ['Important unlock bridge', 'Strong solo utility', 'Good scaling path'],
-    weaknesses: ['Route depends on prior progress', 'Can lag behind top burst classes'],
-  },
-  {
-    slug: 'unrestricted',
-    name: 'Unrestricted',
-    rarity: 'Secret',
-    obtain: 'Prerequisite class, fragments, and currency',
-    mode: 'Endgame',
-    aspect: 'Endgame damage Aspect',
-    confidence: 'unverified',
-    opening: 'To unlock Unrestricted, you first need the correct prerequisite progression, then complete its level, fragment, and currency requirements.',
-    strengths: ['Endgame chase value', 'High scaling potential', 'Strong prestige target'],
-    weaknesses: ['Requires multiple resources', 'Needs verification after patches'],
-  },
-  {
-    slug: 'awakened-devil-ex',
-    name: 'Awakened Devil EX',
-    rarity: 'Secret',
-    obtain: 'Rare material path',
-    mode: 'Burst',
-    aspect: 'Burst amplification Aspect',
-    confidence: 'unverified',
-    opening: 'Awakened Devil EX is a late-game chase class where the route should be planned around rare materials, boss farming, and current patch requirements.',
-    strengths: ['High burst identity', 'Strong chase-class appeal', 'Pairs well with damage Aspects'],
-    weaknesses: ['Rare material pressure', 'Exact requirements need patch checks'],
-  },
-];
+const baseWeaknesses = ['Exact numbers require post-patch verification', 'Best setup can change when Boss Rush rewards or skill values shift'];
+
+export const classes: ClassEntry[] = [
+  ['sinister-trigger', 'Sinister Trigger', 'Mythic', 'Late-game damage route', 'Dungeon clear', 'Damage uptime Aspect', 'probable', 'Sinister Trigger is a top damage-focused Dungeon Lootr class that shines when you build around its burst windows and fast clear potential.'],
+  ['cursed-king', 'Cursed King', 'Mythic', 'Boss Rush route or Cursed Shrine Forge path', 'Boss Rush', 'Burst or sustain Aspect', 'probable', 'Cursed King is one of Dungeon Lootr’s strongest late-game classes, and the fastest route is through Boss Rush or the Cursed Shrine Forge path.'],
+  ['honored-one', 'Honored One', 'Mythic', 'Prerequisite progression chain', 'Solo', 'Control or damage Aspect', 'probable', 'Honored One is a key late-game Dungeon Lootr class and an important progression step for players chasing stronger unlock chains such as Unrestricted.'],
+  ['unrestricted', 'Unrestricted', 'Secret', 'Prerequisite class, fragments, and currency', 'Endgame', 'Endgame damage Aspect', 'unverified', 'Unrestricted is a high-investment Dungeon Lootr chase class, and the unlock route should be checked against current prerequisite, level, fragment, and currency requirements.'],
+  ['awakened-devil-ex', 'Awakened Devil EX', 'Secret', 'Rare material path', 'Burst', 'Burst amplification Aspect', 'unverified', 'Awakened Devil EX is a late-game chase class where the route should be planned around rare materials, boss farming, and current patch requirements.'],
+  ['dreadlord', 'Dreadlord', 'Legendary', 'Boss route', 'Survival', 'Sustain or control Aspect', 'unverified', 'Dreadlord is best evaluated as a durable Dungeon Lootr class for longer fights, especially when survival matters more than raw burst.'],
+  ['anti-magic', 'Anti Magic', 'Legendary', 'Class unlock route', 'Boss Rush', 'Survival or uptime Aspect', 'unverified', 'Anti Magic is a Dungeon Lootr class to evaluate around consistent Boss Rush clears, unlock cost, and how well its kit handles longer fights.'],
+  ['jetstream', 'Jetstream', 'Legendary', 'Class unlock route', 'Mobility', 'Mobility or damage Aspect', 'unverified', 'Jetstream is a mobility-focused Dungeon Lootr class where the best value comes from fast clears and clean rotation uptime.'],
+  ['shadow-vagrant', 'Shadow Vagrant', 'Legendary', 'Class unlock route', 'Solo', 'Damage uptime Aspect', 'unverified', 'Shadow Vagrant should be judged by solo consistency, damage uptime, and whether its unlock route is cheaper than other late-game class targets.'],
+  ['azure-devil', 'Azure Devil', 'Legendary', 'Class unlock route', 'Burst', 'Burst Aspect', 'unverified', 'Azure Devil is a burst-oriented Dungeon Lootr class to compare by boss-window damage, material cost, and late-game scaling.'],
+  ['streamline', 'Streamline', 'Epic', 'Class unlock route', 'Dungeon clear', 'Speed or uptime Aspect', 'unverified', 'Streamline is best treated as a fast-clear Dungeon Lootr class until current patch data proves whether it competes with late-game chase classes.'],
+  ['forge-archon', 'Forge Archon', 'Legendary', 'Forge route', 'Endgame', 'Forge-scaling Aspect', 'unverified', 'Forge Archon belongs on the Dungeon Lootr Forge progression path, so its value depends on material requirements and endgame return on investment.'],
+  ['witch-gunner', 'Witch Gunner', 'Epic', 'Class unlock route', 'Ranged clear', 'Range or damage Aspect', 'unverified', 'Witch Gunner is a Dungeon Lootr class to evaluate by ranged safety, dungeon clear speed, and whether its Aspect pairing improves uptime.'],
+  ['boxer', 'Boxer', 'Rare', 'Class unlock route', 'Early progression', 'Damage or survival Aspect', 'unverified', 'Boxer is an early-to-mid Dungeon Lootr class that should be judged by progression comfort rather than endgame ceiling.'],
+  ['artemis', 'Artemis', 'Epic', 'Class unlock route', 'Dungeon clear', 'Precision or damage Aspect', 'unverified', 'Artemis is a Dungeon Lootr class to test around clear speed, ranged consistency, and whether its investment beats easier progression options.'],
+].map(([slug, name, rarity, obtain, mode, aspect, confidence, opening]) => ({
+  slug,
+  name,
+  rarity,
+  obtain,
+  mode,
+  aspect,
+  confidence: confidence as ClassEntry['confidence'],
+  opening,
+  strengths: [`Strong ${String(mode).toLowerCase()} profile`, 'Clear build direction', 'Useful comparison target'],
+  weaknesses: baseWeaknesses,
+}));
 
 export const guides = [
   {
@@ -138,6 +119,99 @@ export const guides = [
     requirements: ['Finish prerequisite progression', 'Confirm level gate', 'Farm required fragments', 'Keep currency for the final unlock step'],
     next: ['/classes/unrestricted/', '/guides/best-aspect-by-class/'],
   },
+  {
+    slug: 'how-to-get-awakened-devil-ex',
+    target: 'Awakened Devil EX',
+    title: 'How to Get Awakened Devil EX in Dungeon Lootr',
+    opening: 'Awakened Devil EX should be unlocked by confirming its current rare-material path first, then farming the highest-consistency source for those materials.',
+    requirements: ['Confirm current material list', 'Check boss or dungeon source', 'Farm only where your clear rate is stable'],
+    next: ['/classes/awakened-devil-ex/', '/tools/drop-chance-calculator/'],
+  },
+  {
+    slug: 'how-to-get-dreadlord',
+    target: 'Dreadlord',
+    title: 'How to Get Dreadlord in Dungeon Lootr',
+    opening: 'Dreadlord is best approached through its boss route, with drop planning handled before you sink runs into a low-consistency farm.',
+    requirements: ['Confirm boss source', 'Prepare a stable Boss Rush or dungeon build', 'Track rare material progress'],
+    next: ['/classes/dreadlord/', '/tools/drop-chance-calculator/'],
+  },
+  {
+    slug: 'heavenly-fragments',
+    target: 'Heavenly Fragments',
+    title: 'How to Get Heavenly Fragments in Dungeon Lootr',
+    opening: 'Heavenly Fragments should be farmed only after you know which class unlock or Forge route needs them, because the best source depends on your current progression.',
+    requirements: ['Identify the target unlock', 'Confirm source after the latest patch', 'Use a repeatable clear route'],
+    next: ['/drop-rates/', '/tools/drop-chance-calculator/'],
+  },
+  {
+    slug: 'devil-heart',
+    target: 'Devil Heart',
+    title: 'Dungeon Lootr Devil Heart Drop Rate & How to Get It',
+    opening: 'Devil Heart farming should start with the verified source and expected-run calculation, not a blind grind based on a single drop-rate rumor.',
+    requirements: ['Confirm source', 'Record estimated or official rate', 'Calculate runs for 90% and 95% targets'],
+    next: ['/drop-rates/', '/tools/drop-chance-calculator/'],
+  },
+  {
+    slug: 'cursed-fragments',
+    target: 'Cursed Fragments',
+    title: 'How to Get Cursed Fragments in Dungeon Lootr',
+    opening: 'Cursed Fragments are worth routing around the class or Forge path they unlock, then farming through the most reliable repeatable source.',
+    requirements: ['Confirm target class requirement', 'Check current source', 'Avoid unstable high-floor farms'],
+    next: ['/guides/how-to-get-cursed-king/', '/tools/drop-chance-calculator/'],
+  },
+];
+
+export const hubPages = [
+  ['codes', 'Dungeon Lootr Codes', 'These Dungeon Lootr codes currently give the fastest free boost to your progression, especially when a new update or milestone code goes live.', ['Working codes', 'Expired codes', 'Where new codes appear', 'Last checked']],
+  ['builds', 'Dungeon Lootr Builds', 'Dungeon Lootr builds should be picked by mode first: Boss Rush rewards consistency, while dungeon clearing rewards burst windows and mobility.', ['Best overall builds', 'Boss Rush builds', 'Dungeon clear builds', 'Build methodology']],
+  ['aspects', 'Dungeon Lootr Aspects', 'Aspects can completely change how a Dungeon Lootr class performs, so the best choice depends on your class, mode, and damage or survivability needs.', ['Best Aspects by role', 'Class pairings', 'Alternatives', 'Patch notes']],
+  ['dungeons', 'Dungeon Lootr Dungeons', 'Dungeon Lootr dungeon progression is fastest when you farm the highest tier you can clear consistently rather than forcing unstable clears.', ['Progression checkpoints', 'Farming routes', 'Class recommendations', 'Drop notes']],
+  ['items', 'Dungeon Lootr Items', 'Dungeon Lootr items matter most when they connect to a class unlock, Forge path, Boss Rush breakpoint, or rare drop farm.', ['Class materials', 'Fragments', 'Boss drops', 'Used-for index']],
+  ['progression-guide', 'Dungeon Lootr Progression Guide', 'The fastest Dungeon Lootr progression path is to unlock reliable early damage, push higher dungeon tiers quickly, then transition into Boss Rush and deterministic Forge upgrades.', ['Early game', 'Mid game', 'Boss Rush transition', 'Endgame class targets']],
+].map(([slug, title, opening, sections]) => ({
+  slug: slug as string,
+  title: title as string,
+  opening: opening as string,
+  sections: sections as string[],
+}));
+
+export const bossRushPages = [
+  ['floor-40', 'Dungeon Lootr Boss Rush Floor 40', 'Boss Rush Floor 40 is a major Dungeon Lootr progression breakpoint because several high-value class and fragment rewards enter the farming loop around this range.'],
+  ['floor-100', 'Dungeon Lootr Boss Rush Floor 100', 'Boss Rush Floor 100 is an endgame checkpoint where class choice, survivability, and damage uptime matter more than raw burst alone.'],
+  ['drops', 'Dungeon Lootr Boss Rush Drops', 'Boss Rush drops should be tracked by floor, condition, and last-checked patch so players can avoid farming the wrong breakpoint.'],
+].map(([slug, title, opening]) => ({
+  slug,
+  title,
+  opening,
+  sections: ['Reward checks', 'Best strategy', 'Expected runs', 'What to farm next'],
+}));
+
+export const comparisons = [
+  {
+    slug: 'cursed-king-vs-sinister-trigger',
+    a: 'Cursed King',
+    b: 'Sinister Trigger',
+    opening: 'Cursed King is usually the safer Boss Rush investment, while Sinister Trigger is the better pick when your goal is fast burst-focused dungeon clearing.',
+  },
+  {
+    slug: 'honored-one-vs-unrestricted',
+    a: 'Honored One',
+    b: 'Unrestricted',
+    opening: 'Honored One is the progression bridge, while Unrestricted is the higher-investment chase target once prerequisites and resources are already lined up.',
+  },
+];
+
+export const toolPages = [
+  {
+    slug: 'class-finder',
+    title: 'Dungeon Lootr Class Finder',
+    opening: 'Use the Dungeon Lootr Class Finder to narrow class targets by rarity, unlock route, and best mode before committing to a farm.',
+  },
+  {
+    slug: 'aspect-matcher',
+    title: 'Dungeon Lootr Aspect Matcher',
+    opening: 'Use the Dungeon Lootr Aspect Matcher to pair a class with an Aspect direction based on Boss Rush, dungeon clear, burst, or survival goals.',
+  },
 ];
 
 export function byUrl(url: string) {
@@ -150,4 +224,20 @@ export function classBySlug(slug: string) {
 
 export function guideBySlug(slug: string) {
   return guides.find((item) => item.slug === slug);
+}
+
+export function hubBySlug(slug: string) {
+  return hubPages.find((item) => item.slug === slug);
+}
+
+export function bossRushBySlug(slug: string) {
+  return bossRushPages.find((item) => item.slug === slug);
+}
+
+export function comparisonBySlug(slug: string) {
+  return comparisons.find((item) => item.slug === slug);
+}
+
+export function toolBySlug(slug: string) {
+  return toolPages.find((item) => item.slug === slug);
 }

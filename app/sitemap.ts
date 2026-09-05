@@ -1,14 +1,18 @@
 import type { MetadataRoute } from 'next';
-import { classes, guides, seoEntries } from './data';
+import { bossRushPages, classes, comparisons, guides, hubPages, seoEntries, toolPages } from './data';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = 'https://dungeonlootr.top';
   const urls = [
     '/',
     ...seoEntries.map((entry) => entry.url),
+    ...hubPages.map((page) => `/${page.slug}/`),
     ...classes.map((item) => `/classes/${item.slug}/`),
     ...classes.map((item) => `/builds/${item.slug}/`),
     ...guides.map((item) => `/guides/${item.slug}/`),
+    ...bossRushPages.map((page) => `/boss-rush/${page.slug}/`),
+    ...comparisons.map((page) => `/comparisons/${page.slug}/`),
+    ...toolPages.map((page) => `/tools/${page.slug}/`),
     '/guides/best-aspect-by-class/',
   ];
 

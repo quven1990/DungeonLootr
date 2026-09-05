@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { DataNote, Facts, NextSteps } from '../../components';
-import { classBySlug, classes } from '../../data';
+import { classBySlug, classes, guideBySlug } from '../../data';
 
 export function generateStaticParams() {
   return classes.map((item) => ({ slug: item.slug }));
@@ -21,6 +21,7 @@ export default async function ClassPage({ params }: { params: Promise<{ slug: st
   const { slug } = await params;
   const item = classBySlug(slug);
   if (!item) notFound();
+  const unlockGuide = guideBySlug(`how-to-get-${item.slug}`);
 
   return (
     <main>
@@ -32,7 +33,7 @@ export default async function ClassPage({ params }: { params: Promise<{ slug: st
           <p>{item.opening}</p>
           <div className="hero-actions">
             <Link href={`/builds/${item.slug}/`}>See Best Build</Link>
-            <Link className="secondary" href={`/guides/how-to-get-${item.slug}/`}>How to Unlock</Link>
+            <Link className="secondary" href={unlockGuide ? `/guides/${unlockGuide.slug}/` : '/classes/'}>How to Unlock</Link>
           </div>
         </div>
         <Facts facts={[

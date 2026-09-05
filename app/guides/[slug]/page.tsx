@@ -53,10 +53,10 @@ export default async function GuidePage({ params }: { params: Promise<{ slug: st
             </ol>
           </section>
           <DataNote />
-          <NextSteps links={[
-            [`Got ${guide.target}? See the class page`, `/classes/${guide.target.toLowerCase().replaceAll(' ', '-')}/`],
-            ['Still farming? Open calculator', '/tools/drop-chance-calculator/'],
-          ]} />
+          <NextSteps links={guide.next.map((href) => [
+            href.includes('/tools/') ? 'Still farming? Open calculator' : 'Open the next route',
+            href,
+          ])} />
         </div>
         <aside className="side-rail">
           <div className="content-panel">
