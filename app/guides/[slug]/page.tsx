@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import { DataNote, NextSteps } from '../../components';
-import { guideBySlug, guides } from '../../data';
+import { DataNote, NextSteps, RetentionPanel } from '../../components';
+import { guideBySlug, guideSerp, guides } from '../../data';
 
 export function generateStaticParams() {
   return guides.map((item) => ({ slug: item.slug }));
@@ -11,9 +11,12 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const guide = guideBySlug(slug);
   if (!guide) return {};
+  const serp = guideSerp(guide);
   return {
-    title: `${guide.title} - Fastest Method & Requirements`,
-    description: `Unlock ${guide.target} with a quick answer, requirements checklist, route order, farming strategy, and next-step links.`,
+    title: serp.title,
+    description: serp.description,
+    openGraph: { title: serp.title, description: serp.description },
+    twitter: { title: serp.title, description: serp.description },
   };
 }
 
@@ -59,6 +62,10 @@ export default async function GuidePage({ params }: { params: Promise<{ slug: st
           ])} />
         </div>
         <aside className="side-rail">
+          <RetentionPanel
+            title={guide.target}
+            videoQuery={`Dungeon Lootr how to get ${guide.target} Roblox`}
+          />
           <div className="content-panel">
             <h3>Common mistake</h3>
             <p>Do not chase a low-rate drop on an unstable clear. A slightly slower floor with reliable clears usually wins over time.</p>

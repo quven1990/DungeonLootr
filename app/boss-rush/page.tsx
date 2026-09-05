@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { PageHero, NextSteps } from '../components';
+import { PageHero, NextSteps, RetentionPanel } from '../components';
 import { byUrl } from '../data';
 
 export const metadata = {
@@ -29,6 +29,10 @@ export default function BossRushPage() {
           <NextSteps links={[['Still farming? Calculate your drop chance', '/tools/drop-chance-calculator/'], ['Compare top classes', '/class-tier-list/']]} />
         </div>
         <aside className="side-rail">
+          <RetentionPanel
+            title="Boss Rush"
+            videoQuery="Dungeon Lootr Boss Rush Roblox clear guide"
+          />
           <div className="content-panel">
             <h3>Last checked</h3>
             <p>2026-09-05. Floor-specific drops should be verified after each update.</p>

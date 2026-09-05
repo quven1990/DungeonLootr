@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import { Facts, NextSteps } from '../../components';
-import { classBySlug, classes, guideBySlug } from '../../data';
+import { Facts, NextSteps, RetentionPanel } from '../../components';
+import { buildSerp, classBySlug, classes, guideBySlug } from '../../data';
 
 export function generateStaticParams() {
   return classes.map((item) => ({ slug: item.slug }));
@@ -11,9 +11,12 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const item = classBySlug(slug);
   if (!item) return {};
+  const serp = buildSerp(item);
   return {
-    title: `Best ${item.name} Build in Dungeon Lootr - Stats, Aspects & Gear`,
-    description: `Use a practical ${item.name} build framework for Boss Rush, dungeon clear, stat priority, Aspects, and alternatives.`,
+    title: serp.title,
+    description: serp.description,
+    openGraph: { title: serp.title, description: serp.description },
+    twitter: { title: serp.title, description: serp.description },
   };
 }
 
@@ -65,6 +68,14 @@ export default async function BuildPage({ params }: { params: Promise<{ slug: st
             ['Still missing drops? Calculate runs', '/tools/drop-chance-calculator/'],
           ]} />
         </div>
+        <aside className="side-rail">
+          <RetentionPanel
+            title={`${item.name} build`}
+            videoQuery={`Dungeon Lootr ${item.name} build rotation Boss Rush Roblox`}
+            toolHref="/tools/aspect-matcher/"
+            toolLabel="Match an Aspect"
+          />
+        </aside>
       </section>
     </main>
   );

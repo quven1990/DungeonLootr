@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import { DataNote, Facts, NextSteps } from '../../components';
-import { classBySlug, classes, guideBySlug } from '../../data';
+import { ClassFinderPreview, DataNote, Facts, NextSteps, RetentionPanel } from '../../components';
+import { classBySlug, classes, classSerp, guideBySlug } from '../../data';
 
 export function generateStaticParams() {
   return classes.map((item) => ({ slug: item.slug }));
@@ -11,9 +11,12 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const item = classBySlug(slug);
   if (!item) return {};
+  const serp = classSerp(item);
   return {
-    title: `Dungeon Lootr ${item.name} - How to Get, Skills, Build & Best Aspects`,
-    description: `See how ${item.name} works in Dungeon Lootr, including unlock route, best mode, Aspect direction, strengths, weaknesses, and next-step build links.`,
+    title: serp.title,
+    description: serp.description,
+    openGraph: { title: serp.title, description: serp.description },
+    twitter: { title: serp.title, description: serp.description },
   };
 }
 
@@ -61,6 +64,7 @@ export default async function ClassPage({ params }: { params: Promise<{ slug: st
             <h2>Best stats and Aspects</h2>
             <p>Prioritize the stats that keep {item.name} consistent in {item.mode}. Use a {item.aspect.toLowerCase()} first, then test alternatives against your clear speed and survival rate.</p>
           </section>
+          <ClassFinderPreview current={item} />
           <DataNote />
           <NextSteps links={[
             [`Got ${item.name}? Build it next`, `/builds/${item.slug}/`],
@@ -69,6 +73,12 @@ export default async function ClassPage({ params }: { params: Promise<{ slug: st
           ]} />
         </div>
         <aside className="side-rail">
+          <RetentionPanel
+            title={item.name}
+            videoQuery={`Dungeon Lootr ${item.name} gameplay build unlock Roblox`}
+            toolHref="/tools/class-finder/"
+            toolLabel="Find a better class match"
+          />
           <div className="content-panel">
             <h3>Quick facts</h3>
             <p>Confidence: {item.confidence}. Verify exact route requirements after major Dungeon Lootr updates.</p>

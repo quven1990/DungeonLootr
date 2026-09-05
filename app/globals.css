@@ -205,7 +205,8 @@ h2 {
 
 .content-panel,
 .data-note,
-.calculator {
+.calculator,
+.engagement-panel {
   border: 1px solid var(--line);
   border-radius: 8px;
   background: rgba(17, 19, 26, 0.86);
@@ -323,6 +324,54 @@ select {
   margin-top: 8px;
   color: #fff;
   font-size: 24px;
+}
+
+.engagement-panel {
+  display: grid;
+  gap: 14px;
+}
+
+.engagement-item {
+  display: grid;
+  gap: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding-bottom: 14px;
+}
+
+.engagement-item:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.engagement-item a {
+  color: #fff;
+  font-weight: 850;
+}
+
+.engagement-item p {
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.mini-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.mini-grid a {
+  display: grid;
+  gap: 4px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #0a0d13;
+  padding: 12px;
+}
+
+.mini-grid span {
+  color: var(--muted);
+  font-size: 13px;
 }
 
 .quick-answer {

@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import { DataNote, NextSteps } from '../../components';
-import { bossRushBySlug, bossRushPages } from '../../data';
+import { DataNote, NextSteps, RetentionPanel } from '../../components';
+import { bossRushBySlug, bossRushPages, bossRushSerp } from '../../data';
 
 export function generateStaticParams() {
   return bossRushPages.map((page) => ({ slug: page.slug }));
@@ -11,7 +11,13 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const page = bossRushBySlug(slug);
   if (!page) return {};
-  return { title: `${page.title} - Drops, Classes & Best Strategy`, description: page.opening };
+  const serp = bossRushSerp(page);
+  return {
+    title: serp.title,
+    description: serp.description,
+    openGraph: { title: serp.title, description: serp.description },
+    twitter: { title: serp.title, description: serp.description },
+  };
 }
 
 export default async function BossRushDetail({ params }: { params: Promise<{ slug: string }> }) {
@@ -42,6 +48,12 @@ export default async function BossRushDetail({ params }: { params: Promise<{ slu
             ['Open drop calculator', '/tools/drop-chance-calculator/'],
           ]} />
         </div>
+        <aside className="side-rail">
+          <RetentionPanel
+            title={page.title}
+            videoQuery={`${page.title} Dungeon Lootr Roblox clear`}
+          />
+        </aside>
       </section>
     </main>
   );

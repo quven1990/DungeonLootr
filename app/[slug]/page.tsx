@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import { ClassTable, DataNote, NextSteps } from '../components';
-import { hubBySlug, hubPages } from '../data';
+import { ClassTable, DataNote, NextSteps, RetentionPanel } from '../components';
+import { hubBySlug, hubPages, hubSerp } from '../data';
 
 export function generateStaticParams() {
   return hubPages.map((page) => ({ slug: page.slug }));
@@ -11,9 +11,12 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const page = hubBySlug(slug);
   if (!page) return {};
+  const serp = hubSerp(page);
   return {
-    title: `${page.title} - Fast Answers, Routes & Data`,
-    description: page.opening,
+    title: serp.title,
+    description: serp.description,
+    openGraph: { title: serp.title, description: serp.description },
+    twitter: { title: serp.title, description: serp.description },
   };
 }
 
@@ -70,6 +73,12 @@ export default async function HubPage({ params }: { params: Promise<{ slug: stri
           ]} />
         </div>
         <aside className="side-rail">
+          <RetentionPanel
+            title={page.title}
+            videoQuery={`${page.title} Roblox Dungeon Lootr guide`}
+            toolHref={slug === 'aspects' ? '/tools/aspect-matcher/' : '/tools/drop-chance-calculator/'}
+            toolLabel={slug === 'aspects' ? 'Match an Aspect' : 'Plan the next farm'}
+          />
           <div className="content-panel">
             <h3>Phase 1 coverage</h3>
             <p>This hub is part of the first sitemap group and is structured for later table expansion.</p>

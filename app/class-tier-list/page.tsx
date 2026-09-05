@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { ClassTable, DataNote, PageHero } from '../components';
+import { ClassTable, DataNote, PageHero, RetentionPanel } from '../components';
 import { byUrl, classes } from '../data';
 
 export const metadata = {
@@ -27,6 +27,12 @@ export default function TierPage() {
           <DataNote />
         </div>
         <aside className="side-rail">
+          <RetentionPanel
+            title="class tier list"
+            videoQuery="Dungeon Lootr class tier list best classes Roblox"
+            toolHref="/tools/class-finder/"
+            toolLabel="Find your class"
+          />
           <div className="content-panel">
             <h3>Mode-based verdict</h3>
             <p>Boss Rush favors consistency and survivability, while dungeon clearing rewards burst windows and mobility.</p>

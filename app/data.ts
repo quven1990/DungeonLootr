@@ -20,6 +20,12 @@ export type ClassEntry = {
   weaknesses: string[];
 };
 
+export type Serp = {
+  title: string;
+  description: string;
+  intent: string;
+};
+
 export const seoEntries: SeoEntry[] = [
   {
     url: '/classes/',
@@ -213,6 +219,74 @@ export const toolPages = [
     opening: 'Use the Dungeon Lootr Aspect Matcher to pair a class with an Aspect direction based on Boss Rush, dungeon clear, burst, or survival goals.',
   },
 ];
+
+export function classSerp(item: ClassEntry): Serp {
+  const isChase = item.rarity === 'Secret' || item.rarity === 'Mythic';
+  return {
+    title: `Dungeon Lootr ${item.name} Guide - Unlock, Build, Best Aspect & Tier`,
+    description: `${isChase ? 'Decide if' : 'See when'} ${item.name} is worth farming in Dungeon Lootr: unlock route, rarity, best mode, Aspect direction, build links, strengths, weaknesses, and next steps.`,
+    intent: 'The searcher likely wants to know whether this class is strong, how to get it, and what to do after unlocking it.',
+  };
+}
+
+export function buildSerp(item: ClassEntry): Serp {
+  return {
+    title: `Best ${item.name} Build in Dungeon Lootr - Stats, Aspect, Gear & Rotation`,
+    description: `Build ${item.name} for ${item.mode}: stat priority, Aspect pick, gear focus, Boss Rush and dungeon variants, rotation notes, and alternatives if you are still farming.`,
+    intent: 'The searcher already has or wants the class and needs a practical setup, not a lore page.',
+  };
+}
+
+export function guideSerp(guide: { slug: string; target: string; title: string; opening: string }): Serp {
+  const dropIntent = guide.slug === 'devil-heart';
+  return {
+    title: dropIntent
+      ? 'Devil Heart Drop Rate in Dungeon Lootr - Best Farming Method & Runs'
+      : `${guide.title} - Fastest Route, Requirements & Farming Tips`,
+    description: `Get ${guide.target} in Dungeon Lootr with a quick answer, requirements checklist, fastest route, common mistakes, expected grind planning, and what to open next.`,
+    intent: 'The searcher wants the route immediately, plus requirements and a way to judge the grind.',
+  };
+}
+
+export function hubSerp(page: { slug: string; title: string; opening: string }): Serp {
+  const suffixBySlug: Record<string, string> = {
+    codes: 'Working Codes, New Rewards & Expired List',
+    builds: 'Best Builds by Class, Mode, Stats & Aspects',
+    aspects: 'Effects, Best Classes, Pairings & Current Meta',
+    dungeons: 'Routes, Farming Targets & Progression Checkpoints',
+    items: 'Materials, Fragments, Drops & What They Unlock',
+    'progression-guide': 'Fastest Route From Beginner to Endgame',
+  };
+  return {
+    title: `${page.title} - ${suffixBySlug[page.slug] ?? 'Fast Answers & Data'}`,
+    description: `${page.opening} Includes quick answers, tables, tool links, and next-step routes so players do not dead-end after one page.`,
+    intent: 'The searcher is browsing a category and needs a scannable directory with clear next actions.',
+  };
+}
+
+export function bossRushSerp(page: { title: string; opening: string }): Serp {
+  return {
+    title: `${page.title} - Drops, Rewards, Classes & Clear Strategy`,
+    description: `${page.opening} Check reward planning, class choices, expected runs, common mistakes, and related farming tools.`,
+    intent: 'The searcher wants a floor or Boss Rush reward answer, then a class or drop-planning next step.',
+  };
+}
+
+export function comparisonSerp(item: { a: string; b: string; opening: string }): Serp {
+  return {
+    title: `${item.a} vs ${item.b} - Which Is Better in Dungeon Lootr?`,
+    description: `Compare ${item.a} and ${item.b} by Boss Rush, dungeon clear, solo play, unlock cost, investment, and final recommendation.`,
+    intent: 'The searcher is choosing between two options and needs a verdict by mode.',
+  };
+}
+
+export function toolSerp(tool: { title: string; opening: string }): Serp {
+  return {
+    title: `${tool.title} - Pick Faster, Farm Smarter, Waste Fewer Runs`,
+    description: `${tool.opening} Use it alongside class pages, build pages, Boss Rush routes, and drop planning pages.`,
+    intent: 'The searcher wants an interactive shortcut, not another article.',
+  };
+}
 
 export function byUrl(url: string) {
   return seoEntries.find((entry) => entry.url === url);

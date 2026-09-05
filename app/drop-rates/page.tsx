@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { DataNote, PageHero } from '../components';
+import { DataNote, PageHero, RetentionPanel } from '../components';
 import { byUrl } from '../data';
 
 export const metadata = {
@@ -21,6 +21,10 @@ export default function DropRatesPage() {
           <DataNote />
         </div>
         <aside className="side-rail">
+          <RetentionPanel
+            title="drop rates"
+            videoQuery="Dungeon Lootr drop rates boss drops Roblox"
+          />
           <div className="content-panel">
             <h3>Best next action</h3>
             <p>For any rate estimate, calculate 50%, 90%, 95%, and 99% run targets before choosing a farm.</p>

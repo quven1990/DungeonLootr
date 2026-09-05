@@ -1,4 +1,4 @@
-import { ClassTable, DataNote, PageHero } from '../components';
+import { ClassTable, DataNote, PageHero, RetentionPanel } from '../components';
 import { byUrl } from '../data';
 
 export const metadata = {
@@ -17,6 +17,12 @@ export default function ClassesPage() {
           <DataNote />
         </div>
         <aside className="side-rail">
+          <RetentionPanel
+            title="Dungeon Lootr classes"
+            videoQuery="Dungeon Lootr all classes tier list Roblox"
+            toolHref="/tools/class-finder/"
+            toolLabel="Use Class Finder"
+          />
           <div className="content-panel">
             <h3>Filters to add next</h3>
             <p>Rarity, obtain method, best mode, and confidence are already structured for the next expansion pass.</p>

@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import { DataNote, NextSteps } from '../../components';
-import { comparisonBySlug, comparisons } from '../../data';
+import { DataNote, NextSteps, RetentionPanel } from '../../components';
+import { comparisonBySlug, comparisons, comparisonSerp } from '../../data';
 
 export function generateStaticParams() {
   return comparisons.map((item) => ({ slug: item.slug }));
@@ -11,7 +11,13 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const item = comparisonBySlug(slug);
   if (!item) return {};
-  return { title: `${item.a} vs ${item.b}: Which Is Better in Dungeon Lootr?`, description: item.opening };
+  const serp = comparisonSerp(item);
+  return {
+    title: serp.title,
+    description: serp.description,
+    openGraph: { title: serp.title, description: serp.description },
+    twitter: { title: serp.title, description: serp.description },
+  };
 }
 
 export default async function ComparisonPage({ params }: { params: Promise<{ slug: string }> }) {
@@ -45,6 +51,14 @@ export default async function ComparisonPage({ params }: { params: Promise<{ slu
             ['Plan unlock drops', '/tools/drop-chance-calculator/'],
           ]} />
         </div>
+        <aside className="side-rail">
+          <RetentionPanel
+            title={`${item.a} vs ${item.b}`}
+            videoQuery={`Dungeon Lootr ${item.a} ${item.b} comparison Roblox`}
+            toolHref="/tools/class-finder/"
+            toolLabel="Find your best class"
+          />
+        </aside>
       </section>
     </main>
   );

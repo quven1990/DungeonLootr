@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { ClassTable, NextSteps } from '../../components';
-import { toolBySlug, toolPages } from '../../data';
+import { toolBySlug, toolPages, toolSerp } from '../../data';
 
 export function generateStaticParams() {
   return toolPages.map((tool) => ({ slug: tool.slug }));
@@ -11,7 +11,13 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const tool = toolBySlug(slug);
   if (!tool) return {};
-  return { title: tool.title, description: tool.opening };
+  const serp = toolSerp(tool);
+  return {
+    title: serp.title,
+    description: serp.description,
+    openGraph: { title: serp.title, description: serp.description },
+    twitter: { title: serp.title, description: serp.description },
+  };
 }
 
 export default async function ToolPage({ params }: { params: Promise<{ slug: string }> }) {
