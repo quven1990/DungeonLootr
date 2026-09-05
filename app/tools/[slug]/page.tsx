@@ -1,7 +1,9 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import { ClassTable, NextSteps } from '../../components';
-import { toolBySlug, toolPages, toolSerp } from '../../data';
+import { NextSteps } from '../../components';
+import { AspectMatcher } from '../AspectMatcher';
+import { ClassFinder } from '../ClassFinder';
+import { classes, toolBySlug, toolPages, toolSerp } from '../../data';
 
 export function generateStaticParams() {
   return toolPages.map((tool) => ({ slug: tool.slug }));
@@ -37,15 +39,7 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
       </section>
       <section className="site-shell content-grid">
         <div className="article-stack">
-          <section className="content-panel">
-            <h2>Matcher inputs</h2>
-            <ul className="check-list">
-              <li>Choose your target mode: Boss Rush, dungeon clear, solo, or burst.</li>
-              <li>Check rarity and unlock pressure before choosing a chase class.</li>
-              <li>Pair the class with an Aspect direction, then validate with clears.</li>
-            </ul>
-          </section>
-          <ClassTable />
+          {slug === 'class-finder' ? <ClassFinder classes={classes} /> : <AspectMatcher classes={classes} />}
           <NextSteps links={[
             ['Need drop math? Open calculator', '/tools/drop-chance-calculator/'],
             ['See all classes', '/classes/'],

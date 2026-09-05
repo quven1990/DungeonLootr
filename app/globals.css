@@ -620,8 +620,16 @@ dd {
   background: #080b10;
   color: #dce5f2;
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  padding: 0 16px;
+  gap: 8px 12px;
+  padding: 10px 16px;
+}
+
+.search-box a {
+  color: var(--accent);
+  font-weight: 700;
+  text-decoration: none;
 }
 
 .status-pill,
@@ -689,6 +697,70 @@ dd {
   border: 1px solid var(--line);
   border-radius: 8px;
   max-width: 100%;
+}
+
+.codes-meta {
+  margin: 0 0 14px;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.finder-controls {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.finder-controls label {
+  display: grid;
+  gap: 6px;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.finder-controls input,
+.finder-controls select {
+  width: 100%;
+  min-height: 42px;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: rgba(10, 13, 19, 0.92);
+  color: inherit;
+  padding: 8px 10px;
+}
+
+.footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.code-chip {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: rgba(247, 198, 90, 0.12);
+  border: 1px solid rgba(247, 198, 90, 0.28);
+  color: var(--accent);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.92rem;
+  letter-spacing: 0.02em;
+}
+
+.code-chip.muted {
+  color: var(--muted);
+  background: rgba(255, 255, 255, 0.04);
+  border-color: var(--line);
+}
+
+.expired-codes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
 .mobile-cards {

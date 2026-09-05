@@ -40,28 +40,40 @@ export default async function BuildPage({ params }: { params: Promise<{ slug: st
           </div>
         </div>
         <Facts facts={[
+          ['Tier', item.tier],
           ['Mode', item.mode],
-          ['Stats', 'Damage, uptime, survival'],
           ['Aspect', item.aspect],
-          ['Difficulty', item.rarity === 'Secret' ? 'High' : 'Medium-high'],
+          ['Unlock', item.obtain],
+          ['Difficulty', item.rarity === 'Secret' || item.rarity === 'Exotic' ? 'High' : 'Medium-high'],
         ]} />
       </section>
       <section className="site-shell content-grid">
         <div className="article-stack">
           <section className="content-panel">
             <h2>Best overall</h2>
-            <p>Build for reliable clears first. A high-damage setup is only better when it survives the full route and keeps core skills active during boss windows.</p>
+            <ul>
+              {item.buildNotes.map((note) => <li key={note}>{note}</li>)}
+            </ul>
+            <p>Keep clears consistent in {item.mode} before stacking greedier damage. A dead run wastes more time than a slightly slower safe clear.</p>
           </section>
           <section className="content-panel">
-            <h2>Build switcher</h2>
+            <h2>Build focus by mode</h2>
             <div className="card-grid four">
               {['Overall', 'Boss Rush', 'Dungeon', 'Solo'].map((mode) => (
                 <div className="metric" key={mode}>
                   <span>{mode}</span>
-                  <strong>{mode === item.mode ? 'Primary' : 'Alt'}</strong>
+                  <strong>
+                    {mode === 'Overall' || mode === item.mode || (mode === 'Dungeon' && item.mode.includes('clear'))
+                      ? 'Primary'
+                      : 'Alt'}
+                  </strong>
                 </div>
               ))}
             </div>
+          </section>
+          <section className="content-panel">
+            <h2>Strengths to build around</h2>
+            <ul>{item.strengths.map((text) => <li key={text}>{text}</li>)}</ul>
           </section>
           <NextSteps links={[
             ['Need the class first? Unlock route', unlockGuide ? `/guides/${unlockGuide.slug}/` : '/classes/'],

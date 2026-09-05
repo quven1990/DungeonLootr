@@ -40,6 +40,7 @@ export default async function ClassPage({ params }: { params: Promise<{ slug: st
           </div>
         </div>
         <Facts facts={[
+          ['Tier', item.tier],
           ['Rarity', item.rarity],
           ['Obtain', item.obtain],
           ['Best mode', item.mode],
@@ -51,7 +52,9 @@ export default async function ClassPage({ params }: { params: Promise<{ slug: st
         <div className="article-stack">
           <section className="content-panel">
             <h2>How to get {item.name}</h2>
-            <p>{item.obtain}. If the route depends on a rare material or floor-specific drop, use the calculator before committing to a long farm.</p>
+            <ol>
+              {item.unlockSteps.map((step) => <li key={step}>{step}</li>)}
+            </ol>
           </section>
           <section className="content-panel">
             <h2>Strengths and weaknesses</h2>
@@ -62,7 +65,10 @@ export default async function ClassPage({ params }: { params: Promise<{ slug: st
           </section>
           <section className="content-panel">
             <h2>Best stats and Aspects</h2>
-            <p>Prioritize the stats that keep {item.name} consistent in {item.mode}. Use a {item.aspect.toLowerCase()} first, then test alternatives against your clear speed and survival rate.</p>
+            <p>Prioritize the stats that keep {item.name} consistent in {item.mode}. Start with a {item.aspect.toLowerCase()}.</p>
+            <ul>
+              {item.buildNotes.map((note) => <li key={note}>{note}</li>)}
+            </ul>
           </section>
           <ClassFinderPreview current={item} />
           <DataNote />

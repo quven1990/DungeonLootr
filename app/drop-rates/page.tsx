@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { DataNote, PageHero, RetentionPanel } from '../components';
-import { byUrl } from '../data';
+import { byUrl, dropRates } from '../data';
 
 const entry = byUrl('/drop-rates/')!;
 
@@ -17,7 +17,29 @@ export default function DropRatesPage() {
         <div className="article-stack">
           <section className="content-panel">
             <h2>Drop tracking table</h2>
-            <p>Exact official rates are not published for every source. Use this page as the verified-rate index and mark community estimates clearly before scaling item pages.</p>
+            <p>Community-checked rates. Exact official numbers are not published for every source - recalculate after patches.</p>
+            <div className="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Item</th>
+                    <th>Source</th>
+                    <th>Rate</th>
+                    <th>Note</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {dropRates.map((row) => (
+                    <tr key={row.item}>
+                      <td><Link href={row.href}>{row.item}</Link></td>
+                      <td>{row.source}</td>
+                      <td>{row.rate}</td>
+                      <td>{row.note}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </section>
           <DataNote />
         </div>

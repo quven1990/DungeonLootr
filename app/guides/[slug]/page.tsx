@@ -50,10 +50,14 @@ export default async function GuidePage({ params }: { params: Promise<{ slug: st
           <section className="content-panel" id="route">
             <h2>Fastest farming route</h2>
             <ol>
-              <li>Confirm the current route requirements before spending currency.</li>
-              <li>Farm the most stable source first, usually the one your current build can clear consistently.</li>
-              <li>Use deterministic Forge or prerequisite progress as the backup when random drops stall.</li>
+              {guide.steps.map((item) => <li key={item}>{item}</li>)}
             </ol>
+          </section>
+          <section className="content-panel">
+            <h2>Tips that save runs</h2>
+            <ul>
+              {guide.tips.map((item) => <li key={item}>{item}</li>)}
+            </ul>
           </section>
           <DataNote />
           <NextSteps links={guide.next.map((href) => [

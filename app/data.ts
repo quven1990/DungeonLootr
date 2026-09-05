@@ -14,10 +14,13 @@ export type ClassEntry = {
   obtain: string;
   mode: string;
   aspect: string;
+  tier: 'S' | 'A' | 'B' | 'C' | 'D';
   confidence: 'verified' | 'probable' | 'conflicting' | 'unverified';
   opening: string;
   strengths: string[];
   weaknesses: string[];
+  unlockSteps: string[];
+  buildNotes: string[];
 };
 
 export type Serp = {
@@ -79,288 +82,560 @@ export const seoEntries: SeoEntry[] = [
   },
 ];
 
-const baseWeaknesses = [
-  'Exact numbers require post-patch verification',
-  'Best setup can change when Boss Rush rewards or skill values shift',
+export const classes: ClassEntry[] = [
+  {
+    slug: 'cursed-king',
+    name: 'Cursed King',
+    rarity: 'Mythic',
+    obtain: 'Boss Rush Floor 40+ Class Item, or Forge with 50 Sukuna fragments',
+    mode: 'Boss Rush',
+    aspect: 'Burst / sustain Aspect',
+    tier: 'S',
+    confidence: 'probable',
+    opening:
+      'Cursed King is an S-tier Boss Rush powerhouse: get the Class Item from Floor 40+, or craft Cursed Shrine at the Forge with 50 Sukuna fragments.',
+    strengths: ['Top-tier Boss Rush damage and AoE', 'Forge path removes pure RNG dependence', 'Strong once mastery is leveled'],
+    weaknesses: ['Needs Floor 40+ or repeated Floor 100 fragment farms', 'Mastery investment before full kit value'],
+    unlockSteps: [
+      'Reach level 67+ so you can enter Boss Rush (dungeons are the fastest EXP route).',
+      'Option A: push Floor 40+ and farm the Cursed King / Cursed Shrine Class Item drop (higher floors = better odds).',
+      'Option B: create a Boss Rush lobby with Sukuna as the main boss, clear Floor 100 for 8–18 fragments, then craft at the Forge with 50 fragments.',
+      'After unlock, raise mastery; at Mastery 50 you can buy the King of Curses title near the Boss Rush portal for 1,000,000 coins.',
+    ],
+    buildNotes: [
+      'Prioritize clear consistency before greedier damage Aspects.',
+      'Spend early mastery on core cleave / slash damage nodes first.',
+      'Use Boss Rush as the main value loop after unlock.',
+    ],
+  },
+  {
+    slug: 'honored-one',
+    name: 'Honored One',
+    rarity: 'Mythic',
+    obtain: 'Boss Rush Floor 40+ Class Item, or Forge with 50 Gojo fragments',
+    mode: 'Solo',
+    aspect: 'Control / damage Aspect',
+    tier: 'S',
+    confidence: 'probable',
+    opening:
+      'Honored One is S-tier and the bridge into Unrestricted: farm the Boss Rush Class Item from Floor 40+, or Forge it with 50 Gojo fragments.',
+    strengths: ['S-tier combat value', 'Required stepping stone for Unrestricted', 'Forge backup path via Gojo fragments'],
+    weaknesses: ['Shares the Floor 40+ / Floor 100 fragment grind', 'You still need more materials later for Unrestricted'],
+    unlockSteps: [
+      'Enter Boss Rush and target Gojo when farming fragments.',
+      'Farm Class Item drops from Floor 40+, or clear Floor 100 for 8–18 Gojo fragments per clear.',
+      'Craft the Class Item at the Forge once you have 50 Gojo fragments.',
+      'Level Honored One toward 25 if your next chase is Unrestricted.',
+    ],
+    buildNotes: [
+      'Build for solo consistency and control windows.',
+      'Keep this class leveled if Unrestricted is your end target.',
+    ],
+  },
+  {
+    slug: 'unrestricted',
+    name: 'Unrestricted',
+    rarity: 'Secret',
+    obtain: 'Level 75, 500K coins, Honored One Lv 25, 10 Heavenly Fragments',
+    mode: 'Endgame',
+    aspect: 'Endgame damage Aspect',
+    tier: 'S',
+    confidence: 'probable',
+    opening:
+      'Unrestricted is an S-tier endgame chase: player level 75, 500K coins, Honored One level 25, and 10 Heavenly Fragments.',
+    strengths: ['Top-end class ceiling', 'Clear checklist unlock (not pure Boss Rush RNG)', 'Pairs with Honored One progression'],
+    weaknesses: ['Heavy checklist and coin cost', 'Heavenly Fragment farm can stall'],
+    unlockSteps: [
+      'Unlock and level Honored One to 25 first.',
+      'Reach player level 75 and bank 500,000 coins.',
+      'Farm Heavenly Fragments (about 5% from Challenge Mode bosses that spawn every 10 waves).',
+      'Spend the checklist once you have 10 Heavenly Fragments.',
+    ],
+    buildNotes: [
+      'Do not start this farm until Honored One and coin income are stable.',
+      'Use the drop calculator on the 5% Heavenly Fragment rate before long Challenge Mode sessions.',
+    ],
+  },
+  {
+    slug: 'awakened-devil-ex',
+    name: 'Awakened Devil EX',
+    rarity: 'Secret',
+    obtain: 'Azure Devil Lv 50, 1,000,000 coins, 1 Devil Heart',
+    mode: 'Burst',
+    aspect: 'Burst amplification Aspect',
+    tier: 'S',
+    confidence: 'probable',
+    opening:
+      'Awakened Devil EX needs Azure Devil level 50, 1,000,000 coins, and one Devil Heart from Awakened Devil in Frostspire NM.',
+    strengths: ['S-tier burst potential', 'Checklist unlock once materials are ready'],
+    weaknesses: ['Requires Azure Devil progression first', 'Devil Heart farm can be the long pole'],
+    unlockSteps: [
+      'Unlock and level Azure Devil to 50.',
+      'Save 1,000,000 coins.',
+      'Farm Devil Heart from the Awakened Devil boss in Frostspire Nightmare.',
+      'Complete the exchange once all three requirements are ready.',
+    ],
+    buildNotes: [
+      'Build around burst windows once unlocked.',
+      'Farm Frostspire NM only with a stable clear first.',
+    ],
+  },
+  {
+    slug: 'dreadlord',
+    name: 'Dreadlord',
+    rarity: 'Legendary',
+    obtain: '1% Underworld Glaive drop from Underworld Gate Nightmare',
+    mode: 'Survival',
+    aspect: 'Sustain / control Aspect',
+    tier: 'S',
+    confidence: 'probable',
+    opening:
+      'Dreadlord is S-tier survival pressure: farm the Underworld Glaive at about 1% from Underworld Gate Nightmare.',
+    strengths: ['High-end survival class', 'Simple single-item chase'],
+    weaknesses: ['1% drop means long expected runs', 'Needs a stable Nightmare clear first'],
+    unlockSteps: [
+      'Prepare a build that can clear Underworld Gate Nightmare consistently.',
+      'Farm for Underworld Glaive (~1% drop).',
+      'Use the drop calculator before committing to a long 1% grind.',
+    ],
+    buildNotes: [
+      'Lean into sustain Aspects; dying mid-run wastes the rare farm.',
+    ],
+  },
+  {
+    slug: 'sinister-trigger',
+    name: 'Sinister Trigger',
+    rarity: 'Exotic',
+    obtain: 'Class roll (~0.05% Exotic)',
+    mode: 'Dungeon clear',
+    aspect: 'Damage uptime Aspect',
+    tier: 'S',
+    confidence: 'probable',
+    opening:
+      'Sinister Trigger is an S-tier Exotic roll (~0.05%) built for fast dungeon clears and high damage uptime.',
+    strengths: ['Elite clear speed', 'Strong dungeon damage profile'],
+    weaknesses: ['Extremely rare class roll', 'No Forge shortcut like Boss Rush classes'],
+    unlockSteps: [
+      'Spend rolls only when you can afford the Exotic chase.',
+      'Use codes / stone bundles to stretch roll sessions.',
+      'If you hit it, move straight into a clear-speed build.',
+    ],
+    buildNotes: [
+      'Prioritize damage uptime Aspects and dungeon clear routes.',
+    ],
+  },
+  {
+    slug: 'witch-gunner',
+    name: 'Witch Gunner',
+    rarity: 'Legendary',
+    obtain: 'Class roll (~8% Legendary)',
+    mode: 'Ranged clear',
+    aspect: 'Range / damage Aspect',
+    tier: 'S',
+    confidence: 'probable',
+    opening:
+      'Witch Gunner is an S-tier Legendary roll (~8%) with safer ranged clears for progression and farming.',
+    strengths: ['Ranged safety', 'Strong enough to stay in S-tier discussion', 'More obtainable than Exotic/Secret chases'],
+    weaknesses: ['Still RNG-dependent on rolls', 'Lower ceiling than top Boss Rush secrets for some players'],
+    unlockSteps: ['Roll for Legendary classes until Witch Gunner drops.', 'Redeem codes for extra roll resources when available.'],
+    buildNotes: ['Keep range and clear speed first; use it as a safe farmer while chasing Boss Rush classes.'],
+  },
+  {
+    slug: 'shadow-vagrant',
+    name: 'Shadow Vagrant',
+    rarity: 'Legendary',
+    obtain: 'Class unlock / community route (verify after patch)',
+    mode: 'Solo',
+    aspect: 'Damage uptime Aspect',
+    tier: 'S',
+    confidence: 'unverified',
+    opening:
+      'Shadow Vagrant sits in the S-tier conversation as a solo-consistency class - confirm the current unlock route after each patch.',
+    strengths: ['Solo consistency profile', 'S-tier rating in current community lists'],
+    weaknesses: ['Exact unlock details still need post-patch confirmation'],
+    unlockSteps: ['Check the current patch notes / Discord for the live unlock path.', 'Prefer a stable solo clear build once unlocked.'],
+    buildNotes: ['Build for uptime and solo survivability.'],
+  },
+  {
+    slug: 'anti-magic',
+    name: 'Anti Magic',
+    rarity: 'Legendary',
+    obtain: 'Boss Rush Floor 40+ Class Item, or Forge with 50 Asta fragments',
+    mode: 'Boss Rush',
+    aspect: 'Survival / uptime Aspect',
+    tier: 'A',
+    confidence: 'probable',
+    opening:
+      'Anti Magic is A-tier Boss Rush: Floor 40+ Class Item drops, or Forge with 50 Asta fragments from Floor 100 clears.',
+    strengths: ['Same dual-path system as Cursed King / Honored One', 'Reliable Boss Rush farming class'],
+    weaknesses: ['Usually ranked below the absolute S-tier Boss Rush picks'],
+    unlockSteps: [
+      'Select Asta as the Boss Rush main boss when fragment farming.',
+      'Farm Class Item from Floor 40+, or collect 8–18 Asta fragments per Floor 100 clear until you reach 50.',
+      'Craft at the Forge.',
+    ],
+    buildNotes: ['Lean survival/uptime for deeper Boss Rush pushes.'],
+  },
+  {
+    slug: 'azure-devil',
+    name: 'Azure Devil',
+    rarity: 'Celestial',
+    obtain: 'Class roll (~0.5% Celestial)',
+    mode: 'Burst',
+    aspect: 'Burst Aspect',
+    tier: 'A',
+    confidence: 'probable',
+    opening:
+      'Azure Devil is an A-tier Celestial roll (~0.5%) and the required base class for Awakened Devil EX.',
+    strengths: ['Burst kit', 'Required for Awakened Devil EX'],
+    weaknesses: ['Celestial roll RNG', 'Needs heavy follow-up investment for the EX upgrade'],
+    unlockSteps: ['Roll Celestial until Azure Devil drops.', 'Level it to 50 before starting the Devil Heart / coin checklist.'],
+    buildNotes: ['Treat this as both a burst class and an unlock stepping stone.'],
+  },
+  {
+    slug: 'artemis',
+    name: 'Artemis',
+    rarity: 'Celestial',
+    obtain: 'Class roll (~0.5% Celestial)',
+    mode: 'Dungeon clear',
+    aspect: 'Precision / damage Aspect',
+    tier: 'A',
+    confidence: 'probable',
+    opening: 'Artemis is an A-tier Celestial roll (~0.5%) aimed at precise dungeon clear damage.',
+    strengths: ['Strong clear profile', 'Celestial power band'],
+    weaknesses: ['Roll RNG', 'Not a Boss Rush Forge shortcut class'],
+    unlockSteps: ['Roll for Celestial classes.', 'Move into dungeon-clear Aspects after unlock.'],
+    buildNotes: ['Prioritize clear speed and boss-window damage.'],
+  },
+  {
+    slug: 'forge-archon',
+    name: 'Forge Archon',
+    rarity: 'Celestial',
+    obtain: 'Class roll (~0.5% Celestial)',
+    mode: 'Endgame',
+    aspect: 'Forge-scaling Aspect',
+    tier: 'A',
+    confidence: 'probable',
+    opening: 'Forge Archon is an A-tier Celestial (~0.5%) that rewards players already investing in Forge progression.',
+    strengths: ['Fits Forge-focused accounts', 'A-tier combat value'],
+    weaknesses: ['Celestial roll gate', 'Needs Forge investment to feel worth it'],
+    unlockSteps: ['Roll Celestial for Forge Archon.', 'Pair with Forge materials and endgame loops.'],
+    buildNotes: ['Spend resources on Forge value only after your main class route is stable.'],
+  },
+  {
+    slug: 'jetstream',
+    name: 'Jetstream',
+    rarity: 'Legendary',
+    obtain: 'Class unlock route (verify after patch)',
+    mode: 'Mobility',
+    aspect: 'Mobility / damage Aspect',
+    tier: 'A',
+    confidence: 'unverified',
+    opening: 'Jetstream is an A-tier mobility clear class - confirm the live unlock path, then build for speed.',
+    strengths: ['Mobility and fast clears'],
+    weaknesses: ['Unlock details still need verification'],
+    unlockSteps: ['Verify current unlock method in-game / Discord.', 'Build for speed once unlocked.'],
+    buildNotes: ['Use mobility Aspects and avoid over-stacking survival if clears are already stable.'],
+  },
+  {
+    slug: 'streamline',
+    name: 'Streamline',
+    rarity: 'Epic',
+    obtain: 'Class unlock route (verify after patch)',
+    mode: 'Dungeon clear',
+    aspect: 'Speed / uptime Aspect',
+    tier: 'A',
+    confidence: 'unverified',
+    opening: 'Streamline is an A-tier progression clearer for pushing dungeon tiers before endgame chases.',
+    strengths: ['Fast progression clears'],
+    weaknesses: ['Unlock path needs confirmation', 'Not the final endgame ceiling'],
+    unlockSteps: ['Confirm unlock method after the latest update.', 'Use it to push content until an S-tier chase is ready.'],
+    buildNotes: ['Speed and uptime over luxury stats.'],
+  },
+  {
+    slug: 'boxer',
+    name: 'Boxer',
+    rarity: 'Epic',
+    obtain: 'Class roll (~20% Epic)',
+    mode: 'Early progression',
+    aspect: 'Damage / survival Aspect',
+    tier: 'B',
+    confidence: 'probable',
+    opening: 'Boxer is a B-tier Epic roll (~20%) for early/mid comfort - good for progression, not the endgame ceiling.',
+    strengths: ['Easy to roll', 'Smooth early progression'],
+    weaknesses: ['Outscaled by Mythic/Celestial/Secret targets'],
+    unlockSteps: ['Roll Epic until Boxer appears, or use it if it drops early.'],
+    buildNotes: ['Keep a balanced damage/survival setup and swap once a higher tier unlock is ready.'],
+  },
 ];
 
-export const classes: ClassEntry[] = [
-  [
-    'sinister-trigger',
-    'Sinister Trigger',
-    'Mythic',
-    'Late-game damage route',
-    'Dungeon clear',
-    'Damage uptime Aspect',
-    'probable',
-    'Sinister Trigger is a top damage class for fast clears - build around burst windows and you will feel the difference immediately.',
-  ],
-  [
-    'cursed-king',
-    'Cursed King',
-    'Mythic',
-    'Boss Rush route or Cursed Shrine Forge path',
-    'Boss Rush',
-    'Burst or sustain Aspect',
-    'probable',
-    'Cursed King is one of the strongest late-game classes - unlock it through Boss Rush first, or use the Cursed Shrine Forge path as your backup.',
-  ],
-  [
-    'honored-one',
-    'Honored One',
-    'Mythic',
-    'Prerequisite progression chain',
-    'Solo',
-    'Control or damage Aspect',
-    'probable',
-    'Honored One is a key late-game stepping stone - unlock it if you are pushing toward stronger chains like Unrestricted.',
-  ],
-  [
-    'unrestricted',
-    'Unrestricted',
-    'Secret',
-    'Prerequisite class, fragments, and currency',
-    'Endgame',
-    'Endgame damage Aspect',
-    'unverified',
-    'Unrestricted is a high-investment chase class - confirm prereqs, level, fragments, and currency before you commit the farm.',
-  ],
-  [
-    'awakened-devil-ex',
-    'Awakened Devil EX',
-    'Secret',
-    'Rare material path',
-    'Burst',
-    'Burst amplification Aspect',
-    'unverified',
-    'Awakened Devil EX is a late-game chase: plan the rare-material route first, then farm only the most consistent source.',
-  ],
-  [
-    'dreadlord',
-    'Dreadlord',
-    'Legendary',
-    'Boss route',
-    'Survival',
-    'Sustain or control Aspect',
-    'unverified',
-    'Dreadlord shines in long fights where survival beats raw burst - strong if your clears keep dying before the damage lands.',
-  ],
-  [
-    'anti-magic',
-    'Anti Magic',
-    'Legendary',
-    'Class unlock route',
-    'Boss Rush',
-    'Survival or uptime Aspect',
-    'unverified',
-    'Anti Magic is built for consistent Boss Rush clears - check unlock cost and how well it holds in longer fights before farming.',
-  ],
-  [
-    'jetstream',
-    'Jetstream',
-    'Legendary',
-    'Class unlock route',
-    'Mobility',
-    'Mobility or damage Aspect',
-    'unverified',
-    'Jetstream is a mobility class that pays off in fast clears and clean rotation uptime - great when speed is the goal.',
-  ],
-  [
-    'shadow-vagrant',
-    'Shadow Vagrant',
-    'Legendary',
-    'Class unlock route',
-    'Solo',
-    'Damage uptime Aspect',
-    'unverified',
-    'Shadow Vagrant is a solo-consistency pick - farm it if the unlock is cheaper than other late-game targets you want.',
-  ],
-  [
-    'azure-devil',
-    'Azure Devil',
-    'Legendary',
-    'Class unlock route',
-    'Burst',
-    'Burst Aspect',
-    'unverified',
-    'Azure Devil is a burst class - compare boss-window damage and material cost before you invest.',
-  ],
-  [
-    'streamline',
-    'Streamline',
-    'Epic',
-    'Class unlock route',
-    'Dungeon clear',
-    'Speed or uptime Aspect',
-    'unverified',
-    'Streamline is a fast-clear class for progression - use it to push content until a true endgame chase is worth the farm.',
-  ],
-  [
-    'forge-archon',
-    'Forge Archon',
-    'Legendary',
-    'Forge route',
-    'Endgame',
-    'Forge-scaling Aspect',
-    'unverified',
-    'Forge Archon sits on the Forge progression path - worth it when the material cost matches the endgame return.',
-  ],
-  [
-    'witch-gunner',
-    'Witch Gunner',
-    'Epic',
-    'Class unlock route',
-    'Ranged clear',
-    'Range or damage Aspect',
-    'unverified',
-    'Witch Gunner offers ranged safety and solid clear speed - strong when you want safer dungeon farming.',
-  ],
-  [
-    'boxer',
-    'Boxer',
-    'Rare',
-    'Class unlock route',
-    'Early progression',
-    'Damage or survival Aspect',
-    'unverified',
-    'Boxer is an early-to-mid comfort class - take it for smoother progression, not for endgame ceiling.',
-  ],
-  [
-    'artemis',
-    'Artemis',
-    'Epic',
-    'Class unlock route',
-    'Dungeon clear',
-    'Precision or damage Aspect',
-    'unverified',
-    'Artemis is a ranged clear option - farm it if clear speed and consistency beat easier progression classes for you.',
-  ],
-].map(([slug, name, rarity, obtain, mode, aspect, confidence, opening]) => ({
-  slug,
-  name,
-  rarity,
-  obtain,
-  mode,
-  aspect,
-  confidence: confidence as ClassEntry['confidence'],
-  opening,
-  strengths: [`Strong ${String(mode).toLowerCase()} profile`, 'Clear build direction', 'Useful comparison target'],
-  weaknesses: baseWeaknesses,
-}));
+export type GuideEntry = {
+  slug: string;
+  target: string;
+  title: string;
+  opening: string;
+  requirements: string[];
+  steps: string[];
+  tips: string[];
+  next: string[];
+};
 
-export const guides = [
+export const guides: GuideEntry[] = [
   {
     slug: 'how-to-get-cursed-king',
     target: 'Cursed King',
     title: 'How to Get Cursed King in Dungeon Lootr',
-    opening: 'Fastest Cursed King route: Boss Rush first, Forge as the deterministic backup.',
+    opening:
+      'Get Cursed King from Boss Rush Floor 40+ Class Item drops, or craft it at the Forge with 50 Sukuna fragments from Floor 100.',
     requirements: [
-      'Confirm current Boss Rush floor access',
-      'Track Cursed Shrine or Forge materials',
-      'Prepare a class that can clear consistently',
+      'Level 67+ for Boss Rush access',
+      'A build that can reach Floor 40+ (drops) or Floor 100 (fragments)',
+      '50 Sukuna fragments if using the Forge path',
     ],
-    next: ['/builds/cursed-king/', '/tools/drop-chance-calculator/'],
+    steps: [
+      'Reach Boss Rush (level 67+; dungeon clears are the fastest EXP).',
+      'Lucky path: push Floor 40+ and farm the Cursed King / Cursed Shrine Class Item. Higher floors improve drop odds.',
+      'Forge path: create a lobby with Sukuna as main boss, clear Floor 100 for 8–18 fragments per win, stop at 50.',
+      'Craft the Class Item at the Forge, then level mastery. Optional: Mastery 50 + 1,000,000 coins for the King of Curses title.',
+    ],
+    tips: [
+      'Do not farm below Floor 40 if you only want the Class Item drop.',
+      'Fragment path is slower but more deterministic than pure Class Item RNG.',
+      'Join the ClickBytes group before redeeming codes that fund the grind.',
+    ],
+    next: ['/builds/cursed-king/', '/tools/drop-chance-calculator/', '/boss-rush/floor-100/'],
   },
   {
     slug: 'how-to-get-honored-one',
     target: 'Honored One',
     title: 'How to Get Honored One in Dungeon Lootr',
     opening:
-      'Treat Honored One as a prerequisite chain: required class path first, then fragments and currency in order.',
+      'Honored One uses the same Boss Rush system as Cursed King, but you target Gojo: Floor 40+ Class Item or 50 Gojo fragments at the Forge.',
     requirements: [
-      'Check prerequisite class route',
-      'Save fragments before rerolling',
-      'Use Boss Rush only when clear rate is stable',
+      'Boss Rush access',
+      'Gojo selected as the lobby main boss for fragment farming',
+      '50 Gojo fragments for Forge crafting',
     ],
-    next: ['/classes/honored-one/', '/guides/how-to-get-unrestricted/'],
+    steps: [
+      'Enter Boss Rush and decide drop farming vs fragment crafting.',
+      'Farm Class Item from Floor 40+, or clear Floor 100 with Gojo selected for 8–18 fragments each clear.',
+      'Craft at the Forge at 50 fragments.',
+      'If Unrestricted is next, keep leveling Honored One to 25 while banking coins and Heavenly Fragments.',
+    ],
+    tips: [
+      'Honored One is both a strong class and an unlock bridge - do not reset progress if Unrestricted is your goal.',
+      'Same Floor 40 rule: Class Item drops do not start earlier.',
+    ],
+    next: ['/classes/honored-one/', '/guides/how-to-get-unrestricted/', '/guides/heavenly-fragments/'],
   },
   {
     slug: 'how-to-get-unrestricted',
     target: 'Unrestricted',
     title: 'How to Get Unrestricted in Dungeon Lootr',
     opening:
-      'Unlock Unrestricted only after the correct prereq progression, then finish level, fragment, and currency gates.',
+      'Unrestricted checklist: player level 75, 500K coins, Honored One level 25, and 10 Heavenly Fragments from Challenge Mode.',
     requirements: [
-      'Finish prerequisite progression',
-      'Confirm level gate',
-      'Farm required fragments',
-      'Keep currency for the final unlock step',
+      'Honored One unlocked and leveled to 25',
+      'Player level 75',
+      '500,000 coins',
+      '10 Heavenly Fragments',
     ],
-    next: ['/classes/unrestricted/', '/guides/best-aspect-by-class/'],
+    steps: [
+      'Finish the Honored One unlock and push it to level 25.',
+      'Level the account to 75 while stocking 500K coins.',
+      'Run Challenge Mode and pick up Heavenly Fragments from bosses that spawn every 10 waves (~5% drop).',
+      'Complete the unlock once all four requirements are ready.',
+    ],
+    tips: [
+      'Use the calculator on a 5% rate before long Challenge Mode sessions.',
+      'Do not start the coin sink until Honored One leveling is nearly done.',
+    ],
+    next: ['/classes/unrestricted/', '/guides/heavenly-fragments/', '/guides/best-aspect-by-class/'],
   },
   {
     slug: 'how-to-get-awakened-devil-ex',
     target: 'Awakened Devil EX',
     title: 'How to Get Awakened Devil EX in Dungeon Lootr',
     opening:
-      'Confirm the current rare-material list first, then farm the highest-consistency source for Awakened Devil EX.',
-    requirements: [
-      'Confirm current material list',
-      'Check boss or dungeon source',
-      'Farm only where your clear rate is stable',
+      'Awakened Devil EX needs Azure Devil level 50, 1,000,000 coins, and a Devil Heart from Awakened Devil in Frostspire Nightmare.',
+    requirements: ['Azure Devil level 50', '1,000,000 coins', '1 Devil Heart (Frostspire NM)'],
+    steps: [
+      'Unlock Azure Devil (Celestial roll) and level it to 50.',
+      'Bank 1,000,000 coins from stable farms.',
+      'Clear Frostspire Nightmare and farm Devil Heart from Awakened Devil.',
+      'Turn in the checklist for Awakened Devil EX.',
     ],
-    next: ['/classes/awakened-devil-ex/', '/tools/drop-chance-calculator/'],
+    tips: ['Treat Azure Devil as a required base class, not an optional detour.', 'Only farm Frostspire NM when clears are consistent.'],
+    next: ['/classes/awakened-devil-ex/', '/guides/devil-heart/', '/tools/drop-chance-calculator/'],
   },
   {
     slug: 'how-to-get-dreadlord',
     target: 'Dreadlord',
     title: 'How to Get Dreadlord in Dungeon Lootr',
     opening:
-      'Take the boss route for Dreadlord, and plan drops before you dump runs into a low-consistency farm.',
-    requirements: [
-      'Confirm boss source',
-      'Prepare a stable Boss Rush or dungeon build',
-      'Track rare material progress',
+      'Dreadlord unlocks from the Underworld Glaive, about a 1% drop in Underworld Gate Nightmare.',
+    requirements: ['Stable Underworld Gate Nightmare clear', 'Patience for a ~1% item farm'],
+    steps: [
+      'Build a clear that survives Underworld Gate Nightmare repeatedly.',
+      'Farm for Underworld Glaive (~1%).',
+      'Unlock Dreadlord once the Glaive drops.',
     ],
-    next: ['/classes/dreadlord/', '/tools/drop-chance-calculator/'],
+    tips: [
+      'At 1%, expected runs are long - calculate 90%/95% targets before you commit.',
+      'Survival failures are worse than slightly slower clears.',
+    ],
+    next: ['/classes/dreadlord/', '/tools/drop-chance-calculator/', '/drop-rates/'],
   },
   {
     slug: 'heavenly-fragments',
     target: 'Heavenly Fragments',
     title: 'How to Get Heavenly Fragments',
     opening:
-      'Farm Heavenly Fragments only for the unlock you are chasing - the best source changes with your progression.',
-    requirements: [
-      'Identify the target unlock',
-      'Confirm source after the latest patch',
-      'Use a repeatable clear route',
+      'Heavenly Fragments are mainly for Unrestricted: about 5% from Challenge Mode bosses that spawn every 10 waves. You need 10 total.',
+    requirements: ['Access to Challenge Mode', 'Unrestricted checklist progress'],
+    steps: [
+      'Enter Challenge Mode with a stable clear build.',
+      'Defeat the bosses that spawn every 10 waves.',
+      'Bank Heavenly Fragments until you have 10 for Unrestricted.',
     ],
-    next: ['/drop-rates/', '/tools/drop-chance-calculator/'],
+    tips: ['5% is farmable but streaky - use the calculator.', 'Do not farm fragments before Honored One leveling is underway.'],
+    next: ['/guides/how-to-get-unrestricted/', '/tools/drop-chance-calculator/', '/drop-rates/'],
   },
   {
     slug: 'devil-heart',
     target: 'Devil Heart',
     title: 'Devil Heart Drop Rate in Dungeon Lootr',
     opening:
-      'Start Devil Heart farming with a verified source and expected-run math - not a random drop-rate rumor from chat.',
-    requirements: [
-      'Confirm source',
-      'Record estimated or official rate',
-      'Calculate runs for 90% and 95% targets',
+      'Devil Heart drops from the Awakened Devil boss in Frostspire Nightmare and is the rare gate for Awakened Devil EX.',
+    requirements: ['Frostspire Nightmare access', 'Azure Devil progression toward level 50'],
+    steps: [
+      'Unlock Frostspire Nightmare.',
+      'Defeat Awakened Devil specifically for Devil Heart.',
+      'Combine with Azure Devil Lv 50 and 1,000,000 coins for Awakened Devil EX.',
     ],
-    next: ['/drop-rates/', '/tools/drop-chance-calculator/'],
+    tips: ['Exact published % can shift - mark community estimates clearly and recalculate runs after patches.'],
+    next: ['/guides/how-to-get-awakened-devil-ex/', '/drop-rates/', '/tools/drop-chance-calculator/'],
   },
   {
     slug: 'cursed-fragments',
     target: 'Cursed Fragments',
     title: 'How to Get Cursed Fragments',
     opening:
-      'Route Cursed Fragments around the class or Forge path they unlock, then farm the most repeatable source you can clear.',
-    requirements: [
-      'Confirm target class requirement',
-      'Check current source',
-      'Avoid unstable high-floor farms',
+      'Cursed / Sukuna fragments come from Boss Rush Floor 100 clears with Sukuna selected - expect about 8–18 per clear toward the 50 needed for Cursed King.',
+    requirements: ['Boss Rush lobby with Sukuna selected', 'Floor 100 clear ability'],
+    steps: [
+      'Create Boss Rush with Sukuna as the main boss.',
+      'Push to Floor 100 and collect 8–18 fragments per clear.',
+      'Stop at 50 and craft Cursed King at the Forge.',
     ],
-    next: ['/guides/how-to-get-cursed-king/', '/tools/drop-chance-calculator/'],
+    tips: [
+      'Worst case is closer to 7 clears (if you only hit 8 each time); best case can be 3 clears at 18.',
+      'Class Item drops from Floor 40+ can skip this grind entirely if you get lucky.',
+    ],
+    next: ['/guides/how-to-get-cursed-king/', '/boss-rush/floor-100/', '/tools/drop-chance-calculator/'],
   },
 ];
+
+export type DropRateEntry = {
+  item: string;
+  source: string;
+  rate: string;
+  note: string;
+  href: string;
+};
+
+export const dropRates: DropRateEntry[] = [
+  {
+    item: 'Boss Rush Class Item (Cursed King / Honored One / Anti Magic)',
+    source: 'Boss Rush Floor 40+',
+    rate: 'Starts at Floor 40; higher floors improve odds',
+    note: 'No Class Item drop expectation below Floor 40.',
+    href: '/boss-rush/floor-40/',
+  },
+  {
+    item: 'Sukuna / Gojo / Asta Fragments',
+    source: 'Boss Rush Floor 100 main boss',
+    rate: '8–18 fragments per clear',
+    note: '50 fragments craft the matching Class Item at the Forge.',
+    href: '/boss-rush/floor-100/',
+  },
+  {
+    item: 'Heavenly Fragments',
+    source: 'Challenge Mode bosses every 10 waves',
+    rate: '~5%',
+    note: 'Need 10 for Unrestricted.',
+    href: '/guides/heavenly-fragments/',
+  },
+  {
+    item: 'Underworld Glaive (Dreadlord)',
+    source: 'Underworld Gate Nightmare',
+    rate: '~1%',
+    note: 'Long expected farm - use the calculator.',
+    href: '/guides/how-to-get-dreadlord/',
+  },
+  {
+    item: 'Devil Heart',
+    source: 'Awakened Devil in Frostspire Nightmare',
+    rate: 'Community-tracked (verify after patch)',
+    note: 'Required for Awakened Devil EX with Azure Devil Lv 50 + 1M coins.',
+    href: '/guides/devil-heart/',
+  },
+  {
+    item: 'Exotic class roll (Sinister Trigger band)',
+    source: 'Class rolls',
+    rate: '~0.05%',
+    note: 'No Forge bypass - budget rolls carefully.',
+    href: '/classes/sinister-trigger/',
+  },
+  {
+    item: 'Celestial class roll',
+    source: 'Class rolls',
+    rate: '~0.5%',
+    note: 'Azure Devil, Artemis, Forge Archon band.',
+    href: '/classes/',
+  },
+  {
+    item: 'Legendary class roll',
+    source: 'Class rolls',
+    rate: '~8%',
+    note: 'Witch Gunner sits in this band on current lists.',
+    href: '/classes/witch-gunner/',
+  },
+];
+
+export type CodeEntry = {
+  code: string;
+  reward: string;
+  status: 'active' | 'expired';
+  isNew?: boolean;
+};
+
+/** Redeem codes are public promo strings; rewards/status are community-checked and can expire without notice. */
+export const dungeonLootrCodes: CodeEntry[] = [
+  { code: '10KFAV', reward: 'Special rewards', status: 'active', isNew: true },
+  { code: '8KLIKE', reward: 'Special rewards', status: 'active', isNew: true },
+  { code: 'FORGESKIP', reward: '3 Forge Stone Bundles, 3 Reforge Stone Bundles', status: 'active', isNew: true },
+  { code: 'GIVEMEGEMSPLEASE', reward: '3 Aspect Gems', status: 'active' },
+  { code: '20KPLAYERS', reward: '5 Reforge Stone Bundle', status: 'active' },
+  { code: 'JACKPOT', reward: '5 Luck Potion 3', status: 'active' },
+  { code: 'LOOTRISBACK', reward: '3 Forge Stone Bundle', status: 'active' },
+  { code: 'FULLRELEASE', reward: '3 Luck Potion 3', status: 'active' },
+  { code: 'LOOTR', reward: 'Random GM blessing', status: 'active' },
+  { code: 'BYEMETA', reward: 'Expired', status: 'expired' },
+  { code: 'NEWASPECT', reward: 'Expired', status: 'expired' },
+  { code: 'EARLYACCESSYAY', reward: 'Expired', status: 'expired' },
+  { code: '4KFAV', reward: 'Expired', status: 'expired' },
+  { code: '3KLIKES', reward: 'Expired', status: 'expired' },
+];
+
+export const codesLastChecked = '2026-09-03';
 
 export const hubPages = [
   [
     'codes',
     'Dungeon Lootr Codes',
-    'These working Dungeon Lootr codes are the fastest free boost right now - redeem the active list first, skip anything marked expired.',
-    ['Working codes', 'Expired codes', 'Where new codes appear', 'Last checked'],
+    'Redeem the active Dungeon Lootr codes below for free stones, potions, and Aspect gems - skip anything marked expired.',
+    ['Working codes', 'Expired codes', 'How to redeem', 'Last checked'],
   ],
   [
     'builds',
@@ -400,27 +675,43 @@ export const hubPages = [
 }));
 
 export const bossRushPages = [
-  [
-    'floor-40',
-    'Boss Rush Floor 40',
-    'Boss Rush Floor 40 is where several high-value class and fragment rewards enter the loop - if you can clear it stably, this is a farm worth camping.',
-  ],
-  [
-    'floor-100',
-    'Boss Rush Floor 100',
-    'Floor 100 punishes glass-cannon greed - bring a class with survivability and damage uptime, not just a big burst window.',
-  ],
-  [
-    'drops',
-    'Dungeon Lootr Boss Rush Drops',
-    'Do not farm random Boss Rush floors - track drops by floor and patch so you stop at the reward that actually upgrades your account.',
-  ],
-].map(([slug, title, opening]) => ({
-  slug,
-  title,
-  opening,
-  sections: ['Reward checks', 'Best strategy', 'Expected runs', 'What to farm next'],
-}));
+  {
+    slug: 'floor-40',
+    title: 'Boss Rush Floor 40',
+    opening:
+      'Floor 40 is the first floor where Cursed King, Honored One, and Anti Magic Class Items can drop - do not farm Class Items below this breakpoint.',
+    sections: [
+      'Class Item drops unlock at Floor 40+ for the Boss Rush special classes.',
+      'Higher floors improve Class Item odds, so push only while clears stay consistent.',
+      'If drops refuse to land, switch to the Floor 100 fragment → Forge path for the same class.',
+      'Unlock targets: Sukuna line = Cursed King, Gojo line = Honored One, Asta line = Anti Magic.',
+    ],
+  },
+  {
+    slug: 'floor-100',
+    title: 'Boss Rush Floor 100',
+    opening:
+      'Floor 100 is the fragment farm: pick Sukuna, Gojo, or Asta as the lobby boss and expect about 8–18 fragments per clear toward a 50-fragment Forge craft.',
+    sections: [
+      'Select the boss that matches your class before creating the lobby.',
+      'Clear Floor 100 for 8–18 fragments of that boss each successful run.',
+      'Stop at 50 fragments and craft the Class Item at the Forge.',
+      'Rough math: 3–7 Floor 100 clears depending on fragment rolls.',
+    ],
+  },
+  {
+    slug: 'drops',
+    title: 'Dungeon Lootr Boss Rush Drops',
+    opening:
+      'Boss Rush drops split into two loops: Floor 40+ Class Items, and Floor 100 boss fragments for Forge crafting.',
+    sections: [
+      'Floor 40+: Class Item drop chance turns on and scales with floor.',
+      'Floor 100: 8–18 fragments for the selected main boss.',
+      'Forge: 50 fragments = one Class Item for Cursed King, Honored One, or Anti Magic.',
+      'Track which boss you queued - wrong lobby wastes the entire fragment session.',
+    ],
+  },
+];
 
 export const comparisons = [
   {
@@ -491,7 +782,7 @@ export function buildSerp(item: ClassEntry): Serp {
 }
 
 export function buildOpening(item: ClassEntry) {
-  return `Want the best ${item.name} build? Start with ${buildModeHook(item.mode)}, lock this Aspect direction, then copy the stat priority below.`;
+  return `${item.name} (${item.tier}-tier): build for ${buildModeHook(item.mode)} with a ${item.aspect.toLowerCase()}. ${item.buildNotes[0] ?? ''}`.trim();
 }
 
 export function guideSerp(guide: { slug: string; target: string; title: string; opening: string }): Serp {

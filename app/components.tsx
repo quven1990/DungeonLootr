@@ -1,6 +1,62 @@
 import Link from 'next/link';
 import type { ReactNode } from 'react';
-import { classes, type ClassEntry, type SeoEntry } from './data';
+import {
+  classes,
+  codesLastChecked,
+  dungeonLootrCodes,
+  type ClassEntry,
+  type SeoEntry,
+} from './data';
+
+export function CodesPanel() {
+  const active = dungeonLootrCodes.filter((item) => item.status === 'active');
+  const expired = dungeonLootrCodes.filter((item) => item.status === 'expired');
+  return (
+    <>
+      <section className="content-panel">
+        <h2>Working codes</h2>
+        <p className="codes-meta">Last checked: {codesLastChecked}. Codes are case-sensitive and can expire without notice.</p>
+        <div className="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Code</th>
+                <th>Reward</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {active.map((item) => (
+                <tr key={item.code}>
+                  <td><code className="code-chip">{item.code}</code></td>
+                  <td>{item.reward}</td>
+                  <td>{item.isNew ? 'Active · New' : 'Active'}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+      <section className="content-panel">
+        <h2>Expired codes</h2>
+        <ul className="expired-codes">
+          {expired.map((item) => (
+            <li key={item.code}><code className="code-chip muted">{item.code}</code></li>
+          ))}
+        </ul>
+      </section>
+      <section className="content-panel">
+        <h2>How to redeem</h2>
+        <ol>
+          <li>Join the required community group if the game asks for it before redeeming.</li>
+          <li>Open Dungeon Lootr on Roblox and go to the lobby Menu.</li>
+          <li>Open More → Codes, paste a working code, then Claim.</li>
+          <li>If a code fails, check spelling/case, confirm it is still in the active list, and try a fresh server.</li>
+        </ol>
+      </section>
+    </>
+  );
+}
 
 export function PageHero({ entry, cta }: { entry: SeoEntry; cta?: ReactNode }) {
   return (
@@ -37,6 +93,7 @@ export function ClassTable() {
           <thead>
             <tr>
               <th>Class</th>
+              <th>Tier</th>
               <th>Rarity</th>
               <th>Obtain</th>
               <th>Best mode</th>
@@ -47,6 +104,7 @@ export function ClassTable() {
             {classes.map((item) => (
               <tr key={item.slug}>
                 <td><Link href={`/classes/${item.slug}/`}>{item.name}</Link></td>
+                <td>{item.tier}</td>
                 <td><span className="rarity">{item.rarity}</span></td>
                 <td>{item.obtain}</td>
                 <td>{item.mode}</td>
@@ -61,7 +119,7 @@ export function ClassTable() {
           <Link className="class-card" href={`/classes/${item.slug}/`} key={item.slug}>
             <div className="class-card-top">
               <strong>{item.name}</strong>
-              <span className="rarity">{item.rarity}</span>
+              <span className="rarity">{item.tier} · {item.rarity}</span>
             </div>
             <div className="class-card-meta">
               <span>Obtain: {item.obtain}</span>

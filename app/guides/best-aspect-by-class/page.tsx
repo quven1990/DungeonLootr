@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { ClassTable } from '../../components';
+import { classes } from '../../data';
 
 export const metadata = {
   title: 'Best Aspect for Every Dungeon Lootr Class (Current Meta)',
@@ -16,11 +16,11 @@ export default function BestAspectPage() {
         <div className="quick-answer wide">
           <span className="label">Quick Answer</span>
           <p>
-            Here is the best Aspect direction for each major class - then tweak for Boss Rush, fast clears, or survival if
-            your clear rate is falling apart.
+            Start with the Aspect direction listed for your class and mode. If clears fail before damage lands, swap to survival/uptime first.
           </p>
           <div className="hero-actions">
             <Link href="/classes/">Browse classes</Link>
+            <Link className="secondary" href="/tools/aspect-matcher/">Open matcher</Link>
           </div>
         </div>
       </section>
@@ -33,7 +33,31 @@ export default function BestAspectPage() {
               support for rotation-heavy classes, and survivability when your clear fails before your damage matters.
             </p>
           </section>
-          <ClassTable />
+          <section className="content-panel">
+            <h2>Best Aspect by class</h2>
+            <div className="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Class</th>
+                    <th>Tier</th>
+                    <th>Mode</th>
+                    <th>Start with</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {classes.map((item) => (
+                    <tr key={item.slug}>
+                      <td><Link href={`/classes/${item.slug}/`}>{item.name}</Link></td>
+                      <td>{item.tier}</td>
+                      <td>{item.mode}</td>
+                      <td>{item.aspect}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </section>
         </div>
       </section>
     </main>

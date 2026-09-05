@@ -9,21 +9,32 @@ export const metadata = {
   description: entry.description,
 };
 
+const tierOrder = ['S', 'A', 'B', 'C', 'D'] as const;
+
 export default function TierPage() {
-  const top = classes.slice(0, 5);
+  const grouped = tierOrder
+    .map((tier) => ({ tier, items: classes.filter((item) => item.tier === tier) }))
+    .filter((group) => group.items.length > 0);
+
   return (
     <main>
       <PageHero entry={entry} cta={<div className="hero-actions"><Link href="/tools/drop-chance-calculator/">Plan a farm</Link></div>} />
       <section className="site-shell content-grid">
         <div className="article-stack">
-          <section className="content-panel">
-            <h2>Current endgame shortlist</h2>
-            <ol>
-              {top.map((item) => (
-                <li key={item.slug}>{item.name}: strongest when built for {item.mode.toLowerCase()}.</li>
-              ))}
-            </ol>
-          </section>
+          {grouped.map((group) => (
+            <section className="content-panel" key={group.tier}>
+              <h2>{group.tier}-Tier</h2>
+              <ol>
+                {group.items.map((item) => (
+                  <li key={item.slug}>
+                    <Link href={`/classes/${item.slug}/`}>{item.name}</Link>
+                    {' — '}
+                    {item.mode}. Unlock: {item.obtain}.
+                  </li>
+                ))}
+              </ol>
+            </section>
+          ))}
           <ClassTable />
           <DataNote />
         </div>
@@ -36,7 +47,7 @@ export default function TierPage() {
           />
           <div className="content-panel">
             <h3>Mode-based verdict</h3>
-            <p>Boss Rush favors consistency and survivability, while dungeon clearing rewards burst windows and mobility.</p>
+            <p>Boss Rush favors Cursed King / Honored One / Anti Magic paths. Dungeon speed leans Sinister Trigger and ranged clear classes. Survival chases start with Dreadlord.</p>
           </div>
         </aside>
       </section>

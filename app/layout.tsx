@@ -63,8 +63,12 @@ export default function RootLayout({
         {children}
         <footer className="site-footer">
           <div className="site-shell footer">
-            <span>Dungeon Lootr data hub. Community-tested fields are marked on-page.</span>
-            <Link href="/tools/drop-chance-calculator/">Open calculator</Link>
+            <span>Unofficial Dungeon Lootr fan wiki. Community-tested fields are marked on-page.</span>
+            <div className="footer-links">
+              <Link href="/privacy/">Privacy</Link>
+              <Link href="/terms/">Terms</Link>
+              <Link href="/tools/drop-chance-calculator/">Calculator</Link>
+            </div>
           </div>
         </footer>
       </body>

@@ -70,11 +70,21 @@ export default function Home() {
         videoQuery="Dungeon Lootr beginner guide codes progression Roblox"
       />
 
-      <section className="site-shell search-band" aria-label="Search shortcuts">
-        <div className="search-box">Search classes, drops, aspects, guides...</div>
-        <div className="status-pill">Data notes visible</div>
-        <div className="status-pill">Tool-first pages</div>
-        <div className="status-pill">Intent next steps</div>
+      <section className="site-shell search-band" aria-label="Popular shortcuts">
+        <div className="search-box" role="navigation" aria-label="Jump links">
+          <Link href="/codes/">Codes</Link>
+          <span aria-hidden="true">·</span>
+          <Link href="/class-tier-list/">Tier List</Link>
+          <span aria-hidden="true">·</span>
+          <Link href="/boss-rush/">Boss Rush</Link>
+          <span aria-hidden="true">·</span>
+          <Link href="/tools/class-finder/">Class Finder</Link>
+          <span aria-hidden="true">·</span>
+          <Link href="/tools/drop-chance-calculator/">Calculator</Link>
+        </div>
+        <div className="status-pill">Codes updated</div>
+        <div className="status-pill">Boss Rush routes</div>
+        <div className="status-pill">Drop math tool</div>
       </section>
 
       <section className="site-shell section-grid">
