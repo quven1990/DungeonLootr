@@ -138,7 +138,7 @@ export function DataNote() {
     <section className="data-note">
       <span className="label">Data Note</span>
       <p>
-        Some class routes and exact rates can shift after Roblox updates. Fields marked probable or unverified should be treated as community-tested until checked against in-game UI, developer notes, or multiple independent gameplay sources.
+        Routes and rates are community-checked (not official patch notes). Fields marked probable or unverified can shift after Roblox updates - confirm against the in-game UI before long farms.
       </p>
     </section>
   );

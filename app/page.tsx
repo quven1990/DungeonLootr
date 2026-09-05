@@ -9,19 +9,19 @@ const popular = [
 ];
 
 const classes = [
-  { name: 'Cursed King', rarity: 'Mythic', obtain: 'Boss Rush / Forge', mode: 'Boss Rush', href: '/classes/cursed-king/' },
-  { name: 'Sinister Trigger', rarity: 'Mythic', obtain: 'Late-game route', mode: 'Dungeon clear', href: '/classes/sinister-trigger/' },
-  { name: 'Honored One', rarity: 'Mythic', obtain: 'Unlock chain', mode: 'Solo', href: '/classes/honored-one/' },
-  { name: 'Unrestricted', rarity: 'Secret', obtain: 'Prerequisite chain', mode: 'Endgame', href: '/classes/unrestricted/' },
-  { name: 'Awakened Devil EX', rarity: 'Secret', obtain: 'Rare material path', mode: 'Burst', href: '/classes/awakened-devil-ex/' },
-  { name: 'Dreadlord', rarity: 'Legendary', obtain: 'Boss route', mode: 'Survival', href: '/classes/dreadlord/' },
+  { name: 'Cursed King', rarity: 'Mythic', obtain: 'Boss Rush / Forge 50 Sukuna', mode: 'Boss Rush', href: '/classes/cursed-king/' },
+  { name: 'Sinister Trigger', rarity: 'Exotic', obtain: 'Class roll ~0.05%', mode: 'Dungeon clear', href: '/classes/sinister-trigger/' },
+  { name: 'Honored One', rarity: 'Mythic', obtain: 'Boss Rush / Forge 50 Gojo', mode: 'Solo', href: '/classes/honored-one/' },
+  { name: 'Unrestricted', rarity: 'Secret', obtain: 'Lv75 + Honored One 25 + fragments', mode: 'Endgame', href: '/classes/unrestricted/' },
+  { name: 'Awakened Devil EX', rarity: 'Secret', obtain: 'Azure Devil 50 + Devil Heart', mode: 'Burst', href: '/classes/awakened-devil-ex/' },
+  { name: 'Dreadlord', rarity: 'Legendary', obtain: 'Underworld Glaive ~1%', mode: 'Survival', href: '/classes/dreadlord/' },
 ];
 
 const guides = [
-  ['How to Get Cursed King', '/guides/how-to-get-cursed-king/', 'Boss Rush first, Forge as deterministic backup.'],
-  ['How to Get Honored One', '/guides/how-to-get-honored-one/', 'Prerequisites, fragments, and route order.'],
-  ['How to Get Unrestricted', '/guides/how-to-get-unrestricted/', 'Checklist for the late-game unlock chain.'],
-  ['Heavenly Fragments', '/guides/heavenly-fragments/', 'Where they fit into class progression.'],
+  ['How to Get Cursed King', '/guides/how-to-get-cursed-king/', 'Floor 40+ Class Item or 50 Sukuna fragments.'],
+  ['How to Get Jetstream', '/guides/how-to-get-jetstream/', 'Azure Devil quest, Devil Hearts, Exotic armor, 200K coins.'],
+  ['How to Get Unrestricted', '/guides/how-to-get-unrestricted/', 'Checklist: level, coins, Honored One, Heavenly Fragments.'],
+  ['Heavenly Fragments', '/guides/heavenly-fragments/', '~5% Challenge Mode bosses every 10 waves.'],
 ];
 
 export default function Home() {
