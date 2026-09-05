@@ -1,7 +1,8 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { Facts, NextSteps, RetentionPanel } from '../../components';
-import { buildOpening, buildSerp, classBySlug, classes, guideBySlug } from '../../data';
+import { buildOpening, buildSerp, classBySlug, classes, guideBySlug, isIndexableClass } from '../../data';
+import { pageMetadata } from '../../seo';
 
 export function generateStaticParams() {
   return classes.map((item) => ({ slug: item.slug }));
@@ -11,13 +12,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const item = classBySlug(slug);
   if (!item) return {};
-  const serp = buildSerp(item);
-  return {
-    title: serp.title,
-    description: serp.description,
-    openGraph: { title: serp.title, description: serp.description },
-    twitter: { title: serp.title, description: serp.description },
-  };
+  return pageMetadata(buildSerp(item), `/builds/${item.slug}`, { index: isIndexableClass(item) });
 }
 
 export default async function BuildPage({ params }: { params: Promise<{ slug: string }> }) {
@@ -25,12 +20,13 @@ export default async function BuildPage({ params }: { params: Promise<{ slug: st
   const item = classBySlug(slug);
   if (!item) notFound();
   const unlockGuide = guideBySlug(`how-to-get-${item.slug}`);
+  const indexable = isIndexableClass(item);
 
   return (
     <main>
       <section className="site-shell page-hero">
         <p className="breadcrumb">Home / Builds / {item.name}</p>
-        <h1>Best {item.name} Build in Dungeon Lootr</h1>
+        <h1>{indexable ? `Best ${item.name} Build in Dungeon Lootr` : `${item.name} Build Notes in Dungeon Lootr`}</h1>
         <div className="quick-answer wide">
           <span className="label">Quick Answer</span>
           <p>{buildOpening(item)}</p>

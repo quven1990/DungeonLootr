@@ -1,13 +1,14 @@
 import Link from 'next/link';
 import { PageHero, NextSteps, RetentionPanel } from '../components';
 import { byUrl } from '../data';
+import { pageMetadata } from '../seo';
 
 const entry = byUrl('/boss-rush/')!;
 
-export const metadata = {
-  title: entry.title,
-  description: entry.description,
-};
+export const metadata = pageMetadata(
+  { title: entry.title, description: entry.description, intent: 'boss-rush' },
+  '/boss-rush',
+);
 
 export default function BossRushPage() {
   return (

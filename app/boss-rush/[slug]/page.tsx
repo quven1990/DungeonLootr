@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { DataNote, NextSteps, RetentionPanel } from '../../components';
 import { bossRushBySlug, bossRushPages, bossRushSerp } from '../../data';
+import { pageMetadata } from '../../seo';
 
 export function generateStaticParams() {
   return bossRushPages.map((page) => ({ slug: page.slug }));
@@ -11,13 +12,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const page = bossRushBySlug(slug);
   if (!page) return {};
-  const serp = bossRushSerp(page);
-  return {
-    title: serp.title,
-    description: serp.description,
-    openGraph: { title: serp.title, description: serp.description },
-    twitter: { title: serp.title, description: serp.description },
-  };
+  return pageMetadata(bossRushSerp(page), `/boss-rush/${page.slug}`);
 }
 
 export default async function BossRushDetail({ params }: { params: Promise<{ slug: string }> }) {

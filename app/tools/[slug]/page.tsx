@@ -4,6 +4,7 @@ import { NextSteps } from '../../components';
 import { AspectMatcher } from '../AspectMatcher';
 import { ClassFinder } from '../ClassFinder';
 import { classes, toolBySlug, toolPages, toolSerp } from '../../data';
+import { pageMetadata } from '../../seo';
 
 export function generateStaticParams() {
   return toolPages.map((tool) => ({ slug: tool.slug }));
@@ -13,13 +14,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const tool = toolBySlug(slug);
   if (!tool) return {};
-  const serp = toolSerp(tool);
-  return {
-    title: serp.title,
-    description: serp.description,
-    openGraph: { title: serp.title, description: serp.description },
-    twitter: { title: serp.title, description: serp.description },
-  };
+  return pageMetadata(toolSerp(tool), `/tools/${tool.slug}`);
 }
 
 export default async function ToolPage({ params }: { params: Promise<{ slug: string }> }) {

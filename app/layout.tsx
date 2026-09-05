@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import Link from 'next/link';
+import { JsonLd, websiteJsonLd } from './jsonld';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -7,12 +8,14 @@ export const metadata: Metadata = {
   title: 'Dungeon Lootr Wiki - Best Classes, Builds, Boss Rush & Codes',
   description:
     'Fast answers for Dungeon Lootr: class tier list, unlock routes, Boss Rush drops, working codes, and a drop-chance calculator.',
+  alternates: { canonical: '/' },
   openGraph: {
     title: 'Dungeon Lootr Wiki - Best Classes, Builds, Boss Rush & Codes',
     description:
       'Fast answers for Dungeon Lootr: class tier list, unlock routes, Boss Rush drops, working codes, and a drop-chance calculator.',
     images: ['/images/dungeon-lootr-hero.jpg'],
     type: 'website',
+    url: '/',
   },
   twitter: {
     card: 'summary_large_image',
@@ -61,6 +64,7 @@ export default function RootLayout({
           </nav>
         </header>
         {children}
+        <JsonLd data={websiteJsonLd()} />
         <footer className="site-footer">
           <div className="site-shell footer">
             <span>Unofficial Dungeon Lootr fan wiki. Community-tested fields are marked on-page.</span>

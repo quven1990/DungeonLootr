@@ -38,8 +38,8 @@ export default function Home() {
                 Need a main class, an unlock route, or a drop farm plan? Start here - then jump to the tier list, Boss Rush guide, or drop calculator.
               </p>
               <div className="hero-stat-row" aria-label="Site highlights">
-                <span>50 phase-one routes</span>
-                <span>15 class targets</span>
+                <span>Working codes</span>
+                <span>Tracked class unlocks</span>
                 <span>Drop math tool</span>
               </div>
             </div>

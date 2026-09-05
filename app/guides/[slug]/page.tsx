@@ -2,6 +2,8 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { DataNote, NextSteps, RetentionPanel } from '../../components';
 import { guideBySlug, guideSerp, guides } from '../../data';
+import { JsonLd, howToJsonLd } from '../../jsonld';
+import { pageMetadata } from '../../seo';
 
 export function generateStaticParams() {
   return guides.map((item) => ({ slug: item.slug }));
@@ -11,22 +13,25 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const guide = guideBySlug(slug);
   if (!guide) return {};
-  const serp = guideSerp(guide);
-  return {
-    title: serp.title,
-    description: serp.description,
-    openGraph: { title: serp.title, description: serp.description },
-    twitter: { title: serp.title, description: serp.description },
-  };
+  return pageMetadata(guideSerp(guide), `/guides/${guide.slug}`);
 }
 
 export default async function GuidePage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const guide = guideBySlug(slug);
   if (!guide) notFound();
+  const serp = guideSerp(guide);
 
   return (
     <main>
+      <JsonLd
+        data={howToJsonLd({
+          name: guide.title,
+          description: serp.description,
+          steps: guide.steps,
+          url: `/guides/${guide.slug}`,
+        })}
+      />
       <section className="site-shell page-hero">
         <p className="breadcrumb">Home / Guides / {guide.target}</p>
         <h1>{guide.title}</h1>
@@ -58,6 +63,11 @@ export default async function GuidePage({ params }: { params: Promise<{ slug: st
             <ul>
               {guide.tips.map((item) => <li key={item}>{item}</li>)}
             </ul>
+          </section>
+          <section className="content-panel">
+            <h2>FAQ</h2>
+            <p><strong>Is this the fastest route?</strong> It is the community-checked route with the clearest requirements. Recheck after patches.</p>
+            <p><strong>What if the drop stalls?</strong> Switch to the deterministic backup when one exists (for example Floor 100 fragments to Forge), and use the calculator before long RNG farms.</p>
           </section>
           <DataNote />
           <NextSteps links={guide.next.map((href) => [

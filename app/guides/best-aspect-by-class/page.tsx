@@ -1,11 +1,16 @@
 import Link from 'next/link';
 import { classes } from '../../data';
+import { pageMetadata } from '../../seo';
 
-export const metadata = {
-  title: 'Best Aspect for Every Dungeon Lootr Class (Current Meta)',
-  description:
-    'Best Aspect direction for major classes - Boss Rush picks, dungeon clear picks, and strong alternatives.',
-};
+export const metadata = pageMetadata(
+  {
+    title: 'Best Aspect for Every Dungeon Lootr Class (Current Meta)',
+    description:
+      'Best Aspect direction for each tracked class - Boss Rush, dungeon clear, burst, and survival starting points.',
+    intent: 'aspects',
+  },
+  '/guides/best-aspect-by-class',
+);
 
 export default function BestAspectPage() {
   return (

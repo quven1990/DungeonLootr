@@ -32,12 +32,12 @@ export type Serp = {
 export const seoEntries: SeoEntry[] = [
   {
     url: '/classes/',
-    title: 'Dungeon Lootr Classes - All 30+ Classes & How to Unlock Them',
+    title: 'Dungeon Lootr Classes - Unlock Routes, Rarity & Best Modes',
     description:
-      'Every Dungeon Lootr class by rarity and unlock method - Boss Rush drops, Forge routes, strengths, and build links.',
+      'Pick your next Dungeon Lootr class fast: rarity, Boss Rush/Forge unlocks, best mode, and build links in one directory.',
     opening:
-      'Dungeon Lootr has 30+ classes with totally different unlock routes - spin, Boss Rush, and Forge paths included. Pick your target before you farm.',
-    h1: 'Dungeon Lootr Classes: All 30+ Classes & How to Unlock Them',
+      'Every tracked Dungeon Lootr class here shows rarity, unlock route, and best mode - spin, Boss Rush, Forge, and quest paths included. Pick your target before you farm.',
+    h1: 'Dungeon Lootr Classes: Unlock Routes, Rarity & Best Modes',
     type: 'database',
   },
   {
@@ -250,7 +250,7 @@ export const classes: ClassEntry[] = [
     tier: 'S',
     confidence: 'unverified',
     opening:
-      'Shadow Vagrant sits in the S-tier conversation as a solo-consistency class - confirm the current unlock route after each patch.',
+      'Shadow Vagrant shows up on community S-tier lists as a solo-consistency pick - but the unlock route is still unconfirmed, so verify in-game before farming.',
     strengths: ['Appears on multiple community S-tier lists', 'Solo consistency profile once owned'],
     weaknesses: ['No confirmed unlock route published yet', 'Do not plan farms around rumors'],
     unlockSteps: [
@@ -339,7 +339,7 @@ export const classes: ClassEntry[] = [
     aspect: 'Mobility / damage Aspect',
     tier: 'A',
     confidence: 'probable',
-    opening: 'Jetstream is an A-tier mobility clear class - confirm the live unlock path, then build for speed.',
+    opening: 'Jetstream is an A-tier secret quest class: Azure Devil Mastery 50, 3 Devil Hearts, Exotic Shattered Armor, then 200K coins at the blue-boat NPC.',
     strengths: ['Secret quest unlock (not a class spin)', 'Strong mobility clear identity once finished'],
     weaknesses: ['Long multi-dungeon quest', 'Needs Azure Devil Celestial roll first', 'Underworld Nightmare Exotic armor farm'],
     unlockSteps: [
@@ -360,7 +360,7 @@ export const classes: ClassEntry[] = [
     aspect: 'Speed / uptime Aspect',
     tier: 'A',
     confidence: 'unverified',
-    opening: 'Streamline is an A-tier progression clearer for pushing dungeon tiers before endgame chases.',
+    opening: 'Streamline is listed as an A-tier progression clearer, but the obtain method is still unconfirmed - use this page for tier/mode context until the live unlock is verified.',
     strengths: ['Listed as an A-tier progression clearer in community tier lists'],
     weaknesses: ['Obtain method still marked TBC / unconfirmed in community guides'],
     unlockSteps: [
@@ -834,8 +834,19 @@ function buildModeHook(mode: string) {
   return modeHook[mode] ?? mode.toLowerCase();
 }
 
+export function isIndexableClass(item: ClassEntry) {
+  return item.confidence !== 'unverified';
+}
+
 export function classSerp(item: ClassEntry): Serp {
-  const isChase = item.rarity === 'Secret' || item.rarity === 'Mythic';
+  if (!isIndexableClass(item)) {
+    return {
+      title: `Dungeon Lootr ${item.name} - Tier Placement & What We Know`,
+      description: `${item.name} sits in community ${item.tier}-tier talk for ${item.mode.toLowerCase()}, but the unlock route is still unconfirmed - see what is known before you farm.`,
+      intent: 'The searcher wants honesty on an unconfirmed unlock, plus tier/mode context.',
+    };
+  }
+  const isChase = item.rarity === 'Secret' || item.rarity === 'Mythic' || item.rarity === 'Exotic';
   return {
     title: `Dungeon Lootr ${item.name} - How to Unlock, Build & Is It Worth It?`,
     description: isChase
@@ -846,6 +857,13 @@ export function classSerp(item: ClassEntry): Serp {
 }
 
 export function buildSerp(item: ClassEntry): Serp {
+  if (!isIndexableClass(item)) {
+    return {
+      title: `Dungeon Lootr ${item.name} Build Notes - Mode Focus While Unlock Is TBD`,
+      description: `${item.name} build direction for ${buildModeHook(item.mode)} while the unlock route stays unconfirmed - use as planning notes, not a guaranteed farm.`,
+      intent: 'The searcher wants build context without a fake unlock promise.',
+    };
+  }
   const hook = buildModeHook(item.mode);
   return {
     title: `Best ${item.name} Build in Dungeon Lootr - Stats, Aspect & Rotation`,
@@ -939,14 +957,14 @@ const bossRushSerpBySlug: Record<string, { title: string; description: string }>
       'Full Boss Rush drop map by floor: class rewards, fragments, and which breakpoints are worth camping.',
   },
   'floor-40': {
-    title: 'Boss Rush Floor 40 - High-Value Class & Fragment Checkpoint',
+    title: 'Boss Rush Floor 40 - Class Item Drop Breakpoint',
     description:
-      'Floor 40 is a major progression breakpoint: see rewards, best clear classes, and whether you should farm here now.',
+      'Floor 40 is where Cursed King, Honored One, and Anti Magic Class Items can start dropping - see why camping lower floors wastes runs.',
   },
   'floor-100': {
-    title: 'Boss Rush Floor 100 - Endgame Checkpoint & Best Clear Classes',
+    title: 'Boss Rush Floor 100 - Fragment Farm for Forge Crafts',
     description:
-      'Floor 100 is an endgame gate: survivability and uptime beat raw burst. See rewards and which classes clear it.',
+      'Floor 100 pays 8–18 boss fragments per clear toward 50-fragment Forge crafts - plan Sukuna, Gojo, or Asta before you queue.',
   },
 };
 

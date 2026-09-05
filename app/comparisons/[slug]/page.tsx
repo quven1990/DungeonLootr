@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { DataNote, NextSteps, RetentionPanel } from '../../components';
 import { classBySlug, comparisonBySlug, comparisons, comparisonSerp } from '../../data';
+import { pageMetadata } from '../../seo';
 
 export function generateStaticParams() {
   return comparisons.map((item) => ({ slug: item.slug }));
@@ -11,13 +12,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const item = comparisonBySlug(slug);
   if (!item) return {};
-  const serp = comparisonSerp(item);
-  return {
-    title: serp.title,
-    description: serp.description,
-    openGraph: { title: serp.title, description: serp.description },
-    twitter: { title: serp.title, description: serp.description },
-  };
+  return pageMetadata(comparisonSerp(item), `/comparisons/${item.slug}`);
 }
 
 function classFacts(name: string) {

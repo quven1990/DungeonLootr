@@ -1,6 +1,8 @@
 export const metadata = {
   title: 'Privacy Policy - Dungeon Lootr Wiki',
   description: 'Privacy policy for dungeonlootr.top: what data we collect, third-party embeds, and how to contact us.',
+  alternates: { canonical: '/privacy' },
+  robots: { index: true, follow: true },
 };
 
 export default function PrivacyPage() {

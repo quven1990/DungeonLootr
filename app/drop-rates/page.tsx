@@ -1,13 +1,14 @@
 import Link from 'next/link';
 import { DataNote, PageHero, RetentionPanel } from '../components';
 import { byUrl, dropRates } from '../data';
+import { pageMetadata } from '../seo';
 
 const entry = byUrl('/drop-rates/')!;
 
-export const metadata = {
-  title: entry.title,
-  description: entry.description,
-};
+export const metadata = pageMetadata(
+  { title: entry.title, description: entry.description, intent: 'drops' },
+  '/drop-rates',
+);
 
 export default function DropRatesPage() {
   return (

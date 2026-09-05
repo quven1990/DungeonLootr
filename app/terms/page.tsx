@@ -1,6 +1,8 @@
 export const metadata = {
   title: 'Terms of Use - Dungeon Lootr Wiki',
   description: 'Terms of use for dungeonlootr.top: unofficial fan content, no warranties, and community-tested game data.',
+  alternates: { canonical: '/terms' },
+  robots: { index: true, follow: true },
 };
 
 export default function TermsPage() {

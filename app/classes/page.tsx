@@ -1,13 +1,14 @@
-import Link from 'next/link';
 import { ClassTable, DataNote, PageHero, RetentionPanel } from '../components';
 import { byUrl } from '../data';
+import { pageMetadata } from '../seo';
+import Link from 'next/link';
 
 const entry = byUrl('/classes/')!;
 
-export const metadata = {
-  title: entry.title,
-  description: entry.description,
-};
+export const metadata = pageMetadata(
+  { title: entry.title, description: entry.description, intent: 'classes' },
+  '/classes',
+);
 
 export default function ClassesPage() {
   return (

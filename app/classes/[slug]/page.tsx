@@ -1,7 +1,8 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { ClassFinderPreview, DataNote, Facts, NextSteps, RetentionPanel } from '../../components';
-import { classBySlug, classes, classSerp, guideBySlug } from '../../data';
+import { classBySlug, classes, classSerp, guideBySlug, isIndexableClass } from '../../data';
+import { pageMetadata } from '../../seo';
 
 export function generateStaticParams() {
   return classes.map((item) => ({ slug: item.slug }));
@@ -11,13 +12,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const item = classBySlug(slug);
   if (!item) return {};
-  const serp = classSerp(item);
-  return {
-    title: serp.title,
-    description: serp.description,
-    openGraph: { title: serp.title, description: serp.description },
-    twitter: { title: serp.title, description: serp.description },
-  };
+  return pageMetadata(classSerp(item), `/classes/${item.slug}`, { index: isIndexableClass(item) });
 }
 
 export default async function ClassPage({ params }: { params: Promise<{ slug: string }> }) {
@@ -25,18 +20,25 @@ export default async function ClassPage({ params }: { params: Promise<{ slug: st
   const item = classBySlug(slug);
   if (!item) notFound();
   const unlockGuide = guideBySlug(`how-to-get-${item.slug}`);
+  const indexable = isIndexableClass(item);
 
   return (
     <main>
       <section className="site-shell page-hero">
         <p className="breadcrumb">Home / Classes / {item.name}</p>
-        <h1>Dungeon Lootr {item.name}: How to Get, Skills, Build & Best Aspects</h1>
+        <h1>
+          {indexable
+            ? `Dungeon Lootr ${item.name}: How to Get, Skills, Build & Best Aspects`
+            : `Dungeon Lootr ${item.name}: Tier, Mode & What We Know`}
+        </h1>
         <div className="quick-answer wide">
           <span className="label">Quick Answer</span>
           <p>{item.opening}</p>
           <div className="hero-actions">
             <Link href={`/builds/${item.slug}/`}>See Best Build</Link>
-            <Link className="secondary" href={unlockGuide ? `/guides/${unlockGuide.slug}/` : '/classes/'}>How to Unlock</Link>
+            <Link className="secondary" href={unlockGuide ? `/guides/${unlockGuide.slug}/` : '/classes/'}>
+              {indexable ? 'How to Unlock' : 'Browse Classes'}
+            </Link>
           </div>
         </div>
         <Facts facts={[
@@ -51,7 +53,7 @@ export default async function ClassPage({ params }: { params: Promise<{ slug: st
       <section className="site-shell content-grid">
         <div className="article-stack">
           <section className="content-panel">
-            <h2>How to get {item.name}</h2>
+            <h2>{indexable ? `How to get ${item.name}` : `What we know about ${item.name}`}</h2>
             <ol>
               {item.unlockSteps.map((step) => <li key={step}>{step}</li>)}
             </ol>

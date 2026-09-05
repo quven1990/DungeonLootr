@@ -1,13 +1,14 @@
 import { PageHero } from '../../components';
 import { byUrl } from '../../data';
+import { pageMetadata } from '../../seo';
 import DropCalculator from './DropCalculator';
 
 const entry = byUrl('/tools/drop-chance-calculator/')!;
 
-export const metadata = {
-  title: entry.title,
-  description: entry.description,
-};
+export const metadata = pageMetadata(
+  { title: entry.title, description: entry.description, intent: 'calculator' },
+  '/tools/drop-chance-calculator',
+);
 
 export default function CalculatorPage() {
   return (

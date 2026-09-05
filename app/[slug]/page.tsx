@@ -2,6 +2,8 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { ClassTable, CodesPanel, DataNote, NextSteps, RetentionPanel } from '../components';
 import { codesLastChecked, hubBySlug, hubPages, hubSerp } from '../data';
+import { JsonLd, faqJsonLd } from '../jsonld';
+import { pageMetadata } from '../seo';
 
 export function generateStaticParams() {
   return hubPages.map((page) => ({ slug: page.slug }));
@@ -11,13 +13,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const page = hubBySlug(slug);
   if (!page) return {};
-  const serp = hubSerp(page);
-  return {
-    title: serp.title,
-    description: serp.description,
-    openGraph: { title: serp.title, description: serp.description },
-    twitter: { title: serp.title, description: serp.description },
-  };
+  return pageMetadata(hubSerp(page), `/${page.slug}`);
 }
 
 function HubBody({ slug }: { slug: string }) {
@@ -88,6 +84,20 @@ export default async function HubPage({ params }: { params: Promise<{ slug: stri
 
   return (
     <main>
+      {slug === 'codes' ? (
+        <JsonLd
+          data={faqJsonLd([
+            {
+              q: 'Where do I redeem Dungeon Lootr codes?',
+              a: 'Open the lobby Menu, go to More → Codes, paste a working code, then Claim. Join the required community group if the game asks for it.',
+            },
+            {
+              q: 'Why is my Dungeon Lootr code not working?',
+              a: 'Codes are case-sensitive and can expire. Copy from the active list, avoid expired codes, and try a fresh server if a valid code still fails.',
+            },
+          ])}
+        />
+      ) : null}
       <section className="site-shell page-hero">
         <p className="breadcrumb">Home / {page.title}</p>
         <h1>{page.title}</h1>

@@ -1,13 +1,14 @@
 import Link from 'next/link';
 import { ClassTable, DataNote, PageHero, RetentionPanel } from '../components';
 import { byUrl, classes } from '../data';
+import { pageMetadata } from '../seo';
 
 const entry = byUrl('/class-tier-list/')!;
 
-export const metadata = {
-  title: entry.title,
-  description: entry.description,
-};
+export const metadata = pageMetadata(
+  { title: entry.title, description: entry.description, intent: 'tier' },
+  '/class-tier-list',
+);
 
 const tierOrder = ['S', 'A', 'B', 'C', 'D'] as const;
 
