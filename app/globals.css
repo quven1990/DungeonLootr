@@ -109,6 +109,10 @@ table a:hover,
   padding: 46px 0 24px;
 }
 
+.hero-grid > .eyebrow {
+  grid-column: 1 / -1;
+}
+
 .hero-copy {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(280px, 390px);
