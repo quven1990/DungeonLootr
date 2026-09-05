@@ -96,22 +96,100 @@ export function RetentionPanel({
   toolHref?: string;
   toolLabel?: string;
 }) {
-  const youtube = `https://www.youtube.com/results?search_query=${encodeURIComponent(videoQuery)}`;
+  const video = pickVideo(title, videoQuery);
   return (
     <div className="engagement-panel">
       <div className="engagement-item">
         <span className="label">Tool</span>
         <Link href={toolHref}>{toolLabel}</Link>
       </div>
-      <div className="engagement-item">
+      <div className="engagement-item video-item">
         <span className="label">Video</span>
-        <a href={youtube} target="_blank" rel="noreferrer">
-          Watch {title} gameplay on YouTube
-        </a>
+        <VideoEmbed video={video} compact />
         <p>Use gameplay to verify skill timing, clear consistency, and whether the route still matches the current update.</p>
       </div>
     </div>
   );
+}
+
+export function FeaturedVideo({ title, videoQuery }: { title: string; videoQuery: string }) {
+  const video = pickVideo(title, videoQuery);
+  return (
+    <section className="site-shell video-feature">
+      <div>
+        <p className="eyebrow">Gameplay video</p>
+        <h2>{video.heading}</h2>
+        <p>{video.reason}</p>
+      </div>
+      <VideoEmbed video={video} />
+    </section>
+  );
+}
+
+type VideoChoice = {
+  id: string;
+  label: string;
+  heading: string;
+  reason: string;
+};
+
+function VideoEmbed({ video, compact = false }: { video: VideoChoice; compact?: boolean }) {
+  return (
+    <div className={compact ? 'video-embed compact' : 'video-embed'}>
+      <iframe
+        src={`https://www.youtube-nocookie.com/embed/${video.id}`}
+        title={video.label}
+        loading="lazy"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        allowFullScreen
+      />
+      <a href={`https://www.youtube.com/watch?v=${video.id}`} target="_blank" rel="noreferrer">
+        Open on YouTube
+      </a>
+    </div>
+  );
+}
+
+function pickVideo(title: string, videoQuery: string): VideoChoice {
+  const key = `${title} ${videoQuery}`.toLowerCase();
+  if (key.includes('wiki') || key.includes('code') || key.includes('progression') || key.includes('beginner')) {
+    return {
+      id: '2uE24Q7LeQQ',
+      label: 'Dungeon Lootr beginner guide and new exotic class video',
+      heading: 'Beginner guide and current progression context',
+      reason: 'This is the broadest fit for home, codes, and progression pages because it gives new visitors a gameplay overview quickly.',
+    };
+  }
+  if (key.includes('tier') || key.includes('class') || key.includes('aspect')) {
+    return {
+      id: '2AAJL4oJFoo',
+      label: 'Dungeon Lootr all classes showcase video',
+      heading: 'All classes showcased before you commit',
+      reason: 'This works best on class and tier pages because users can see kits and animations before choosing what to farm.',
+    };
+  }
+  if (key.includes('boss') || key.includes('dungeon') || key.includes('build')) {
+    return {
+      id: 'FjNIit2YdUw',
+      label: 'Dungeon Lootr strongest classes versus all dungeons gameplay',
+      heading: 'Dungeon and Boss Rush gameplay route',
+      reason: 'This video fits build, dungeon, and Boss Rush pages because it compares stronger classes against multiple dungeon clears.',
+    };
+  }
+  if (key.includes('drop') || key.includes('rate') || key.includes('item') || key.includes('fragment')) {
+    return {
+      id: 'XwQFsLvtdr8',
+      label: 'Dungeon Lootr tier list and class unlock route video',
+      heading: 'Tier list and unlock route context',
+      reason: 'This supports farming pages because it keeps rare drops connected to the class routes players are actually chasing.',
+    };
+  }
+  return {
+    id: '2uE24Q7LeQQ',
+    label: 'Dungeon Lootr beginner guide and new exotic class video',
+    heading: 'Beginner guide and current progression context',
+    reason: 'This is the broadest fit for home, codes, and progression pages because it gives new visitors a gameplay overview quickly.',
+  };
 }
 
 export function ClassFinderPreview({ current }: { current?: ClassEntry }) {

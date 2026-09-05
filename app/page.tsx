@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { FeaturedVideo } from './components';
 
 const popular = [
   ['Class Tier List', '/class-tier-list/', 'Best classes by Boss Rush, dungeon clear, solo value, and investment.'],
@@ -63,6 +64,11 @@ export default function Home() {
           </aside>
         </div>
       </section>
+
+      <FeaturedVideo
+        title="Dungeon Lootr Wiki"
+        videoQuery="Dungeon Lootr beginner guide codes progression Roblox"
+      />
 
       <section className="site-shell search-band" aria-label="Search shortcuts">
         <div className="search-box">Search classes, drops, aspects, guides...</div>
