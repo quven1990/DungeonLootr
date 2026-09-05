@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { Facts, NextSteps, RetentionPanel } from '../../components';
-import { buildSerp, classBySlug, classes, guideBySlug } from '../../data';
+import { buildOpening, buildSerp, classBySlug, classes, guideBySlug } from '../../data';
 
 export function generateStaticParams() {
   return classes.map((item) => ({ slug: item.slug }));
@@ -33,7 +33,7 @@ export default async function BuildPage({ params }: { params: Promise<{ slug: st
         <h1>Best {item.name} Build in Dungeon Lootr</h1>
         <div className="quick-answer wide">
           <span className="label">Quick Answer</span>
-          <p>The best {item.name} build starts with {item.mode.toLowerCase()} consistency, then tunes stats, Aspect, and gear around the fights you can clear without losing uptime.</p>
+          <p>{buildOpening(item)}</p>
           <div className="hero-actions">
             <Link href={`/classes/${item.slug}/`}>Class details</Link>
             <Link className="secondary" href="/guides/best-aspect-by-class/">Best Aspects</Link>

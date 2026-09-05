@@ -2,13 +2,14 @@ import { PageHero } from '../../components';
 import { byUrl } from '../../data';
 import DropCalculator from './DropCalculator';
 
+const entry = byUrl('/tools/drop-chance-calculator/')!;
+
 export const metadata = {
-  title: 'Dungeon Lootr Drop Chance Calculator - Estimate Runs for Any Drop Rate',
-  description: 'Enter a Dungeon Lootr drop rate and see your chance after any number of runs, plus how many attempts you need for 50%, 90%, 95%, or 99%.',
+  title: entry.title,
+  description: entry.description,
 };
 
 export default function CalculatorPage() {
-  const entry = byUrl('/tools/drop-chance-calculator/')!;
   return (
     <main>
       <PageHero entry={entry} />

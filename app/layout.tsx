@@ -1,25 +1,32 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import Link from 'next/link';
 import './globals.css';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://dungeonlootr.top'),
-  title: 'Dungeon Lootr Wiki - Classes, Builds, Boss Rush, Drops & Guides',
+  title: 'Dungeon Lootr Wiki - Best Classes, Builds, Boss Rush & Codes',
   description:
-    'Dungeon Lootr guides for classes, builds, Boss Rush, drops, unlocks, Aspects, codes, and the latest update - built for fast answers, not filler.',
+    'Fast answers for Dungeon Lootr: class tier list, unlock routes, Boss Rush drops, working codes, and a drop-chance calculator.',
   openGraph: {
-    title: 'Dungeon Lootr Wiki - Classes, Builds, Boss Rush, Drops & Guides',
+    title: 'Dungeon Lootr Wiki - Best Classes, Builds, Boss Rush & Codes',
     description:
-      'Fast Dungeon Lootr answers, class routes, drop tools, Boss Rush planning, and build recommendations.',
+      'Fast answers for Dungeon Lootr: class tier list, unlock routes, Boss Rush drops, working codes, and a drop-chance calculator.',
     images: ['/images/dungeon-lootr-hero.jpg'],
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Dungeon Lootr Wiki',
-    description: 'Answer-first Dungeon Lootr guides, tools, and data.',
+    title: 'Dungeon Lootr Wiki - Best Classes, Builds, Boss Rush & Codes',
+    description:
+      'Fast answers for Dungeon Lootr: class tier list, unlock routes, Boss Rush drops, working codes, and a drop-chance calculator.',
     images: ['/images/dungeon-lootr-hero.jpg'],
   },
+};
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  viewportFit: 'cover',
 };
 
 const navItems = [

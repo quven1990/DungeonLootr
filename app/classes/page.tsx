@@ -1,13 +1,14 @@
 import { ClassTable, DataNote, PageHero, RetentionPanel } from '../components';
 import { byUrl } from '../data';
 
+const entry = byUrl('/classes/')!;
+
 export const metadata = {
-  title: 'Dungeon Lootr Classes - All Classes, Rarities & How to Unlock Them',
-  description: 'Browse Dungeon Lootr classes by rarity and unlock method, including Boss Rush drops, Forge routes, strengths, builds, and current patch notes.',
+  title: entry.title,
+  description: entry.description,
 };
 
 export default function ClassesPage() {
-  const entry = byUrl('/classes/')!;
   return (
     <main>
       <PageHero entry={entry} />

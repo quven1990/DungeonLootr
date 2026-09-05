@@ -31,30 +31,47 @@ export function Facts({ facts }: { facts: [string, string][] }) {
 
 export function ClassTable() {
   return (
-    <div className="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>Class</th>
-            <th>Rarity</th>
-            <th>Obtain</th>
-            <th>Best mode</th>
-            <th>Confidence</th>
-          </tr>
-        </thead>
-        <tbody>
-          {classes.map((item) => (
-            <tr key={item.slug}>
-              <td><Link href={`/classes/${item.slug}/`}>{item.name}</Link></td>
-              <td><span className="rarity">{item.rarity}</span></td>
-              <td>{item.obtain}</td>
-              <td>{item.mode}</td>
-              <td>{item.confidence}</td>
+    <>
+      <div className="table-wrap desktop-table">
+        <table>
+          <thead>
+            <tr>
+              <th>Class</th>
+              <th>Rarity</th>
+              <th>Obtain</th>
+              <th>Best mode</th>
+              <th>Confidence</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+          </thead>
+          <tbody>
+            {classes.map((item) => (
+              <tr key={item.slug}>
+                <td><Link href={`/classes/${item.slug}/`}>{item.name}</Link></td>
+                <td><span className="rarity">{item.rarity}</span></td>
+                <td>{item.obtain}</td>
+                <td>{item.mode}</td>
+                <td>{item.confidence}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <div className="class-card-list mobile-cards" aria-label="Class list">
+        {classes.map((item) => (
+          <Link className="class-card" href={`/classes/${item.slug}/`} key={item.slug}>
+            <div className="class-card-top">
+              <strong>{item.name}</strong>
+              <span className="rarity">{item.rarity}</span>
+            </div>
+            <div className="class-card-meta">
+              <span>Obtain: {item.obtain}</span>
+              <span>Best mode: {item.mode}</span>
+              <span>Confidence: {item.confidence}</span>
+            </div>
+          </Link>
+        ))}
+      </div>
+    </>
   );
 }
 

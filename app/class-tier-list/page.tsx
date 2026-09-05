@@ -2,13 +2,14 @@ import Link from 'next/link';
 import { ClassTable, DataNote, PageHero, RetentionPanel } from '../components';
 import { byUrl, classes } from '../data';
 
+const entry = byUrl('/class-tier-list/')!;
+
 export const metadata = {
-  title: 'Dungeon Lootr Class Tier List - Best Classes After the Latest Update',
-  description: 'See the best Dungeon Lootr classes ranked for Boss Rush, dungeon clearing, mobility, and endgame value, with patch-aware recommendations.',
+  title: entry.title,
+  description: entry.description,
 };
 
 export default function TierPage() {
-  const entry = byUrl('/class-tier-list/')!;
   const top = classes.slice(0, 5);
   return (
     <main>

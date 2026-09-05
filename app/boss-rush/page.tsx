@@ -2,13 +2,14 @@ import Link from 'next/link';
 import { PageHero, NextSteps, RetentionPanel } from '../components';
 import { byUrl } from '../data';
 
+const entry = byUrl('/boss-rush/')!;
+
 export const metadata = {
-  title: 'Dungeon Lootr Boss Rush Guide - Floors, Class Drops, Fragments & Builds',
-  description: 'See the important Boss Rush floors, class drops, fragment rewards, farming routes, and the best classes for pushing deeper.',
+  title: entry.title,
+  description: entry.description,
 };
 
 export default function BossRushPage() {
-  const entry = byUrl('/boss-rush/')!;
   return (
     <main>
       <PageHero entry={entry} cta={<div className="hero-actions"><Link href="/class-tier-list/">See best classes</Link></div>} />

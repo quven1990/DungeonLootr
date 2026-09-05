@@ -33,9 +33,9 @@ export default function Home() {
           <div className="hero-copy">
             <div>
               <p className="breadcrumb">Home / Fast answers / Current routes</p>
-              <h1>Dungeon Lootr Wiki: Classes, Builds, Boss Rush, Drops & Guides</h1>
+              <h1>Dungeon Lootr Wiki: Best Classes, Builds, Boss Rush & Codes</h1>
               <p className="serp-opening">
-                Dungeon Lootr is a class-based dungeon RPG where the fastest progression comes from understanding unlock routes, Boss Rush rewards, builds, Aspects, and drop farming.
+                Need a main class, an unlock route, or a drop farm plan? Start here - then jump to the tier list, Boss Rush guide, or drop calculator.
               </p>
               <div className="hero-stat-row" aria-label="Site highlights">
                 <span>50 phase-one routes</span>
@@ -97,7 +97,7 @@ export default function Home() {
           <p className="eyebrow">Classes</p>
           <h2>Current class database</h2>
         </div>
-        <div className="table-wrap">
+        <div className="table-wrap desktop-table">
           <table>
             <thead>
               <tr>
@@ -118,6 +118,20 @@ export default function Home() {
               ))}
             </tbody>
           </table>
+        </div>
+        <div className="class-card-list mobile-cards" aria-label="Current class database">
+          {classes.map((item) => (
+            <Link className="class-card" href={item.href} key={item.name}>
+              <div className="class-card-top">
+                <strong>{item.name}</strong>
+                <span className="rarity">{item.rarity}</span>
+              </div>
+              <div className="class-card-meta">
+                <span>Obtain: {item.obtain}</span>
+                <span>Best mode: {item.mode}</span>
+              </div>
+            </Link>
+          ))}
         </div>
       </section>
 

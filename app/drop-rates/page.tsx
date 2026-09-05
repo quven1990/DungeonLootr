@@ -2,13 +2,14 @@ import Link from 'next/link';
 import { DataNote, PageHero, RetentionPanel } from '../components';
 import { byUrl } from '../data';
 
+const entry = byUrl('/drop-rates/')!;
+
 export const metadata = {
-  title: 'Dungeon Lootr Drop Rates - Boss, Class Item & Fragment Chances',
-  description: 'Check Dungeon Lootr drop rates for boss loot, class items, fragments, and rare materials, with last-checked patch dates and farming notes.',
+  title: entry.title,
+  description: entry.description,
 };
 
 export default function DropRatesPage() {
-  const entry = byUrl('/drop-rates/')!;
   return (
     <main>
       <PageHero entry={entry} cta={<div className="hero-actions"><Link href="/tools/drop-chance-calculator/">Open Drop Calculator</Link></div>} />
