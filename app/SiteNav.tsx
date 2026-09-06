@@ -47,39 +47,42 @@ export function SiteNav() {
   }, [open]);
 
   return (
-    <header className="site-nav">
-      <nav className="nav-inner" aria-label="Main navigation">
-        <Link href="/" className="brand" aria-label="Dungeon Lootr home">
-          <span className="brand-mark">DL</span>
-          <span>Dungeon Lootr</span>
-        </Link>
+    <>
+      <header className="site-nav">
+        <nav className="nav-inner" aria-label="Main navigation">
+          <Link href="/" className="brand" aria-label="Dungeon Lootr home">
+            <span className="brand-mark">DL</span>
+            <span className="brand-text">Dungeon Lootr</span>
+          </Link>
 
-        <div className="nav-links nav-links-desktop">
-          {navItems.map(([label, href]) => (
-            <Link
-              href={href}
-              key={href}
-              className={isActive(pathname, href) ? 'is-active' : undefined}
-              aria-current={isActive(pathname, href) ? 'page' : undefined}
-            >
-              {label}
-            </Link>
-          ))}
-        </div>
+          <div className="nav-links nav-links-desktop">
+            {navItems.map(([label, href]) => (
+              <Link
+                href={href}
+                key={href}
+                className={isActive(pathname, href) ? 'is-active' : undefined}
+                aria-current={isActive(pathname, href) ? 'page' : undefined}
+              >
+                {label}
+              </Link>
+            ))}
+          </div>
 
-        <button
-          type="button"
-          className={`menu-toggle${open ? ' is-open' : ''}`}
-          aria-expanded={open}
-          aria-controls={panelId}
-          aria-label={open ? 'Close menu' : 'Open menu'}
-          onClick={() => setOpen((value) => !value)}
-        >
-          <span className="menu-toggle-bars" aria-hidden="true" />
-          <span className="menu-toggle-text">{open ? 'Close' : 'Menu'}</span>
-        </button>
-      </nav>
+          <button
+            type="button"
+            className={`menu-toggle${open ? ' is-open' : ''}`}
+            aria-expanded={open}
+            aria-controls={panelId}
+            aria-label={open ? 'Close menu' : 'Open menu'}
+            onClick={() => setOpen((value) => !value)}
+          >
+            <span className="menu-toggle-bars" aria-hidden="true" />
+            <span className="menu-toggle-text">{open ? 'Close' : 'Menu'}</span>
+          </button>
+        </nav>
+      </header>
 
+      {/* Keep fixed overlays outside .site-nav — backdrop-filter creates a containing block. */}
       <div
         className={`nav-backdrop${open ? ' is-open' : ''}`}
         hidden={!open}
@@ -94,7 +97,17 @@ export function SiteNav() {
         aria-modal="true"
         aria-label="Site menu"
       >
-        <p className="nav-drawer-label">Navigate</p>
+        <div className="nav-drawer-head">
+          <p className="nav-drawer-label">Navigate</p>
+          <button
+            type="button"
+            className="nav-drawer-close"
+            aria-label="Close menu"
+            onClick={() => setOpen(false)}
+          >
+            Close
+          </button>
+        </div>
         <div className="nav-drawer-links">
           {navItems.map(([label, href]) => (
             <Link
@@ -102,13 +115,12 @@ export function SiteNav() {
               key={href}
               className={isActive(pathname, href) ? 'is-active' : undefined}
               aria-current={isActive(pathname, href) ? 'page' : undefined}
-              onClick={() => setOpen(false)}
             >
               {label}
             </Link>
           ))}
         </div>
       </div>
-    </header>
+    </>
   );
 }

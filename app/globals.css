@@ -80,14 +80,22 @@ a {
   display: flex;
   align-items: center;
   gap: 10px;
-  flex-shrink: 0;
+  flex-shrink: 1;
+  min-width: 0;
   font-weight: 800;
+}
+
+.brand-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .brand-mark {
   display: grid;
   width: 34px;
   height: 34px;
+  flex-shrink: 0;
   place-items: center;
   border: 1px solid rgba(247, 198, 90, 0.72);
   border-radius: 6px;
@@ -237,19 +245,45 @@ table a:hover,
   transform: translateX(104%);
   transition: transform 0.2s ease;
   overflow-y: auto;
+  overscroll-behavior: contain;
 }
 
 .nav-drawer.is-open {
   transform: translateX(0);
 }
 
+.nav-drawer-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
 .nav-drawer-label {
-  margin: 8px 0 14px;
+  margin: 0;
   color: var(--muted);
   font-size: 12px;
   font-weight: 750;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+}
+
+.nav-drawer-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  min-width: 44px;
+  padding: 0 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(10, 13, 19, 0.88);
+  color: var(--foreground);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
 }
 
 .nav-drawer-links {
