@@ -20,7 +20,7 @@ export default function DropRatesPage() {
           <section className="content-panel">
             <h2>Drop tracking table</h2>
             <p>Community-checked rates. Exact official numbers are not published for every source - recalculate after patches.</p>
-            <div className="table-wrap">
+            <div className="table-wrap desktop-table">
               <table>
                 <thead>
                   <tr>
@@ -41,6 +41,20 @@ export default function DropRatesPage() {
                   ))}
                 </tbody>
               </table>
+            </div>
+            <div className="class-card-list mobile-cards" aria-label="Drop rates">
+              {dropRates.map((row) => (
+                <Link className="class-card" href={row.href} key={row.item}>
+                  <div className="class-card-top">
+                    <strong>{row.item}</strong>
+                    <span className="status-pill">{row.rate}</span>
+                  </div>
+                  <div className="class-card-meta">
+                    <span>Source: {row.source}</span>
+                    <span>{row.note}</span>
+                  </div>
+                </Link>
+              ))}
             </div>
           </section>
           <DataNote />

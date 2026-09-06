@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import { Analytics } from './analytics';
 import Link from './native-link';
 import { JsonLd, websiteJsonLd } from './jsonld';
+import { SiteNav } from './SiteNav';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -44,14 +45,6 @@ export const viewport: Viewport = {
   viewportFit: 'cover',
 };
 
-const navItems = [
-  ['Classes', '/classes'],
-  ['Tier List', '/class-tier-list'],
-  ['Boss Rush', '/boss-rush'],
-  ['Drops', '/drop-rates'],
-  ['Tools', '/tools/drop-chance-calculator'],
-];
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -61,21 +54,7 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <Analytics />
-        <header className="site-nav">
-          <nav className="nav-inner" aria-label="Main navigation">
-            <Link href="/" className="brand" aria-label="Dungeon Lootr home">
-              <span className="brand-mark">DL</span>
-              <span>Dungeon Lootr</span>
-            </Link>
-            <div className="nav-links">
-              {navItems.map(([label, href]) => (
-                <Link href={href} key={href}>
-                  {label}
-                </Link>
-              ))}
-            </div>
-          </nav>
-        </header>
+        <SiteNav />
         {children}
         <JsonLd data={websiteJsonLd()} />
         <footer className="site-footer">

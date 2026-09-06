@@ -40,7 +40,7 @@ export default function BestAspectPage() {
           </section>
           <section className="content-panel">
             <h2>Best Aspect by class</h2>
-            <div className="table-wrap">
+            <div className="table-wrap desktop-table">
               <table>
                 <thead>
                   <tr>
@@ -61,6 +61,20 @@ export default function BestAspectPage() {
                   ))}
                 </tbody>
               </table>
+            </div>
+            <div className="class-card-list mobile-cards" aria-label="Best Aspect by class">
+              {classes.map((item) => (
+                <Link className="class-card" href={`/classes/${item.slug}`} key={item.slug}>
+                  <div className="class-card-top">
+                    <strong>{item.name}</strong>
+                    <span className="rarity">{item.tier}</span>
+                  </div>
+                  <div className="class-card-meta">
+                    <span>Mode: {item.mode}</span>
+                    <span>Start with: {item.aspect}</span>
+                  </div>
+                </Link>
+              ))}
             </div>
           </section>
         </div>

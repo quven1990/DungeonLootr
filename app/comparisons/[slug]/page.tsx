@@ -48,7 +48,7 @@ export default async function ComparisonPage({ params }: { params: Promise<{ slu
         <div className="article-stack">
           <section className="content-panel">
             <h2>Side-by-side facts</h2>
-            <div className="table-wrap">
+            <div className="table-wrap desktop-table">
               <table>
                 <thead>
                   <tr>
@@ -85,6 +85,30 @@ export default async function ComparisonPage({ params }: { params: Promise<{ slu
                   </tr>
                 </tbody>
               </table>
+            </div>
+            <div className="compare-card-list mobile-cards" aria-label="Side-by-side facts">
+              <article className="class-card">
+                <div className="class-card-top">
+                  <strong>{item.a}</strong>
+                  <span className="rarity">{left?.tier ?? '—'} · {left?.rarity ?? '—'}</span>
+                </div>
+                <div className="class-card-meta">
+                  <span>Best mode: {left?.mode ?? '—'}</span>
+                  <span>Unlock: {left?.obtain ?? '—'}</span>
+                  <span>Confidence: {left?.confidence ?? '—'}</span>
+                </div>
+              </article>
+              <article className="class-card">
+                <div className="class-card-top">
+                  <strong>{item.b}</strong>
+                  <span className="rarity">{right?.tier ?? '—'} · {right?.rarity ?? '—'}</span>
+                </div>
+                <div className="class-card-meta">
+                  <span>Best mode: {right?.mode ?? '—'}</span>
+                  <span>Unlock: {right?.obtain ?? '—'}</span>
+                  <span>Confidence: {right?.confidence ?? '—'}</span>
+                </div>
+              </article>
             </div>
           </section>
           <section className="content-panel">

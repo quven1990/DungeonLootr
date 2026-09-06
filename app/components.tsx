@@ -1,5 +1,6 @@
 import Link from './native-link';
 import type { ReactNode } from 'react';
+import { CopyCodeButton } from './CopyCodeButton';
 import {
   classes,
   codesLastChecked,
@@ -20,13 +21,14 @@ export function CodesPanel() {
           Last checked: {codesLastChecked}. Codes are case-sensitive and can expire without notice.{' '}
           <Link href="/updatelog">Update log</Link>
         </p>
-        <div className="table-wrap">
+        <div className="table-wrap desktop-table">
           <table>
             <thead>
               <tr>
                 <th>Code</th>
                 <th>Reward</th>
                 <th>Status</th>
+                <th>Copy</th>
               </tr>
             </thead>
             <tbody>
@@ -35,17 +37,29 @@ export function CodesPanel() {
                   <td><code className="code-chip">{item.code}</code></td>
                   <td>{item.reward}</td>
                   <td>{item.isNew ? 'Active · New' : 'Active'}</td>
+                  <td><CopyCodeButton code={item.code} showCode={false} /></td>
                 </tr>
               ))}
             </tbody>
           </table>
+        </div>
+        <div className="code-card-list mobile-cards" aria-label="Working codes">
+          {active.map((item) => (
+            <article className="code-card" key={item.code}>
+              <div className="code-card-top">
+                <CopyCodeButton code={item.code} />
+                <span className="status-pill">{item.isNew ? 'Active · New' : 'Active'}</span>
+              </div>
+              <p className="code-card-reward">{item.reward}</p>
+            </article>
+          ))}
         </div>
       </section>
       <section className="content-panel">
         <h2>Expired codes</h2>
         <ul className="expired-codes">
           {expired.map((item) => (
-            <li key={item.code}><code className="code-chip muted">{item.code}</code></li>
+            <li key={item.code}><CopyCodeButton code={item.code} muted /></li>
           ))}
         </ul>
       </section>

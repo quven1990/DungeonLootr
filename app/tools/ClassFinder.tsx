@@ -44,7 +44,7 @@ export function ClassFinder({ classes }: { classes: ClassEntry[] }) {
         </label>
       </div>
       <p className="codes-meta">{filtered.length} classes match.</p>
-      <div className="table-wrap">
+      <div className="table-wrap desktop-table">
         <table>
           <thead>
             <tr>
@@ -67,6 +67,20 @@ export function ClassFinder({ classes }: { classes: ClassEntry[] }) {
             ))}
           </tbody>
         </table>
+      </div>
+      <div className="class-card-list mobile-cards" aria-label="Filtered class list">
+        {filtered.map((item) => (
+          <Link className="class-card" href={`/classes/${item.slug}`} key={item.slug}>
+            <div className="class-card-top">
+              <strong>{item.name}</strong>
+              <span className="rarity">{item.tier} · {item.rarity}</span>
+            </div>
+            <div className="class-card-meta">
+              <span>Best mode: {item.mode}</span>
+              <span>Unlock: {item.obtain}</span>
+            </div>
+          </Link>
+        ))}
       </div>
     </section>
   );
