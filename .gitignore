@@ -15,6 +15,7 @@
 /.next/
 /.vinext/
 /out/
+*.tsbuildinfo
 
 # misc
 .DS_Store
@@ -33,6 +34,7 @@ yarn-error.log*
 .vercel
 next-env.d.ts
 /dist/
+/.pages-deploy/
 /.wrangler/
 /outputs/
 /work/

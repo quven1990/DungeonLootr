@@ -1,6 +1,6 @@
 'use client';
 
-import Link from 'next/link';
+import Link from '../native-link';
 import { useMemo, useState } from 'react';
 import type { ClassEntry } from '../data';
 
@@ -33,7 +33,7 @@ export function AspectMatcher({ classes }: { classes: ClassEntry[] }) {
       <ul className="check-list">
         {matches.map((item) => (
           <li key={item.slug}>
-            <Link href={`/classes/${item.slug}/`}>{item.name}</Link>
+            <Link href={`/classes/${item.slug}`}>{item.name}</Link>
             {' — '}
             start with <strong>{item.aspect}</strong> for {item.mode.toLowerCase()}.
           </li>

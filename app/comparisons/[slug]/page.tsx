@@ -1,8 +1,9 @@
 import { notFound } from 'next/navigation';
-import Link from 'next/link';
-import { DataNote, NextSteps, RetentionPanel } from '../../components';
+import Link from '../../native-link';
+import { DataNote, NextSteps, RelatedLinks, RetentionPanel } from '../../components';
 import { classBySlug, comparisonBySlug, comparisons, comparisonSerp } from '../../data';
-import { pageMetadata } from '../../seo';
+import { hubClusterLinks } from '../../related';
+import { notFoundMetadata, pageMetadata } from '../../seo';
 
 export function generateStaticParams() {
   return comparisons.map((item) => ({ slug: item.slug }));
@@ -11,7 +12,7 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const item = comparisonBySlug(slug);
-  if (!item) return {};
+  if (!item) return notFoundMetadata;
   return pageMetadata(comparisonSerp(item), `/comparisons/${item.slug}`);
 }
 
@@ -40,7 +41,7 @@ export default async function ComparisonPage({ params }: { params: Promise<{ slu
         <div className="quick-answer wide">
           <span className="label">Quick Answer</span>
           <p>{item.opening}</p>
-          <div className="hero-actions"><Link href="/class-tier-list/">See Tier List</Link></div>
+          <div className="hero-actions"><Link href="/class-tier-list">See Tier List</Link></div>
         </div>
       </section>
       <section className="site-shell content-grid">
@@ -95,16 +96,19 @@ export default async function ComparisonPage({ params }: { params: Promise<{ slu
             </ul>
           </section>
           <DataNote />
+          <RelatedLinks title="Related pages" links={hubClusterLinks(`/comparisons/${item.slug}`)} />
           <NextSteps links={[
-            left ? [`Open ${item.a}`, `/classes/${left.slug}/`] : ['Browse all classes', '/classes/'],
-            right ? [`Open ${item.b}`, `/classes/${right.slug}/`] : ['Plan unlock drops', '/tools/drop-chance-calculator/'],
+            left ? [`Open ${item.a}`, `/classes/${left.slug}`] : ['Browse all classes', '/classes'],
+            right ? [`Open ${item.b}`, `/classes/${right.slug}`] : ['Plan unlock drops', '/tools/drop-chance-calculator'],
+            ['Class tier list', '/class-tier-list'],
+            ['Boss Rush guide', '/boss-rush'],
           ]} />
         </div>
         <aside className="side-rail">
           <RetentionPanel
             title={`${item.a} vs ${item.b}`}
             videoQuery={`Dungeon Lootr ${item.a} ${item.b} comparison Roblox`}
-            toolHref="/tools/class-finder/"
+            toolHref="/tools/class-finder"
             toolLabel="Find your best class"
           />
         </aside>

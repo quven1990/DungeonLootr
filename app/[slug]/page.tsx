@@ -1,9 +1,10 @@
 import { notFound } from 'next/navigation';
-import Link from 'next/link';
-import { ClassTable, CodesPanel, DataNote, NextSteps, RetentionPanel } from '../components';
-import { codesLastChecked, hubBySlug, hubPages, hubSerp } from '../data';
+import Link from '../native-link';
+import { ClassTable, CodesPanel, DataNote, NextSteps, RelatedLinks, RetentionPanel } from '../components';
+import { codesLastChecked, demotedHubSlugs, hubBySlug, hubPages, hubSerp } from '../data';
 import { JsonLd, faqJsonLd } from '../jsonld';
-import { pageMetadata } from '../seo';
+import { hubClusterLinks } from '../related';
+import { notFoundMetadata, pageMetadata } from '../seo';
 
 export function generateStaticParams() {
   return hubPages.map((page) => ({ slug: page.slug }));
@@ -12,8 +13,8 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const page = hubBySlug(slug);
-  if (!page) return {};
-  return pageMetadata(hubSerp(page), `/${page.slug}`);
+  if (!page) return notFoundMetadata;
+  return pageMetadata(hubSerp(page), `/${page.slug}`, { index: !demotedHubSlugs.has(page.slug) });
 }
 
 function HubBody({ slug }: { slug: string }) {
@@ -70,7 +71,7 @@ function HubBody({ slug }: { slug: string }) {
           <li>Underworld Glaive → Dreadlord</li>
           <li>Boss Rush Class Items (Floor 40+) → skip the fragment grind if the drop lands</li>
         </ul>
-        <p><Link href="/drop-rates/">Open the drop-rate table</Link> for sources and odds.</p>
+        <p><Link href="/drop-rates">Open the drop-rate table</Link> for sources and odds.</p>
       </section>
     );
   }
@@ -105,8 +106,8 @@ export default async function HubPage({ params }: { params: Promise<{ slug: stri
           <span className="label">Quick Answer</span>
           <p>{page.opening}</p>
           <div className="hero-actions">
-            <Link href="/tools/drop-chance-calculator/">Open Drop Calculator</Link>
-            <Link className="secondary" href="/classes/">Browse Classes</Link>
+            <Link href="/tools/drop-chance-calculator">Open Drop Calculator</Link>
+            <Link className="secondary" href="/classes">Browse Classes</Link>
           </div>
         </div>
       </section>
@@ -120,17 +121,19 @@ export default async function HubPage({ params }: { params: Promise<{ slug: stri
           </section>
           <HubBody slug={slug} />
           <DataNote />
+          <RelatedLinks title="Related pages" links={hubClusterLinks(`/${page.slug}`)} />
           <NextSteps links={[
-            ['Pick a class target', '/classes/'],
-            ['Plan rare drops', '/tools/drop-chance-calculator/'],
-            ['Check Boss Rush', '/boss-rush/'],
+            ['Pick a class target', '/classes'],
+            ['Plan rare drops', '/tools/drop-chance-calculator'],
+            ['Check Boss Rush', '/boss-rush'],
+            ['Class tier list', '/class-tier-list'],
           ]} />
         </div>
         <aside className="side-rail">
           <RetentionPanel
             title={page.title}
             videoQuery={`${page.title} Roblox Dungeon Lootr guide`}
-            toolHref={slug === 'aspects' ? '/tools/aspect-matcher/' : '/tools/drop-chance-calculator/'}
+            toolHref={slug === 'aspects' ? '/tools/aspect-matcher' : '/tools/drop-chance-calculator'}
             toolLabel={slug === 'aspects' ? 'Match an Aspect' : 'Plan the next farm'}
           />
           <div className="content-panel">

@@ -1,6 +1,6 @@
 'use client';
 
-import Link from 'next/link';
+import Link from '../native-link';
 import { useMemo, useState } from 'react';
 import type { ClassEntry } from '../data';
 
@@ -58,7 +58,7 @@ export function ClassFinder({ classes }: { classes: ClassEntry[] }) {
           <tbody>
             {filtered.map((item) => (
               <tr key={item.slug}>
-                <td><Link href={`/classes/${item.slug}/`}>{item.name}</Link></td>
+                <td><Link href={`/classes/${item.slug}`}>{item.name}</Link></td>
                 <td>{item.tier}</td>
                 <td><span className="rarity">{item.rarity}</span></td>
                 <td>{item.mode}</td>

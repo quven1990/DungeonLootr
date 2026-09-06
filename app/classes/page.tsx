@@ -1,9 +1,9 @@
 import { ClassTable, DataNote, PageHero, RetentionPanel } from '../components';
 import { byUrl } from '../data';
 import { pageMetadata } from '../seo';
-import Link from 'next/link';
+import Link from '../native-link';
 
-const entry = byUrl('/classes/')!;
+const entry = byUrl('/classes')!;
 
 export const metadata = pageMetadata(
   { title: entry.title, description: entry.description, intent: 'classes' },
@@ -25,7 +25,7 @@ export default function ClassesPage() {
               <li>Rare dungeon drops: Dreadlord via Underworld Glaive (~1%).</li>
             </ul>
             <p>
-              Use the <Link href="/tools/class-finder/">Class Finder</Link> to filter by tier and mode before opening an unlock guide.
+              Use the <Link href="/tools/class-finder">Class Finder</Link> to filter by tier and mode before opening an unlock guide.
             </p>
           </section>
           <ClassTable />
@@ -35,7 +35,7 @@ export default function ClassesPage() {
           <RetentionPanel
             title="Dungeon Lootr classes"
             videoQuery="Dungeon Lootr all classes tier list Roblox"
-            toolHref="/tools/class-finder/"
+            toolHref="/tools/class-finder"
             toolLabel="Use Class Finder"
           />
           <div className="content-panel">

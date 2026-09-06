@@ -23,15 +23,125 @@ export type ClassEntry = {
   buildNotes: string[];
 };
 
+/** Real build payload for /builds pages. Thin builds stay noindex. */
+export type BuildProfile = {
+  bestMode: string;
+  bestAspect: string;
+  altAspect: string;
+  statPriority: string;
+  gearFocus: string;
+  rotation: string;
+  bossRushSetup: string;
+  dungeonSetup: string;
+  strengths: string[];
+  weaknesses: string[];
+  lastChecked: string;
+  patch: string;
+  dataStatus: 'Verified' | 'Community-tested' | 'Mixed';
+};
+
+export type SearchIntent = 'entity' | 'howto' | 'build' | 'tool' | 'comparison' | 'freshness' | 'hub' | 'database' | 'tier';
+
 export type Serp = {
   title: string;
   description: string;
   intent: string;
+  primaryKeyword?: string;
+  searchIntent?: SearchIntent;
 };
+
+export const CONTENT_LAST_CHECKED = '2026-09-06';
+export const CONTENT_PATCH = 'Current';
+
+const VAGUE_BUILD_RE = /prioritize consistency|use the class effectively|play aggressively|build around|lean into/i;
+
+export const buildProfiles: Record<string, BuildProfile> = {
+  'cursed-king': {
+    bestMode: 'Boss Rush',
+    bestAspect: 'Burst / sustain hybrid (cleave uptime first)',
+    altAspect: 'Pure sustain if Floor 40+ clears are unstable',
+    statPriority: 'Damage > Cooldown > Survivability',
+    gearFocus: 'AoE / cleave weapons and mastery nodes that raise slash damage before greedier crit stacking',
+    rotation: 'Open with core cleave → keep slash uptime on packs → save burst for elite / floor bosses → reset only when the next pack is already grouped',
+    bossRushSetup: 'Primary. Push stable Floor 40+ clears before optimizing for Floor 100 fragment lobbies.',
+    dungeonSetup: 'Secondary. Use the same Aspect but drop greedier damage if dungeon deaths reset coin / EXP progress.',
+    strengths: ['Top Boss Rush AoE once mastery is online', 'Forge path makes the class farmable without pure Class Item RNG'],
+    weaknesses: ['Needs Floor 40+ or 50 Sukuna fragments', 'Mastery investment before the kit feels complete'],
+    lastChecked: CONTENT_LAST_CHECKED,
+    patch: CONTENT_PATCH,
+    dataStatus: 'Community-tested',
+  },
+  'sinister-trigger': {
+    bestMode: 'Dungeon clear',
+    bestAspect: 'Damage uptime Aspect',
+    altAspect: 'Burst Aspect for short boss windows',
+    statPriority: 'Damage > Cooldown > Mobility',
+    gearFocus: 'Clear-speed weapons and uptime stats; avoid tank stacking that slows dungeon cycles',
+    rotation: 'Keep damage uptime rolling → clear packs without resetting buff windows → bank burst for dungeon bosses',
+    bossRushSetup: 'Alt. Only if your clear is already stable; dungeon value is the main reason to chase this Exotic.',
+    dungeonSetup: 'Primary. Build for pack clear speed and boss uptime, not long Boss Rush sustain.',
+    strengths: ['Elite dungeon clear speed', 'High damage uptime profile'],
+    weaknesses: ['~0.05% Exotic roll with no Forge shortcut', 'Bad investment if you mainly push Boss Rush'],
+    lastChecked: CONTENT_LAST_CHECKED,
+    patch: CONTENT_PATCH,
+    dataStatus: 'Community-tested',
+  },
+  'honored-one': {
+    bestMode: 'Solo',
+    bestAspect: 'Control / damage Aspect',
+    altAspect: 'Sustain Aspect for safer Boss Rush farming',
+    statPriority: 'Damage > Cooldown > Survivability',
+    gearFocus: 'Solo consistency gear; keep control tools online while leveling toward Unrestricted',
+    rotation: 'Establish control → deal damage in safe windows → reset only after the room is stable',
+    bossRushSetup: 'Strong secondary. Use for Gojo fragment / Class Item farms while leveling to 25.',
+    dungeonSetup: 'Use when you need a safer solo clearer before endgame checklist farms.',
+    strengths: ['S-tier combat value', 'Required bridge into Unrestricted'],
+    weaknesses: ['Shares Floor 40+ / Floor 100 grind', 'More checklist work after unlock'],
+    lastChecked: CONTENT_LAST_CHECKED,
+    patch: CONTENT_PATCH,
+    dataStatus: 'Community-tested',
+  },
+  unrestricted: {
+    bestMode: 'Endgame',
+    bestAspect: 'Endgame damage Aspect',
+    altAspect: 'Sustain Aspect until clears are consistent',
+    statPriority: 'Damage > Cooldown > Survivability',
+    gearFocus: 'Endgame damage pieces after the checklist unlock; do not over-invest before Honored One 25 is done',
+    rotation: 'Hold burst for elites / bosses → keep uptime between packs → avoid deaths that waste coin sinks',
+    bossRushSetup: 'Use after unlock for deep clears; farm prep still happens on Honored One.',
+    dungeonSetup: 'Strong once unlocked; checklist cost means this is not an early main.',
+    strengths: ['Top-end ceiling', 'Checklist unlock instead of pure Boss Rush RNG'],
+    weaknesses: ['Heavy coin / fragment checklist', 'Requires Honored One progression first'],
+    lastChecked: CONTENT_LAST_CHECKED,
+    patch: CONTENT_PATCH,
+    dataStatus: 'Community-tested',
+  },
+};
+
+export function getBuildProfile(slug: string): BuildProfile | undefined {
+  return buildProfiles[slug];
+}
+
+export function isBuildPublishReady(profile: BuildProfile | undefined): boolean {
+  if (!profile) return false;
+  const fields = [
+    profile.bestAspect,
+    profile.statPriority,
+    profile.gearFocus,
+    profile.rotation,
+    profile.bossRushSetup || profile.dungeonSetup,
+  ];
+  const filled = fields.filter((value) => value && value.trim().length >= 12 && !VAGUE_BUILD_RE.test(value));
+  return filled.length >= 3;
+}
+
+export function isIndexableBuild(item: ClassEntry) {
+  return isIndexableClass(item) && isBuildPublishReady(getBuildProfile(item.slug));
+}
 
 export const seoEntries: SeoEntry[] = [
   {
-    url: '/classes/',
+    url: '/classes',
     title: 'Dungeon Lootr Classes - Unlock Routes, Rarity & Best Modes',
     description:
       'Pick your next Dungeon Lootr class fast: rarity, Boss Rush/Forge unlocks, best mode, and build links in one directory.',
@@ -41,7 +151,7 @@ export const seoEntries: SeoEntry[] = [
     type: 'database',
   },
   {
-    url: '/class-tier-list/',
+    url: '/class-tier-list',
     title: 'Dungeon Lootr Tier List - Best Classes After the Latest Update',
     description:
       'S-tier and ranked picks for Boss Rush, dungeon clears, mobility, and endgame value - updated for the latest patch.',
@@ -51,7 +161,7 @@ export const seoEntries: SeoEntry[] = [
     type: 'tier',
   },
   {
-    url: '/boss-rush/',
+    url: '/boss-rush',
     title: 'Dungeon Lootr Boss Rush Guide - Key Floors, Class Drops & Best Push Classes',
     description:
       'Hit the Boss Rush floors that drop classes and fragments, see farming routes, and pick a class that actually pushes deeper.',
@@ -61,7 +171,7 @@ export const seoEntries: SeoEntry[] = [
     type: 'hub',
   },
   {
-    url: '/drop-rates/',
+    url: '/drop-rates',
     title: 'Dungeon Lootr Drop Rates - Boss, Class Item & Fragment Chances',
     description:
       'Check Dungeon Lootr drop rates for boss loot, class items, fragments, and rare materials, with last-checked patch dates and farming notes.',
@@ -71,7 +181,7 @@ export const seoEntries: SeoEntry[] = [
     type: 'database',
   },
   {
-    url: '/tools/drop-chance-calculator/',
+    url: '/tools/drop-chance-calculator',
     title: 'Dungeon Lootr Drop Chance Calculator - Runs to 50%, 90%, 95%, 99%',
     description:
       'Stop guessing rare drops. Enter any drop rate and see your chance after N runs - plus attempts needed for 50/90/95/99%.',
@@ -420,7 +530,7 @@ export const guides: GuideEntry[] = [
       'Fragment path is slower but more deterministic than pure Class Item RNG.',
       'Join the ClickBytes group before redeeming codes that fund the grind.',
     ],
-    next: ['/builds/cursed-king/', '/tools/drop-chance-calculator/', '/boss-rush/floor-100/'],
+    next: ['/builds/cursed-king', '/tools/drop-chance-calculator', '/boss-rush/floor-100'],
   },
   {
     slug: 'how-to-get-honored-one',
@@ -443,7 +553,7 @@ export const guides: GuideEntry[] = [
       'Honored One is both a strong class and an unlock bridge - do not reset progress if Unrestricted is your goal.',
       'Same Floor 40 rule: Class Item drops do not start earlier.',
     ],
-    next: ['/classes/honored-one/', '/guides/how-to-get-unrestricted/', '/guides/heavenly-fragments/'],
+    next: ['/classes/honored-one', '/guides/how-to-get-unrestricted', '/guides/heavenly-fragments'],
   },
   {
     slug: 'how-to-get-unrestricted',
@@ -467,7 +577,7 @@ export const guides: GuideEntry[] = [
       'Use the calculator on a 5% rate before long Challenge Mode sessions.',
       'Do not start the coin sink until Honored One leveling is nearly done.',
     ],
-    next: ['/classes/unrestricted/', '/guides/heavenly-fragments/', '/guides/best-aspect-by-class/'],
+    next: ['/classes/unrestricted', '/guides/heavenly-fragments', '/guides/best-aspect-by-class'],
   },
   {
     slug: 'how-to-get-awakened-devil-ex',
@@ -483,7 +593,7 @@ export const guides: GuideEntry[] = [
       'Turn in the checklist for Awakened Devil EX.',
     ],
     tips: ['Treat Azure Devil as a required base class, not an optional detour.', 'Only farm Frostspire NM when clears are consistent.'],
-    next: ['/classes/awakened-devil-ex/', '/guides/devil-heart/', '/tools/drop-chance-calculator/'],
+    next: ['/classes/awakened-devil-ex', '/guides/devil-heart', '/tools/drop-chance-calculator'],
   },
   {
     slug: 'how-to-get-dreadlord',
@@ -501,7 +611,7 @@ export const guides: GuideEntry[] = [
       'At 1%, expected runs are long - calculate 90%/95% targets before you commit.',
       'Survival failures are worse than slightly slower clears.',
     ],
-    next: ['/classes/dreadlord/', '/tools/drop-chance-calculator/', '/drop-rates/'],
+    next: ['/classes/dreadlord', '/tools/drop-chance-calculator', '/drop-rates'],
   },
   {
     slug: 'how-to-get-anti-magic',
@@ -523,7 +633,7 @@ export const guides: GuideEntry[] = [
       'Same Floor 40 rule as Cursed King and Honored One: Class Item drops do not start earlier.',
       'Wrong lobby boss wastes the fragment session.',
     ],
-    next: ['/classes/anti-magic/', '/boss-rush/floor-100/', '/tools/drop-chance-calculator/'],
+    next: ['/classes/anti-magic', '/boss-rush/floor-100', '/tools/drop-chance-calculator'],
   },
   {
     slug: 'how-to-get-jetstream',
@@ -548,7 +658,7 @@ export const guides: GuideEntry[] = [
       'Save coins while farming - the katana payment is the final gate.',
       'Nightmare content requires at least level 25; bring strong gear anyway.',
     ],
-    next: ['/classes/jetstream/', '/guides/devil-heart/', '/tools/drop-chance-calculator/'],
+    next: ['/classes/jetstream', '/guides/devil-heart', '/tools/drop-chance-calculator'],
   },
   {
     slug: 'heavenly-fragments',
@@ -563,7 +673,7 @@ export const guides: GuideEntry[] = [
       'Bank Heavenly Fragments until you have 10 for Unrestricted.',
     ],
     tips: ['5% is farmable but streaky - use the calculator.', 'Do not farm fragments before Honored One leveling is underway.'],
-    next: ['/guides/how-to-get-unrestricted/', '/tools/drop-chance-calculator/', '/drop-rates/'],
+    next: ['/guides/how-to-get-unrestricted', '/tools/drop-chance-calculator', '/drop-rates'],
   },
   {
     slug: 'devil-heart',
@@ -584,7 +694,7 @@ export const guides: GuideEntry[] = [
       'Jetstream and Awakened Devil EX compete for the same heart farm - plan which unlock you finish first.',
       'Recheck the live drop text after patches.',
     ],
-    next: ['/guides/how-to-get-awakened-devil-ex/', '/guides/how-to-get-jetstream/', '/tools/drop-chance-calculator/'],
+    next: ['/guides/how-to-get-awakened-devil-ex', '/guides/how-to-get-jetstream', '/tools/drop-chance-calculator'],
   },
   {
     slug: 'cursed-fragments',
@@ -602,7 +712,7 @@ export const guides: GuideEntry[] = [
       'Worst case is closer to 7 clears (if you only hit 8 each time); best case can be 3 clears at 18.',
       'Class Item drops from Floor 40+ can skip this grind entirely if you get lucky.',
     ],
-    next: ['/guides/how-to-get-cursed-king/', '/boss-rush/floor-100/', '/tools/drop-chance-calculator/'],
+    next: ['/guides/how-to-get-cursed-king', '/boss-rush/floor-100', '/tools/drop-chance-calculator'],
   },
 ];
 
@@ -620,56 +730,56 @@ export const dropRates: DropRateEntry[] = [
     source: 'Boss Rush Floor 40+',
     rate: 'Starts at Floor 40; higher floors improve odds',
     note: 'No Class Item drop expectation below Floor 40.',
-    href: '/boss-rush/floor-40/',
+    href: '/boss-rush/floor-40',
   },
   {
     item: 'Sukuna / Gojo / Asta Fragments',
     source: 'Boss Rush Floor 100 main boss',
     rate: '8–18 fragments per clear',
     note: '50 fragments craft the matching Class Item at the Forge.',
-    href: '/boss-rush/floor-100/',
+    href: '/boss-rush/floor-100',
   },
   {
     item: 'Heavenly Fragments',
     source: 'Challenge Mode bosses every 10 waves',
     rate: '~5%',
     note: 'Need 10 for Unrestricted.',
-    href: '/guides/heavenly-fragments/',
+    href: '/guides/heavenly-fragments',
   },
   {
     item: 'Underworld Glaive (Dreadlord)',
     source: 'Underworld Gate Nightmare',
     rate: '~1%',
     note: 'Long expected farm - use the calculator.',
-    href: '/guides/how-to-get-dreadlord/',
+    href: '/guides/how-to-get-dreadlord',
   },
   {
     item: 'Devil Heart',
     source: 'Awakened Devil in Frostspire',
     rate: '~35% per clear (community)',
     note: 'Need 1 for Awakened Devil EX; need 3 for Jetstream. Unlock Frostspire via Catacombs Hard.',
-    href: '/guides/devil-heart/',
+    href: '/guides/devil-heart',
   },
   {
     item: 'Exotic class roll (Sinister Trigger band)',
     source: 'Class rolls',
     rate: '~0.05%',
     note: 'No Forge bypass - budget rolls carefully.',
-    href: '/classes/sinister-trigger/',
+    href: '/classes/sinister-trigger',
   },
   {
     item: 'Celestial class roll',
     source: 'Class rolls',
     rate: '~0.5%',
     note: 'Azure Devil, Artemis, Forge Archon band.',
-    href: '/classes/',
+    href: '/classes',
   },
   {
     item: 'Legendary class roll',
     source: 'Class rolls',
     rate: '~8%',
     note: 'Witch Gunner sits in this band on current lists.',
-    href: '/classes/witch-gunner/',
+    href: '/classes/witch-gunner',
   },
 ];
 
@@ -682,29 +792,78 @@ export type CodeEntry = {
 
 /** Redeem codes are public promo strings; rewards/status are community-checked and can expire without notice. */
 export const dungeonLootrCodes: CodeEntry[] = [
-  { code: '10KFAV', reward: 'Special rewards', status: 'active', isNew: true },
-  { code: '8KLIKE', reward: 'Special rewards', status: 'active', isNew: true },
-  { code: 'FORGESKIP', reward: '3 Forge Stone Bundles, 3 Reforge Stone Bundles', status: 'active', isNew: true },
-  { code: 'GIVEMEGEMSPLEASE', reward: '3 Aspect Gems', status: 'active' },
-  { code: '20KPLAYERS', reward: '5 Reforge Stone Bundle', status: 'active' },
-  { code: 'JACKPOT', reward: '5 Luck Potion 3', status: 'active' },
-  { code: 'LOOTRISBACK', reward: '3 Forge Stone Bundle', status: 'active' },
-  { code: 'FULLRELEASE', reward: '3 Luck Potion 3', status: 'active' },
-  { code: 'LOOTR', reward: 'Random GM blessing', status: 'active' },
-  { code: 'BYEMETA', reward: 'Expired', status: 'expired' },
-  { code: 'NEWASPECT', reward: 'Expired', status: 'expired' },
-  { code: 'EARLYACCESSYAY', reward: 'Expired', status: 'expired' },
-  { code: '4KFAV', reward: 'Expired', status: 'expired' },
+  { code: 'UPDATE1', reward: '100 Mage Chests and 10 Normal Chests', status: 'active', isNew: true },
+  { code: 'WEEKENDBUFFS', reward: '2X of all Luck Potions', status: 'active', isNew: true },
+  { code: '15KCCU', reward: '5 Luck Potions III', status: 'active', isNew: true },
+  { code: 'COURAGE', reward: '5 Random GM Blessings', status: 'active', isNew: true },
+  { code: 'LOVETHISGAME', reward: '10 Aspect Gems', status: 'active', isNew: true },
+  { code: 'RAIDTIME', reward: '5 Forge Stones Bundle', status: 'active', isNew: true },
+  { code: 'LOOTR', reward: 'Random GM Blessing', status: 'active' },
+  { code: 'FORGESKIP', reward: '3 Forge Stone Bundles, 3 Reforge Stone Bundles', status: 'expired' },
+  { code: '8KLIKE', reward: 'Special rewards', status: 'expired' },
+  { code: '10KFAV', reward: 'Special rewards', status: 'expired' },
+  { code: 'FULLRELEASE', reward: '3 Luck Potion 3', status: 'expired' },
+  { code: 'LOOTRISBACK', reward: '3 Forge Stone Bundle', status: 'expired' },
+  { code: 'JACKPOT', reward: '5 Luck Potion 3', status: 'expired' },
+  { code: '20KPLAYERS', reward: '5 Reforge Stone Bundle', status: 'expired' },
+  { code: 'GIVEMEGEMSPLEASE', reward: '3 Aspect Gems', status: 'expired' },
   { code: '3KLIKES', reward: 'Expired', status: 'expired' },
+  { code: '4KFAV', reward: 'Expired', status: 'expired' },
+  { code: 'EARLYACCESSYAY', reward: 'Expired', status: 'expired' },
+  { code: 'NEWASPECT', reward: 'Expired', status: 'expired' },
+  { code: 'BYEMETA', reward: 'Expired', status: 'expired' },
 ];
 
-export const codesLastChecked = '2026-09-03';
+export const codesLastChecked = '2026-09-06';
+
+export type UpdateLogEntry = {
+  date: string;
+  title: string;
+  summary: string;
+  changes: string[];
+  hrefs?: [string, string][];
+};
+
+export const updateLog: UpdateLogEntry[] = [
+  {
+    date: '2026-09-06',
+    title: 'Codes refresh',
+    summary:
+      'Rebuilt the active Dungeon Lootr codes list after a community codes roundup published new redeem codes and marked older ones expired.',
+    changes: [
+      'Added active codes: UPDATE1, WEEKENDBUFFS, 15KCCU, COURAGE, LOVETHISGAME, RAIDTIME.',
+      'Kept LOOTR active.',
+      'Moved FORGESKIP, 8KLIKE, 10KFAV, FULLRELEASE, LOOTRISBACK, JACKPOT, 20KPLAYERS, GIVEMEGEMSPLEASE to expired.',
+      'Refreshed /codes last-checked date and sitemap lastmod for changed pages.',
+    ],
+    hrefs: [
+      ['Working codes', '/codes'],
+      ['Drop calculator', '/tools/drop-chance-calculator'],
+    ],
+  },
+  {
+    date: '2026-09-06',
+    title: 'SEO Phase 1 launch',
+    summary:
+      'Answer-first templates for class / how-to / build pages, thin-build noindex rules, and IndexNow submission.',
+    changes: [
+      'Separated Entity / How-to / Build intent templates.',
+      'Indexed only publish-ready builds (Cursed King, Honored One, Unrestricted, Sinister Trigger).',
+      'Removed template-leak CTA copy and added intent next steps.',
+      'Enabled IndexNow key + sitemap URL notify.',
+    ],
+    hrefs: [
+      ['Cursed King', '/classes/cursed-king'],
+      ['Cursed King build', '/builds/cursed-king'],
+    ],
+  },
+];
 
 export const hubPages = [
   [
     'codes',
     'Dungeon Lootr Codes',
-    'Redeem the active Dungeon Lootr codes below for free stones, potions, and Aspect gems - skip anything marked expired.',
+    'Redeem the newest Dungeon Lootr codes for chests, luck potions, Aspect gems, and Forge stones - skip anything marked expired.',
     ['Working codes', 'Expired codes', 'How to redeem', 'Last checked'],
   ],
   [
@@ -743,6 +902,13 @@ export const hubPages = [
   opening: opening as string,
   sections: sections as string[],
 }));
+
+/** Thin hubs kept for UX but kept out of crawl prioritization. */
+export const demotedHubSlugs = new Set(['dungeons', 'items', 'progression-guide']);
+
+export function isIndexableHub(slug: string) {
+  return !demotedHubSlugs.has(slug);
+}
 
 export const bossRushPages = [
   {
@@ -844,35 +1010,44 @@ export function classSerp(item: ClassEntry): Serp {
       title: `Dungeon Lootr ${item.name} - Tier Placement & What We Know`,
       description: `${item.name} sits in community ${item.tier}-tier talk for ${item.mode.toLowerCase()}, but the unlock route is still unconfirmed - see what is known before you farm.`,
       intent: 'The searcher wants honesty on an unconfirmed unlock, plus tier/mode context.',
+      primaryKeyword: `Dungeon Lootr ${item.name}`,
+      searchIntent: 'entity',
     };
   }
-  const isChase = item.rarity === 'Secret' || item.rarity === 'Mythic' || item.rarity === 'Exotic';
   return {
-    title: `Dungeon Lootr ${item.name} - How to Unlock, Build & Is It Worth It?`,
-    description: isChase
-      ? `Is ${item.name} worth farming in Dungeon Lootr? Unlock route, best mode, Aspect direction, build, and whether to chase it now.`
-      : `${item.name} unlock route, best mode, Aspect, build links, and when this class is actually worth your runs.`,
-    intent: 'The searcher likely wants to know whether this class is strong, how to get it, and what to do after unlocking it.',
+    title: `Dungeon Lootr ${item.name} – How to Get It, Skills, Build & Best Aspects`,
+    description: `${item.name}: rarity, obtain overview, best mode, strengths/weaknesses, Aspect summary, and links to the unlock route and build.`,
+    intent: 'Entity overview for the class, not a full unlock tutorial or full build page.',
+    primaryKeyword: `Dungeon Lootr ${item.name}`,
+    searchIntent: 'entity',
   };
 }
 
 export function buildSerp(item: ClassEntry): Serp {
-  if (!isIndexableClass(item)) {
+  const profile = getBuildProfile(item.slug);
+  if (!isIndexableBuild(item)) {
     return {
-      title: `Dungeon Lootr ${item.name} Build Notes - Mode Focus While Unlock Is TBD`,
-      description: `${item.name} build direction for ${buildModeHook(item.mode)} while the unlock route stays unconfirmed - use as planning notes, not a guaranteed farm.`,
-      intent: 'The searcher wants build context without a fake unlock promise.',
+      title: `Dungeon Lootr ${item.name} Build Notes - Mode Focus`,
+      description: `${item.name} build notes for ${buildModeHook(item.mode)}. Full stats / Aspect / rotation publishing when the setup is verified.`,
+      intent: 'Thin build page kept noindex until publish-ready.',
+      primaryKeyword: `Dungeon Lootr ${item.name} build`,
+      searchIntent: 'build',
     };
   }
-  const hook = buildModeHook(item.mode);
   return {
-    title: `Best ${item.name} Build in Dungeon Lootr - Stats, Aspect & Rotation`,
-    description: `Copy the best ${item.name} build for ${hook}: stat priority, best Aspect, gear focus, Boss Rush and dungeon variants, plus a budget setup while you farm.`,
-    intent: 'The searcher already has or wants the class and needs a practical setup, not a lore page.',
+    title: `Best ${item.name} Build in Dungeon Lootr – Stats, Aspects & Gear`,
+    description: `Copy the best ${item.name} build: ${profile!.statPriority.toLowerCase()}, ${profile!.bestAspect.toLowerCase()}, gear focus, Boss Rush and dungeon setups.`,
+    intent: 'Practical build page for players who already have or are about to unlock the class.',
+    primaryKeyword: `Dungeon Lootr ${item.name} build`,
+    searchIntent: 'build',
   };
 }
 
 export function buildOpening(item: ClassEntry) {
+  const profile = getBuildProfile(item.slug);
+  if (profile) {
+    return `${item.name} best overall: ${profile.bestMode} with ${profile.bestAspect}. Stat priority ${profile.statPriority}.`;
+  }
   return `${item.name} (${item.tier}-tier): build for ${buildModeHook(item.mode)} with a ${item.aspect.toLowerCase()}. ${item.buildNotes[0] ?? ''}`.trim();
 }
 
@@ -902,9 +1077,11 @@ export function guideSerp(guide: { slug: string; target: string; title: string; 
     };
   }
   return {
-    title: `How to Get ${guide.target} in Dungeon Lootr - Fastest Route & Requirements`,
-    description: `Unlock ${guide.target} fast: requirements checklist, best route, common mistakes, and how hard the grind actually is.`,
-    intent: 'The searcher wants the route immediately, plus requirements and a way to judge the grind.',
+    title: `How to Get ${guide.target} in Dungeon Lootr – Fastest Method & Requirements`,
+    description: `Unlock ${guide.target} with the fastest route, required fragments or floors, Forge option when it exists, and farming tips.`,
+    intent: 'How-to unlock page: route and requirements only, not a full build or tier essay.',
+    primaryKeyword: `how to get ${guide.target} Dungeon Lootr`,
+    searchIntent: 'howto',
   };
 }
 
@@ -912,7 +1089,7 @@ const hubSerpBySlug: Record<string, { title: string; description: string }> = {
   codes: {
     title: 'Dungeon Lootr Codes - Working Codes & Free Rewards (Updated)',
     description:
-      'Active Dungeon Lootr codes with free rewards, plus expired codes so you do not waste time redeeming dead ones.',
+      'Newest Dungeon Lootr codes for chests, luck potions, Aspect gems, and Forge stones, plus expired codes to skip.',
   },
   builds: {
     title: 'Dungeon Lootr Builds - Copy-Ready Setups by Class & Mode',

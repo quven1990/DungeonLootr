@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import Link from '../../native-link';
 import { classes } from '../../data';
 import { pageMetadata } from '../../seo';
 
@@ -24,8 +24,8 @@ export default function BestAspectPage() {
             Start with the Aspect direction listed for your class and mode. If clears fail before damage lands, swap to survival/uptime first.
           </p>
           <div className="hero-actions">
-            <Link href="/classes/">Browse classes</Link>
-            <Link className="secondary" href="/tools/aspect-matcher/">Open matcher</Link>
+            <Link href="/classes">Browse classes</Link>
+            <Link className="secondary" href="/tools/aspect-matcher">Open matcher</Link>
           </div>
         </div>
       </section>
@@ -53,7 +53,7 @@ export default function BestAspectPage() {
                 <tbody>
                   {classes.map((item) => (
                     <tr key={item.slug}>
-                      <td><Link href={`/classes/${item.slug}/`}>{item.name}</Link></td>
+                      <td><Link href={`/classes/${item.slug}`}>{item.name}</Link></td>
                       <td>{item.tier}</td>
                       <td>{item.mode}</td>
                       <td>{item.aspect}</td>

@@ -32,6 +32,17 @@ export default function TermsPage() {
         <section className="content-panel">
           <h2>Acceptable use</h2>
           <p>Do not misuse the site for scraping abuse, fraud, or anything that violates Roblox or applicable law.</p>
+        </section>
+        <section className="content-panel">
+          <h2>Contact</h2>
+          <p>
+            Questions about these terms:{' '}
+            <a href="mailto:contact@dungeonlootr.top">contact@dungeonlootr.top</a>
+          </p>
+          <p>
+            Privacy requests:{' '}
+            <a href="mailto:privacy@dungeonlootr.top">privacy@dungeonlootr.top</a>
+          </p>
           <p>Last updated: 2026-09-06.</p>
         </section>
       </section>

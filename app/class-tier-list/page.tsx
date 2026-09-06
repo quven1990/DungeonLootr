@@ -1,9 +1,10 @@
-import Link from 'next/link';
-import { ClassTable, DataNote, PageHero, RetentionPanel } from '../components';
+import Link from '../native-link';
+import { ClassTable, DataNote, NextSteps, PageHero, RelatedLinks, RetentionPanel } from '../components';
 import { byUrl, classes } from '../data';
+import { hubClusterLinks } from '../related';
 import { pageMetadata } from '../seo';
 
-const entry = byUrl('/class-tier-list/')!;
+const entry = byUrl('/class-tier-list')!;
 
 export const metadata = pageMetadata(
   { title: entry.title, description: entry.description, intent: 'tier' },
@@ -19,7 +20,7 @@ export default function TierPage() {
 
   return (
     <main>
-      <PageHero entry={entry} cta={<div className="hero-actions"><Link href="/tools/drop-chance-calculator/">Plan a farm</Link></div>} />
+      <PageHero entry={entry} cta={<div className="hero-actions"><Link href="/tools/drop-chance-calculator">Plan a farm</Link></div>} />
       <section className="site-shell content-grid">
         <div className="article-stack">
           {grouped.map((group) => (
@@ -28,7 +29,7 @@ export default function TierPage() {
               <ol>
                 {group.items.map((item) => (
                   <li key={item.slug}>
-                    <Link href={`/classes/${item.slug}/`}>{item.name}</Link>
+                    <Link href={`/classes/${item.slug}`}>{item.name}</Link>
                     {' — '}
                     {item.mode}. Unlock: {item.obtain}.
                   </li>
@@ -38,12 +39,19 @@ export default function TierPage() {
           ))}
           <ClassTable />
           <DataNote />
+          <RelatedLinks title="Related pages" links={hubClusterLinks('/class-tier-list')} />
+          <NextSteps links={[
+            ['Browse all classes', '/classes'],
+            ['Boss Rush routes', '/boss-rush'],
+            ['Drop calculator', '/tools/drop-chance-calculator'],
+            ['Working codes', '/codes'],
+          ]} />
         </div>
         <aside className="side-rail">
           <RetentionPanel
             title="class tier list"
             videoQuery="Dungeon Lootr class tier list best classes Roblox"
-            toolHref="/tools/class-finder/"
+            toolHref="/tools/class-finder"
             toolLabel="Find your class"
           />
           <div className="content-panel">

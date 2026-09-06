@@ -1,9 +1,10 @@
-import Link from 'next/link';
-import { DataNote, PageHero, RetentionPanel } from '../components';
+import Link from '../native-link';
+import { DataNote, NextSteps, PageHero, RelatedLinks, RetentionPanel } from '../components';
 import { byUrl, dropRates } from '../data';
+import { hubClusterLinks } from '../related';
 import { pageMetadata } from '../seo';
 
-const entry = byUrl('/drop-rates/')!;
+const entry = byUrl('/drop-rates')!;
 
 export const metadata = pageMetadata(
   { title: entry.title, description: entry.description, intent: 'drops' },
@@ -13,7 +14,7 @@ export const metadata = pageMetadata(
 export default function DropRatesPage() {
   return (
     <main>
-      <PageHero entry={entry} cta={<div className="hero-actions"><Link href="/tools/drop-chance-calculator/">Open Drop Calculator</Link></div>} />
+      <PageHero entry={entry} cta={<div className="hero-actions"><Link href="/tools/drop-chance-calculator">Open Drop Calculator</Link></div>} />
       <section className="site-shell content-grid">
         <div className="article-stack">
           <section className="content-panel">
@@ -43,6 +44,13 @@ export default function DropRatesPage() {
             </div>
           </section>
           <DataNote />
+          <RelatedLinks title="Related pages" links={hubClusterLinks('/drop-rates')} />
+          <NextSteps links={[
+            ['Open drop calculator', '/tools/drop-chance-calculator'],
+            ['Boss Rush routes', '/boss-rush'],
+            ['Class unlock guides', '/guides/how-to-get-cursed-king'],
+            ['All classes', '/classes'],
+          ]} />
         </div>
         <aside className="side-rail">
           <RetentionPanel

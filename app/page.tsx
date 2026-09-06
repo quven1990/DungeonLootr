@@ -1,27 +1,39 @@
-import Link from 'next/link';
+import type { Metadata } from 'next';
+import Link from './native-link';
 import { FeaturedVideo } from './components';
+import { pageMetadata } from './seo';
+
+export const metadata: Metadata = pageMetadata(
+  {
+    title: 'Dungeon Lootr Wiki - Best Classes, Builds, Boss Rush & Codes',
+    description:
+      'Fast answers for Dungeon Lootr: class tier list, unlock routes, Boss Rush drops, working codes, and a drop-chance calculator.',
+    intent: 'home',
+  },
+  '/',
+);
 
 const popular = [
-  ['Class Tier List', '/class-tier-list/', 'Best classes by Boss Rush, dungeon clear, solo value, and investment.'],
-  ['Cursed King Unlock', '/guides/how-to-get-cursed-king/', 'Fastest route, requirements, and what to farm next.'],
-  ['Drop Calculator', '/tools/drop-chance-calculator/', 'Estimate runs for rare class items, fragments, and boss drops.'],
-  ['Boss Rush Guide', '/boss-rush/', 'Floor breakpoints, reward planning, and pushing strategy.'],
+  ['Class Tier List', '/class-tier-list', 'Best classes by Boss Rush, dungeon clear, solo value, and investment.'],
+  ['Cursed King Unlock', '/guides/how-to-get-cursed-king', 'Fastest route, requirements, and what to farm next.'],
+  ['Drop Calculator', '/tools/drop-chance-calculator', 'Estimate runs for rare class items, fragments, and boss drops.'],
+  ['Boss Rush Guide', '/boss-rush', 'Floor breakpoints, reward planning, and pushing strategy.'],
 ];
 
 const classes = [
-  { name: 'Cursed King', rarity: 'Mythic', obtain: 'Boss Rush / Forge 50 Sukuna', mode: 'Boss Rush', href: '/classes/cursed-king/' },
-  { name: 'Sinister Trigger', rarity: 'Exotic', obtain: 'Class roll ~0.05%', mode: 'Dungeon clear', href: '/classes/sinister-trigger/' },
-  { name: 'Honored One', rarity: 'Mythic', obtain: 'Boss Rush / Forge 50 Gojo', mode: 'Solo', href: '/classes/honored-one/' },
-  { name: 'Unrestricted', rarity: 'Secret', obtain: 'Lv75 + Honored One 25 + fragments', mode: 'Endgame', href: '/classes/unrestricted/' },
-  { name: 'Awakened Devil EX', rarity: 'Secret', obtain: 'Azure Devil 50 + Devil Heart', mode: 'Burst', href: '/classes/awakened-devil-ex/' },
-  { name: 'Dreadlord', rarity: 'Legendary', obtain: 'Underworld Glaive ~1%', mode: 'Survival', href: '/classes/dreadlord/' },
+  { name: 'Cursed King', rarity: 'Mythic', obtain: 'Boss Rush / Forge 50 Sukuna', mode: 'Boss Rush', href: '/classes/cursed-king' },
+  { name: 'Sinister Trigger', rarity: 'Exotic', obtain: 'Class roll ~0.05%', mode: 'Dungeon clear', href: '/classes/sinister-trigger' },
+  { name: 'Honored One', rarity: 'Mythic', obtain: 'Boss Rush / Forge 50 Gojo', mode: 'Solo', href: '/classes/honored-one' },
+  { name: 'Unrestricted', rarity: 'Secret', obtain: 'Lv75 + Honored One 25 + fragments', mode: 'Endgame', href: '/classes/unrestricted' },
+  { name: 'Awakened Devil EX', rarity: 'Secret', obtain: 'Azure Devil 50 + Devil Heart', mode: 'Burst', href: '/classes/awakened-devil-ex' },
+  { name: 'Dreadlord', rarity: 'Legendary', obtain: 'Underworld Glaive ~1%', mode: 'Survival', href: '/classes/dreadlord' },
 ];
 
 const guides = [
-  ['How to Get Cursed King', '/guides/how-to-get-cursed-king/', 'Floor 40+ Class Item or 50 Sukuna fragments.'],
-  ['How to Get Jetstream', '/guides/how-to-get-jetstream/', 'Azure Devil quest, Devil Hearts, Exotic armor, 200K coins.'],
-  ['How to Get Unrestricted', '/guides/how-to-get-unrestricted/', 'Checklist: level, coins, Honored One, Heavenly Fragments.'],
-  ['Heavenly Fragments', '/guides/heavenly-fragments/', '~5% Challenge Mode bosses every 10 waves.'],
+  ['How to Get Cursed King', '/guides/how-to-get-cursed-king', 'Floor 40+ Class Item or 50 Sukuna fragments.'],
+  ['How to Get Jetstream', '/guides/how-to-get-jetstream', 'Azure Devil quest, Devil Hearts, Exotic armor, 200K coins.'],
+  ['How to Get Unrestricted', '/guides/how-to-get-unrestricted', 'Checklist: level, coins, Honored One, Heavenly Fragments.'],
+  ['Heavenly Fragments', '/guides/heavenly-fragments', '~5% Challenge Mode bosses every 10 waves.'],
 ];
 
 export default function Home() {
@@ -46,11 +58,11 @@ export default function Home() {
             <div className="quick-answer">
               <span className="label">Quick Answer</span>
               <p>
-                Start with the class directory if you are choosing a main, use the unlock guides when you already know your target, and open the drop calculator before committing to a long rare-item farm.
+                Pick a class, open its unlock route, then run drop math before a long farm. Start with Cursed King, Boss Rush floors, or the calculator.
               </p>
               <div className="hero-actions">
-                <Link href="/classes/">Browse Classes</Link>
-                <Link href="/tools/drop-chance-calculator/" className="secondary">Open Drop Calculator</Link>
+                <Link href="/classes">Browse Classes</Link>
+                <Link href="/tools/drop-chance-calculator" className="secondary">Open Drop Calculator</Link>
               </div>
             </div>
           </div>
@@ -59,7 +71,7 @@ export default function Home() {
             <dl>
               <div><dt>Patch</dt><dd>Community-tested</dd></div>
               <div><dt>Priority</dt><dd>Boss Rush routes</dd></div>
-              <div><dt>Last checked</dt><dd>2026-09-05</dd></div>
+              <div><dt>Last checked</dt><dd>2026-09-06</dd></div>
             </dl>
           </aside>
         </div>
@@ -72,15 +84,15 @@ export default function Home() {
 
       <section className="site-shell search-band" aria-label="Popular shortcuts">
         <div className="search-box" role="navigation" aria-label="Jump links">
-          <Link href="/codes/">Codes</Link>
+          <Link href="/codes">Codes</Link>
           <span aria-hidden="true">·</span>
-          <Link href="/class-tier-list/">Tier List</Link>
+          <Link href="/class-tier-list">Tier List</Link>
           <span aria-hidden="true">·</span>
-          <Link href="/boss-rush/">Boss Rush</Link>
+          <Link href="/boss-rush">Boss Rush</Link>
           <span aria-hidden="true">·</span>
-          <Link href="/tools/class-finder/">Class Finder</Link>
+          <Link href="/tools/class-finder">Class Finder</Link>
           <span aria-hidden="true">·</span>
-          <Link href="/tools/drop-chance-calculator/">Calculator</Link>
+          <Link href="/tools/drop-chance-calculator">Calculator</Link>
         </div>
         <div className="status-pill">Codes updated</div>
         <div className="status-pill">Boss Rush routes</div>
@@ -165,7 +177,7 @@ export default function Home() {
             <span className="label">Drop chance formula</span>
             <strong>P(at least once) = 1 - (1 - p)^n</strong>
             <p>Use it for boss drops, class items, fragments, and any community-tested rare-rate estimate.</p>
-            <Link href="/tools/drop-chance-calculator/">Calculate your runs</Link>
+            <Link href="/tools/drop-chance-calculator">Calculate your runs</Link>
           </div>
         </div>
       </section>
