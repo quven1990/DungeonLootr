@@ -13,7 +13,8 @@
     "deploy": "npm run build && node scripts/deploy-pages.mjs",
     "deploy:cf": "node scripts/deploy-pages.mjs",
     "deploy:worker": "npm run build && node scripts/deploy-pages.mjs",
-    "indexnow": "node scripts/indexnow.mjs"
+    "indexnow": "node scripts/indexnow.mjs",
+    "purge:html": "node scripts/purge-html-cache.mjs"
   },
   "dependencies": {
     "next": "16.2.6",

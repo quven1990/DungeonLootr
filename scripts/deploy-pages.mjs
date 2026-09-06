@@ -44,4 +44,20 @@ if ((indexNow.status ?? 1) !== 0) {
   console.warn('IndexNow submit failed; deploy itself succeeded. Re-run: npm run indexnow');
 }
 
+// Safe HTML-only cache purge. Never purge_everything (that can 404 hashed CSS).
+if (process.env.CLOUDFLARE_API_TOKEN && process.env.CLOUDFLARE_ZONE_ID) {
+  console.log('\nPurging HTML document cache (leaving /_next/static immutable assets)...');
+  const purge = spawnSync('node', ['scripts/purge-html-cache.mjs'], {
+    stdio: 'inherit',
+    cwd: root,
+    shell: process.platform === 'win32',
+    env: process.env,
+  });
+  if ((purge.status ?? 1) !== 0) {
+    console.warn('HTML cache purge failed; deploy itself succeeded. Re-run: npm run purge:html');
+  }
+} else {
+  console.log('\nSkip HTML cache purge (set CLOUDFLARE_API_TOKEN + CLOUDFLARE_ZONE_ID to enable).');
+}
+
 process.exit(0);
