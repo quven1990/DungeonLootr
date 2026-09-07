@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { playUiSound } from './ui-feedback';
 
 async function copyText(value: string) {
   if (navigator.clipboard?.writeText) {
@@ -33,6 +34,7 @@ export function CopyCodeButton({
     try {
       await copyText(code);
       setCopied(true);
+      playUiSound('success');
       window.setTimeout(() => setCopied(false), 1600);
     } catch {
       setCopied(false);

@@ -1,8 +1,9 @@
 'use client';
 
 import Link from '../native-link';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import type { ClassEntry } from '../data';
+import { playUiSound, prefersReducedMotion } from '../ui-feedback';
 
 const tiers = ['All', 'S', 'A', 'B', 'C', 'D'] as const;
 const modes = ['All', 'Boss Rush', 'Dungeon clear', 'Solo', 'Burst', 'Survival', 'Mobility', 'Ranged clear', 'Endgame', 'Early progression'] as const;
@@ -11,6 +12,8 @@ export function ClassFinder({ classes }: { classes: ClassEntry[] }) {
   const [tier, setTier] = useState<(typeof tiers)[number]>('All');
   const [mode, setMode] = useState<(typeof modes)[number]>('All');
   const [query, setQuery] = useState('');
+  const [pop, setPop] = useState(false);
+  const firstPaint = useRef(true);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -22,6 +25,18 @@ export function ClassFinder({ classes }: { classes: ClassEntry[] }) {
     });
   }, [classes, tier, mode, query]);
 
+  useEffect(() => {
+    if (firstPaint.current) {
+      firstPaint.current = false;
+      return;
+    }
+    playUiSound('tap');
+    if (prefersReducedMotion()) return;
+    setPop(true);
+    const timer = window.setTimeout(() => setPop(false), 280);
+    return () => window.clearTimeout(timer);
+  }, [tier, mode]);
+
   return (
     <section className="content-panel">
       <h2>Filter classes</h2>
@@ -32,18 +47,26 @@ export function ClassFinder({ classes }: { classes: ClassEntry[] }) {
         </label>
         <label>
           Tier
-          <select value={tier} onChange={(e) => setTier(e.target.value as (typeof tiers)[number])}>
+          <select
+            className={tier !== 'All' ? 'is-selected' : undefined}
+            value={tier}
+            onChange={(e) => setTier(e.target.value as (typeof tiers)[number])}
+          >
             {tiers.map((value) => <option key={value} value={value}>{value}</option>)}
           </select>
         </label>
         <label>
           Mode
-          <select value={mode} onChange={(e) => setMode(e.target.value as (typeof modes)[number])}>
+          <select
+            className={mode !== 'All' ? 'is-selected' : undefined}
+            value={mode}
+            onChange={(e) => setMode(e.target.value as (typeof modes)[number])}
+          >
             {modes.map((value) => <option key={value} value={value}>{value}</option>)}
           </select>
         </label>
       </div>
-      <p className="codes-meta">{filtered.length} classes match.</p>
+      <p className={`codes-meta filter-count${pop ? ' is-pop' : ''}`}>{filtered.length} classes match.</p>
       <div className="table-wrap desktop-table">
         <table>
           <thead>

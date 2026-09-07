@@ -43,7 +43,7 @@ export function classIntentNextSteps(item: ClassEntry): RelatedLink[] {
   return dedupe(
     [
       unlock
-        ? ([`Still farming? Fastest ${item.name} unlock →`, `/guides/${unlock.slug}`, 'Requirements, Floor 40 / Forge path, and common mistakes.'] as RelatedLink)
+        ? ([`Still farming? Suggested ${item.name} unlock →`, `/guides/${unlock.slug}`, 'Requirements, Floor 40 / Forge path, and common mistakes.'] as RelatedLink)
         : null,
       [`Already unlocked? Best ${item.name} build →`, `/builds/${item.slug}`, 'Stats, Aspect, gear focus, and mode setup.'],
       compare,
@@ -74,7 +74,7 @@ export function buildIntentNextSteps(item: ClassEntry): RelatedLink[] {
     [
       [`Need ${item.name} first? Unlock route →`, unlock ? `/guides/${unlock.slug}` : '/classes', 'Requirements and fastest farm before you copy a build.'],
       ['Not sure it is worth the grind? Tier list →', '/class-tier-list', 'Compare this class against current S/A options.'],
-      ['Best Aspect by class →', '/guides/best-aspect-by-class', 'Confirm Aspect direction for your clear goal.'],
+      ['Aspect direction by class →', '/guides/best-aspect-by-class', 'Confirm Aspect direction that matches your clear goal.'],
       ['Still missing drops? Calculate runs →', '/tools/drop-chance-calculator', 'Convert a drop rate into expected attempts.'],
     ].filter(Boolean) as RelatedLink[],
     [`/builds/${item.slug}`],
@@ -87,7 +87,7 @@ export function buildClusterLinks(item: ClassEntry): RelatedLink[] {
     [
       [`${item.name} class overview →`, `/classes/${item.slug}`],
       unlock ? [`Unlock ${item.name} →`, `/guides/${unlock.slug}`] : null,
-      ['Best Aspects by class', '/guides/best-aspect-by-class'],
+      ['Aspect directions by class', '/guides/best-aspect-by-class'],
       ['Aspect matcher', '/tools/aspect-matcher'],
       ['Class tier list', '/class-tier-list'],
       ['Boss Rush guide', '/boss-rush'],

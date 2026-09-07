@@ -4,9 +4,9 @@ import { pageMetadata } from '../../seo';
 
 export const metadata = pageMetadata(
   {
-    title: 'Best Aspect for Every Dungeon Lootr Class (Current Meta)',
+    title: 'Aspect Direction by Dungeon Lootr Class (Community Snapshot)',
     description:
-      'Best Aspect direction for each tracked class - Boss Rush, dungeon clear, burst, and survival starting points.',
+      'Aspect direction notes for tracked classes - Boss Rush, dungeon clear, burst, and survival starting points. Not verified in-game Aspect names.',
     intent: 'aspects',
   },
   '/guides/best-aspect-by-class',
@@ -17,11 +17,12 @@ export default function BestAspectPage() {
     <main>
       <section className="site-shell page-hero">
         <p className="breadcrumb">Home / Guides / Aspects</p>
-        <h1>Best Aspect for Every Dungeon Lootr Class</h1>
+        <h1>Aspect Direction by Dungeon Lootr Class</h1>
         <div className="quick-answer wide">
           <span className="label">Quick Answer</span>
           <p>
-            Start with the Aspect direction listed for your class and mode. If clears fail before damage lands, swap to survival/uptime first.
+            Start with the Aspect direction listed for your class and mode. These are community direction notes until
+            concrete in-game Aspect names are confirmed. If clears fail before damage lands, swap to survival/uptime first.
           </p>
           <div className="hero-actions">
             <Link href="/classes">Browse classes</Link>
@@ -39,7 +40,7 @@ export default function BestAspectPage() {
             </p>
           </section>
           <section className="content-panel">
-            <h2>Best Aspect by class</h2>
+            <h2>Aspect direction by class</h2>
             <div className="table-wrap desktop-table">
               <table>
                 <thead>
@@ -62,7 +63,7 @@ export default function BestAspectPage() {
                 </tbody>
               </table>
             </div>
-            <div className="class-card-list mobile-cards" aria-label="Best Aspect by class">
+            <div className="class-card-list mobile-cards" aria-label="Aspect direction by class">
               {classes.map((item) => (
                 <Link className="class-card" href={`/classes/${item.slug}`} key={item.slug}>
                   <div className="class-card-top">

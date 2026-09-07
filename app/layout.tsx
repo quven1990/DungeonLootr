@@ -3,6 +3,7 @@ import { Analytics } from './analytics';
 import Link from './native-link';
 import { JsonLd, websiteJsonLd } from './jsonld';
 import { SiteNav } from './SiteNav';
+import { FeedbackRoot, SoundToggle } from './FeedbackRoot';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -54,12 +55,16 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <Analytics />
+        <FeedbackRoot />
         <SiteNav />
         {children}
         <JsonLd data={websiteJsonLd()} />
         <footer className="site-footer">
           <div className="site-shell footer">
-            <span>Unofficial Dungeon Lootr fan wiki. Community-tested fields are marked on-page.</span>
+            <div className="footer-meta">
+              <span>Unofficial Dungeon Lootr fan wiki. Community-reported fields are marked on-page.</span>
+              <SoundToggle />
+            </div>
             <div className="footer-links">
               <Link href="/classes">Classes</Link>
               <Link href="/class-tier-list">Tier List</Link>

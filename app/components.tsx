@@ -123,7 +123,7 @@ export function ClassTable() {
               <tr key={item.slug}>
                 <td><Link href={`/classes/${item.slug}`}>{item.name}</Link></td>
                 <td>{item.tier}</td>
-                <td><span className="rarity">{item.rarity}</span></td>
+                <td><span className="rarity">{item.rarity}</span>{item.rarityConflictNote ? ' · pending confirm' : ''}</td>
                 <td>{item.obtain}</td>
                 <td>{item.mode}</td>
                 <td>{item.confidence}</td>
@@ -137,7 +137,7 @@ export function ClassTable() {
           <Link className="class-card" href={`/classes/${item.slug}`} key={item.slug}>
             <div className="class-card-top">
               <strong>{item.name}</strong>
-              <span className="rarity">{item.tier} · {item.rarity}</span>
+              <span className="rarity">{item.tier} · {item.rarity}{item.rarityConflictNote ? ' · pending' : ''}</span>
             </div>
             <div className="class-card-meta">
               <span>Obtain: {item.obtain}</span>
@@ -156,7 +156,10 @@ export function DataNote() {
     <section className="data-note">
       <span className="label">Data Note</span>
       <p>
-        Routes and rates are community-checked (not official patch notes). Fields marked probable or unverified can shift after Roblox updates - confirm against the in-game UI before long farms.
+        Routes and rates are community-reported (not official patch notes). Fields marked probable, conflicting, or
+        unverified can shift after Roblox updates. Rarity labels that disagree across community guides are marked pending
+        in-game confirm — confirm against the live UI before long farms. Send correction notes via the{' '}
+        <a href="https://github.com/quven1990/DungeonLootr/issues">GitHub issues</a> for this wiki.
       </p>
     </section>
   );
@@ -369,17 +372,18 @@ export function ClassFinderPreview({ current }: { current?: ClassEntry }) {
 
 function describeLink(label: string, href: string) {
   const text = label.toLowerCase();
-  if (href.includes('/tools/drop-chance-calculator')) return 'Estimate runs to 50%, 90%, 95%, and 99% before a long farm.';
-  if (href.includes('/guides/how-to-get-')) return 'Open the fastest unlock route, requirements, and common mistakes.';
-  if (href.includes('/builds/')) return 'Copy stats, Aspect, gear focus, and mode setup for this class.';
+  if (href.includes('/tools/drop-chance-calculator')) return 'Estimate attempts to 50%, 90%, 95%, and 99% before a long farm.';
+  if (href.includes('/guides/how-to-get-')) return 'Open the suggested unlock route, requirements, and common mistakes.';
+  if (href.includes('/builds/')) return 'Read build notes or a verified setup for this class.';
   if (href.includes('/classes/')) return 'See rarity, obtain overview, strengths, weaknesses, and best mode.';
   if (href.includes('/comparisons/')) return 'Get a mode-based verdict instead of guessing from rarity alone.';
-  if (href.includes('/class-tier-list')) return 'Check whether this class is still worth the grind in the current meta.';
+  if (href.includes('/class-tier-list')) return 'Check whether this selected class is still worth the grind in your mode.';
   if (href.includes('/boss-rush')) return 'Plan floor breakpoints, Class Item drops, and fragment farms.';
   if (href.includes('/drop-rates')) return 'Confirm sources and odds before you queue the same clear again.';
   if (href.includes('/guides/best-aspect')) return 'Pick an Aspect direction that matches your clear goal.';
+  if (href.includes('/codes')) return 'Redeem active codes before a long farm session.';
   if (text.includes('unlock') || text.includes('farming') || text.includes('got ')) {
     return 'Stay on the same class path with the next useful action.';
   }
-  return 'Open the next useful page for this class or farm plan.';
+  return 'Continue with the related page that matches your next goal.';
 }

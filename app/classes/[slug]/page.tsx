@@ -48,19 +48,34 @@ export default async function ClassPage({ params }: { params: Promise<{ slug: st
         </div>
         <Facts
           facts={[
-            ['Rarity', item.rarity],
+            ['Rarity', item.rarityConflictNote ? `${item.rarity} (pending confirm)` : item.rarity],
             ['Obtain', item.obtain],
             ['Best mode', item.mode],
-            ['Best Aspect', item.aspect],
+            ['Aspect note', item.aspect],
             ['Tier', item.tier],
             ['Last checked', CONTENT_LAST_CHECKED],
             ['Patch', CONTENT_PATCH],
-            ['Data status', item.confidence === 'verified' ? 'Verified' : 'Community-tested'],
+            [
+              'Data status',
+              item.confidence === 'verified'
+                ? 'Verified'
+                : item.confidence === 'conflicting'
+                  ? 'Conflicting labels'
+                  : item.confidence === 'unverified'
+                    ? 'Unverified'
+                    : 'Community-reported',
+            ],
           ]}
         />
       </section>
       <section className="site-shell content-grid">
         <div className="article-stack">
+          {item.rarityConflictNote ? (
+            <section className="content-panel">
+              <h2>Rarity label note</h2>
+              <p>{item.rarityConflictNote}</p>
+            </section>
+          ) : null}
           <section className="content-panel">
             <h2>Obtain overview</h2>
             <p>{item.obtain}.</p>
@@ -92,7 +107,7 @@ export default async function ClassPage({ params }: { params: Promise<{ slug: st
             </ul>
           </section>
           <section className="content-panel">
-            <h2>Best Aspect and build summary</h2>
+            <h2>Aspect note and build summary</h2>
             <p>
               Start with a {item.aspect.toLowerCase()} for {item.mode}. Full stats, gear focus, and rotation live on the
               build page.

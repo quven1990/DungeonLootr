@@ -11,6 +11,8 @@ export type ClassEntry = {
   slug: string;
   name: string;
   rarity: string;
+  /** When community guides disagree on the rarity label (e.g. Mythic/Secret vs Exotic). */
+  rarityConflictNote?: string;
   obtain: string;
   mode: string;
   aspect: string;
@@ -51,20 +53,24 @@ export type Serp = {
 };
 
 export const CONTENT_LAST_CHECKED = '2026-09-06';
-export const CONTENT_PATCH = 'Current';
+export const CONTENT_PATCH = 'Community snapshot';
 
-const VAGUE_BUILD_RE = /prioritize consistency|use the class effectively|play aggressively|build around|lean into/i;
+/** UPD1 names reported by community media but not yet rated on this wiki. */
+export const UNRATED_CLASS_NAMES = ['Spell Breaker', 'Cryomancer', 'Coyote', 'Dark Professor'] as const;
+
+const VAGUE_BUILD_RE =
+  /prioritize consistency|use the class effectively|play aggressively|build around|lean into|hybrid|uptime aspect|damage aspect|control \/|endgame damage|burst aspect|sustain aspect|pure sustain|cleave uptime|aspect direction/i;
 
 export const buildProfiles: Record<string, BuildProfile> = {
   'cursed-king': {
     bestMode: 'Boss Rush',
-    bestAspect: 'Burst / sustain hybrid (cleave uptime first)',
-    altAspect: 'Pure sustain if Floor 40+ clears are unstable',
-    statPriority: 'Damage > Cooldown > Survivability',
+    bestAspect: 'Aspect direction (unverified): burst / sustain hybrid',
+    altAspect: 'Aspect direction (unverified): pure sustain if Floor 40+ clears are unstable',
+    statPriority: 'Damage > Cooldown > Survivability (general priority, unverified point spreads)',
     gearFocus: 'AoE / cleave weapons and mastery nodes that raise slash damage before greedier crit stacking',
     rotation: 'Open with core cleave → keep slash uptime on packs → save burst for elite / floor bosses → reset only when the next pack is already grouped',
     bossRushSetup: 'Primary. Push stable Floor 40+ clears before optimizing for Floor 100 fragment lobbies.',
-    dungeonSetup: 'Secondary. Use the same Aspect but drop greedier damage if dungeon deaths reset coin / EXP progress.',
+    dungeonSetup: 'Secondary. Use the same direction but drop greedier damage if dungeon deaths reset coin / EXP progress.',
     strengths: ['Top Boss Rush AoE once mastery is online', 'Forge path makes the class farmable without pure Class Item RNG'],
     weaknesses: ['Needs Floor 40+ or 50 Sukuna fragments', 'Mastery investment before the kit feels complete'],
     lastChecked: CONTENT_LAST_CHECKED,
@@ -73,9 +79,9 @@ export const buildProfiles: Record<string, BuildProfile> = {
   },
   'sinister-trigger': {
     bestMode: 'Dungeon clear',
-    bestAspect: 'Damage uptime Aspect',
-    altAspect: 'Burst Aspect for short boss windows',
-    statPriority: 'Damage > Cooldown > Mobility',
+    bestAspect: 'Aspect direction (unverified): damage uptime',
+    altAspect: 'Aspect direction (unverified): burst for short boss windows',
+    statPriority: 'Damage > Cooldown > Mobility (general priority, unverified point spreads)',
     gearFocus: 'Clear-speed weapons and uptime stats; avoid tank stacking that slows dungeon cycles',
     rotation: 'Keep damage uptime rolling → clear packs without resetting buff windows → bank burst for dungeon bosses',
     bossRushSetup: 'Alt. Only if your clear is already stable; dungeon value is the main reason to chase this Exotic.',
@@ -88,9 +94,9 @@ export const buildProfiles: Record<string, BuildProfile> = {
   },
   'honored-one': {
     bestMode: 'Solo',
-    bestAspect: 'Control / damage Aspect',
-    altAspect: 'Sustain Aspect for safer Boss Rush farming',
-    statPriority: 'Damage > Cooldown > Survivability',
+    bestAspect: 'Aspect direction (unverified): control / damage',
+    altAspect: 'Aspect direction (unverified): sustain for safer Boss Rush farming',
+    statPriority: 'Damage > Cooldown > Survivability (general priority, unverified point spreads)',
     gearFocus: 'Solo consistency gear; keep control tools online while leveling toward Unrestricted',
     rotation: 'Establish control → deal damage in safe windows → reset only after the room is stable',
     bossRushSetup: 'Strong secondary. Use for Gojo fragment / Class Item farms while leveling to 25.',
@@ -103,9 +109,9 @@ export const buildProfiles: Record<string, BuildProfile> = {
   },
   unrestricted: {
     bestMode: 'Endgame',
-    bestAspect: 'Endgame damage Aspect',
-    altAspect: 'Sustain Aspect until clears are consistent',
-    statPriority: 'Damage > Cooldown > Survivability',
+    bestAspect: 'Aspect direction (unverified): endgame damage',
+    altAspect: 'Aspect direction (unverified): sustain until clears are consistent',
+    statPriority: 'Damage > Cooldown > Survivability (general priority, unverified point spreads)',
     gearFocus: 'Endgame damage pieces after the checklist unlock; do not over-invest before Honored One 25 is done',
     rotation: 'Hold burst for elites / bosses → keep uptime between packs → avoid deaths that waste coin sinks',
     bossRushSetup: 'Use after unlock for deep clears; farm prep still happens on Honored One.',
@@ -124,15 +130,16 @@ export function getBuildProfile(slug: string): BuildProfile | undefined {
 
 export function isBuildPublishReady(profile: BuildProfile | undefined): boolean {
   if (!profile) return false;
-  const fields = [
-    profile.bestAspect,
-    profile.statPriority,
-    profile.gearFocus,
-    profile.rotation,
-    profile.bossRushSetup || profile.dungeonSetup,
-  ];
+  // Require a concrete Aspect name (not a role/direction phrase) before claiming "Best build".
+  if (!profile.bestAspect || profile.bestAspect.trim().length < 3 || VAGUE_BUILD_RE.test(profile.bestAspect)) {
+    return false;
+  }
+  if (VAGUE_BUILD_RE.test(profile.altAspect) || VAGUE_BUILD_RE.test(profile.statPriority)) {
+    return false;
+  }
+  const fields = [profile.gearFocus, profile.rotation, profile.bossRushSetup || profile.dungeonSetup];
   const filled = fields.filter((value) => value && value.trim().length >= 12 && !VAGUE_BUILD_RE.test(value));
-  return filled.length >= 3;
+  return filled.length >= 2;
 }
 
 export function isIndexableBuild(item: ClassEntry) {
@@ -152,12 +159,12 @@ export const seoEntries: SeoEntry[] = [
   },
   {
     url: '/class-tier-list',
-    title: 'Dungeon Lootr Tier List - Best Classes After the Latest Update',
+    title: 'Dungeon Lootr Tier List - Selected Classes by Mode',
     description:
-      'S-tier and ranked picks for Boss Rush, dungeon clears, mobility, and endgame value - updated for the latest patch.',
+      'Selected Dungeon Lootr class rankings for Boss Rush, dungeon clears, solo, and endgame value - community snapshot, not a full roster claim.',
     opening:
-      'Looking for the best Dungeon Lootr class right now? The current meta clusters around a few high-output picks for Boss Rush and fast clears - here is the ranked list.',
-    h1: 'Dungeon Lootr Class Tier List',
+      'This is a selected-class tier list for modes we track (Boss Rush, dungeon clear, solo, survival, endgame). New UPD1 classes without enough testing sit in Unrated below - not invented S/A placements.',
+    h1: 'Dungeon Lootr Class Tier List (Selected)',
     type: 'tier',
   },
   {
@@ -186,7 +193,7 @@ export const seoEntries: SeoEntry[] = [
     description:
       'Stop guessing rare drops. Enter any drop rate and see your chance after N runs - plus attempts needed for 50/90/95/99%.',
     opening:
-      'Paste any Dungeon Lootr drop rate and see how many runs you really need instead of trusting a single percentage rumor.',
+      'Paste any constant drop rate and see expected wait vs cumulative chance across independent attempts. Default 2% is an example only — not a game drop claim.',
     h1: 'Dungeon Lootr Drop Chance Calculator',
     type: 'tool',
   },
@@ -197,11 +204,13 @@ export const classes: ClassEntry[] = [
     slug: 'cursed-king',
     name: 'Cursed King',
     rarity: 'Mythic',
+    rarityConflictNote:
+      'Rarity label pending in-game confirm. Some community guides list this as Exotic instead of Mythic.',
     obtain: 'Boss Rush Floor 40+ Class Item, or Forge with 50 Sukuna fragments',
     mode: 'Boss Rush',
     aspect: 'Burst / sustain Aspect',
     tier: 'S',
-    confidence: 'probable',
+    confidence: 'conflicting',
     opening:
       'Cursed King is an S-tier Boss Rush powerhouse: get the Class Item from Floor 40+, or craft Cursed Shrine at the Forge with 50 Sukuna fragments.',
     strengths: ['Top-tier Boss Rush damage and AoE', 'Forge path removes pure RNG dependence', 'Strong once mastery is leveled'],
@@ -222,11 +231,13 @@ export const classes: ClassEntry[] = [
     slug: 'honored-one',
     name: 'Honored One',
     rarity: 'Mythic',
+    rarityConflictNote:
+      'Rarity label pending in-game confirm. Some community guides list this as Exotic instead of Mythic.',
     obtain: 'Boss Rush Floor 40+ Class Item, or Forge with 50 Gojo fragments',
     mode: 'Solo',
     aspect: 'Control / damage Aspect',
     tier: 'S',
-    confidence: 'probable',
+    confidence: 'conflicting',
     opening:
       'Honored One is S-tier and the bridge into Unrestricted: farm the Boss Rush Class Item from Floor 40+, or Forge it with 50 Gojo fragments.',
     strengths: ['S-tier combat value', 'Required stepping stone for Unrestricted', 'Forge backup path via Gojo fragments'],
@@ -246,11 +257,13 @@ export const classes: ClassEntry[] = [
     slug: 'unrestricted',
     name: 'Unrestricted',
     rarity: 'Secret',
+    rarityConflictNote:
+      'Rarity label pending in-game confirm. Some community guides list this as Exotic instead of Secret.',
     obtain: 'Level 75, 500K coins, Honored One Lv 25, 10 Heavenly Fragments',
     mode: 'Endgame',
     aspect: 'Endgame damage Aspect',
     tier: 'S',
-    confidence: 'probable',
+    confidence: 'conflicting',
     opening:
       'Unrestricted is an S-tier endgame chase: player level 75, 500K coins, Honored One level 25, and 10 Heavenly Fragments.',
     strengths: ['Top-end class ceiling', 'Clear checklist unlock (not pure Boss Rush RNG)', 'Pairs with Honored One progression'],
@@ -270,11 +283,13 @@ export const classes: ClassEntry[] = [
     slug: 'awakened-devil-ex',
     name: 'Awakened Devil EX',
     rarity: 'Secret',
+    rarityConflictNote:
+      'Rarity label pending in-game confirm. Some community guides list this as Exotic instead of Secret.',
     obtain: 'Azure Devil Lv 50, 1,000,000 coins, 1 Devil Heart',
     mode: 'Burst',
     aspect: 'Burst amplification Aspect',
     tier: 'S',
-    confidence: 'probable',
+    confidence: 'conflicting',
     opening:
       'Awakened Devil EX needs Azure Devil level 50, 1,000,000 coins, and one Devil Heart from Awakened Devil in Frostspire NM.',
     strengths: ['S-tier burst potential', 'Checklist unlock once materials are ready'],
@@ -826,6 +841,23 @@ export type UpdateLogEntry = {
 
 export const updateLog: UpdateLogEntry[] = [
   {
+    date: '2026-09-07',
+    title: 'Evidence and calculator wording pass',
+    summary:
+      'Tightened rarity conflict notes, demoted unverified Best Build claims to Build Notes, and corrected drop-calculator math copy.',
+    changes: [
+      'Marked Mythic/Secret labels that conflict with other community Exotic labels as pending in-game confirm.',
+      'Build pages without concrete Aspect names stay as Build Notes (noindex) instead of Best Build.',
+      'Tier list scope clarified as selected classes; UPD1 names listed as Unrated when untested.',
+      'Drop calculator copy now separates expected wait vs cumulative chance; 2% example uses accurate wording.',
+    ],
+    hrefs: [
+      ['Working codes', '/codes'],
+      ['Drop calculator', '/tools/drop-chance-calculator'],
+      ['Tier list', '/class-tier-list'],
+    ],
+  },
+  {
     date: '2026-09-06',
     title: 'Codes refresh',
     summary:
@@ -834,27 +866,11 @@ export const updateLog: UpdateLogEntry[] = [
       'Added active codes: UPDATE1, WEEKENDBUFFS, 15KCCU, COURAGE, LOVETHISGAME, RAIDTIME.',
       'Kept LOOTR active.',
       'Moved FORGESKIP, 8KLIKE, 10KFAV, FULLRELEASE, LOOTRISBACK, JACKPOT, 20KPLAYERS, GIVEMEGEMSPLEASE to expired.',
-      'Refreshed /codes last-checked date and sitemap lastmod for changed pages.',
+      'Refreshed /codes last-checked date.',
     ],
     hrefs: [
       ['Working codes', '/codes'],
       ['Drop calculator', '/tools/drop-chance-calculator'],
-    ],
-  },
-  {
-    date: '2026-09-06',
-    title: 'SEO Phase 1 launch',
-    summary:
-      'Answer-first templates for class / how-to / build pages, thin-build noindex rules, and IndexNow submission.',
-    changes: [
-      'Separated Entity / How-to / Build intent templates.',
-      'Indexed only publish-ready builds (Cursed King, Honored One, Unrestricted, Sinister Trigger).',
-      'Removed template-leak CTA copy and added intent next steps.',
-      'Enabled IndexNow key + sitemap URL notify.',
-    ],
-    hrefs: [
-      ['Cursed King', '/classes/cursed-king'],
-      ['Cursed King build', '/builds/cursed-king'],
     ],
   },
 ];
@@ -1015,8 +1031,8 @@ export function classSerp(item: ClassEntry): Serp {
     };
   }
   return {
-    title: `Dungeon Lootr ${item.name} – How to Get It, Skills, Build & Best Aspects`,
-    description: `${item.name}: rarity, obtain overview, best mode, strengths/weaknesses, Aspect summary, and links to the unlock route and build.`,
+    title: `Dungeon Lootr ${item.name} – How to Get It, Skills & Build Notes`,
+    description: `${item.name}: rarity, obtain overview, best mode, strengths/weaknesses, Aspect notes, and links to the unlock route and build notes.`,
     intent: 'Entity overview for the class, not a full unlock tutorial or full build page.',
     primaryKeyword: `Dungeon Lootr ${item.name}`,
     searchIntent: 'entity',
@@ -1045,10 +1061,13 @@ export function buildSerp(item: ClassEntry): Serp {
 
 export function buildOpening(item: ClassEntry) {
   const profile = getBuildProfile(item.slug);
-  if (profile) {
+  if (profile && isIndexableBuild(item)) {
     return `${item.name} best overall: ${profile.bestMode} with ${profile.bestAspect}. Stat priority ${profile.statPriority}.`;
   }
-  return `${item.name} (${item.tier}-tier): build for ${buildModeHook(item.mode)} with a ${item.aspect.toLowerCase()}. ${item.buildNotes[0] ?? ''}`.trim();
+  if (profile) {
+    return `${item.name} build notes for ${profile.bestMode}. Aspect and gear lines below are community direction notes - not a verified Best Build until in-game Aspect names and tests are confirmed.`;
+  }
+  return `${item.name} (${item.tier}-tier): build notes for ${buildModeHook(item.mode)}. ${item.buildNotes[0] ?? ''}`.trim();
 }
 
 export function guideSerp(guide: { slug: string; target: string; title: string; opening: string }): Serp {
@@ -1062,7 +1081,7 @@ export function guideSerp(guide: { slug: string; target: string; title: string; 
   }
   if (guide.slug === 'heavenly-fragments') {
     return {
-      title: 'How to Get Heavenly Fragments - Best Farm & What They Unlock',
+      title: 'How to Get Heavenly Fragments - Farm Sources & What They Unlock',
       description:
         'Where to farm Heavenly Fragments, what class/Forge routes need them, and the most consistent source for your stage.',
       intent: 'The searcher wants source + unlock utility.',
@@ -1070,15 +1089,15 @@ export function guideSerp(guide: { slug: string; target: string; title: string; 
   }
   if (guide.slug === 'cursed-fragments') {
     return {
-      title: 'How to Get Cursed Fragments - Fast Farm for Class & Forge Routes',
+      title: 'How to Get Cursed Fragments - Suggested Farm for Class & Forge Routes',
       description:
-        'Fastest reliable Cursed Fragment farm, which unlocks need them, and mistakes that waste your Boss Rush runs.',
+        'Suggested Cursed Fragment farm routes, which unlocks need them, and mistakes that waste Boss Rush runs.',
       intent: 'The searcher wants a reliable fragment farm tied to unlocks.',
     };
   }
   return {
-    title: `How to Get ${guide.target} in Dungeon Lootr – Fastest Method & Requirements`,
-    description: `Unlock ${guide.target} with the fastest route, required fragments or floors, Forge option when it exists, and farming tips.`,
+    title: `How to Get ${guide.target} in Dungeon Lootr – Suggested Route & Requirements`,
+    description: `Unlock ${guide.target} with a suggested route, required fragments or floors, Forge option when it exists, and farming tips. Requirements marked community-reported pending in-game confirm.`,
     intent: 'How-to unlock page: route and requirements only, not a full build or tier essay.',
     primaryKeyword: `how to get ${guide.target} Dungeon Lootr`,
     searchIntent: 'howto',
@@ -1112,9 +1131,9 @@ const hubSerpBySlug: Record<string, { title: string; description: string }> = {
       'See what every key fragment and material unlocks - class routes, Forge paths, and Boss Rush farms.',
   },
   'progression-guide': {
-    title: 'Dungeon Lootr Progression Guide - Fastest Beginner to Endgame Route',
+    title: 'Dungeon Lootr Progression Guide - Beginner to Endgame Route',
     description:
-      'The fastest Dungeon Lootr path: early damage → higher dungeon tiers → Boss Rush → Forge upgrades.',
+      'A suggested Dungeon Lootr path: early damage → higher dungeon tiers → Boss Rush → Forge upgrades.',
   },
 };
 

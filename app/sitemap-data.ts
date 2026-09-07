@@ -10,14 +10,34 @@ function clean(path: string) {
 /** Custom public URL map path (not /sitemap.xml). */
 export const URL_MAP_PATH = '/dl-lootr-urlmap.xml';
 
-/** Per-path lastmod overrides when content actually changed. */
+/** Only bump lastmod when that URL's substance changed. */
 const LASTMOD_BY_PATH: Record<string, string> = {
-  '/': '2026-09-06',
   '/codes': '2026-09-06',
-  '/updatelog': '2026-09-06',
 };
 
+const BATCH_LASTMOD = '2026-09-07';
 const DEFAULT_LASTMOD = '2026-09-06';
+
+function lastmodFor(path: string) {
+  if (LASTMOD_BY_PATH[path]) return LASTMOD_BY_PATH[path];
+  if (
+    path === '/' ||
+    path === '/updatelog' ||
+    path === '/classes' ||
+    path === '/class-tier-list' ||
+    path === '/tools/drop-chance-calculator' ||
+    path === '/tools/class-finder' ||
+    path === '/tools/aspect-matcher' ||
+    path === '/guides/best-aspect-by-class' ||
+    path === '/progression-guide' ||
+    path.startsWith('/classes/') ||
+    path.startsWith('/guides/') ||
+    path.startsWith('/builds/')
+  ) {
+    return BATCH_LASTMOD;
+  }
+  return DEFAULT_LASTMOD;
+}
 
 export function getIndexableUrls() {
   const indexableClasses = classes.filter(isIndexableClass);
@@ -42,7 +62,7 @@ export function buildUrlMapXml() {
   const body = urls
     .map((path) => {
       const loc = clean(path);
-      const lastmod = LASTMOD_BY_PATH[path] ?? DEFAULT_LASTMOD;
+      const lastmod = lastmodFor(path);
       return `  <url>
     <loc>${loc}</loc>
     <lastmod>${lastmod}</lastmod>

@@ -40,7 +40,7 @@ export default async function GuidePage({ params }: { params: Promise<{ slug: st
           <span className="label">Quick Answer</span>
           <p>{guide.opening}</p>
           <div className="hero-actions">
-            <Link href="#route">Fastest Route</Link>
+            <Link href="#route">Suggested Route</Link>
             <Link className="secondary" href="/tools/drop-chance-calculator">
               Open Calculator
             </Link>
@@ -52,7 +52,7 @@ export default async function GuidePage({ params }: { params: Promise<{ slug: st
             ['Requirements', `${guide.requirements.length} checks`],
             ['Last checked', CONTENT_LAST_CHECKED],
             ['Patch', CONTENT_PATCH],
-            ['Data status', 'Community-tested'],
+            ['Data status', 'Community-reported'],
           ]}
         />
       </section>
@@ -67,7 +67,7 @@ export default async function GuidePage({ params }: { params: Promise<{ slug: st
             </ul>
           </section>
           <section className="content-panel" id="route">
-            <h2>Fastest farming route</h2>
+            <h2>Suggested farming route</h2>
             <ol>
               {guide.steps.map((item) => (
                 <li key={item}>{item}</li>
@@ -85,8 +85,8 @@ export default async function GuidePage({ params }: { params: Promise<{ slug: st
           <section className="content-panel">
             <h2>FAQ</h2>
             <p>
-              <strong>Is this the fastest route?</strong> It is the community-checked route with the clearest
-              requirements. Recheck after patches.
+              <strong>Is this the fastest route?</strong> It is a suggested community-reported route with the clearest
+              requirements we track — not a timed speedrun claim. Recheck after patches and against the in-game UI.
             </p>
             <p>
               <strong>What if the drop stalls?</strong> Switch to the deterministic backup when one exists (for example

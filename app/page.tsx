@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from './native-link';
 import { FeaturedVideo } from './components';
+import { classBySlug, CONTENT_LAST_CHECKED } from './data';
 import { pageMetadata } from './seo';
 
 export const metadata: Metadata = pageMetadata(
@@ -14,20 +15,24 @@ export const metadata: Metadata = pageMetadata(
 );
 
 const popular = [
-  ['Class Tier List', '/class-tier-list', 'Best classes by Boss Rush, dungeon clear, solo value, and investment.'],
-  ['Cursed King Unlock', '/guides/how-to-get-cursed-king', 'Fastest route, requirements, and what to farm next.'],
-  ['Drop Calculator', '/tools/drop-chance-calculator', 'Estimate runs for rare class items, fragments, and boss drops.'],
+  ['Class Tier List', '/class-tier-list', 'Selected classes by Boss Rush, dungeon clear, solo value, and investment.'],
+  ['Cursed King Unlock', '/guides/how-to-get-cursed-king', 'Suggested route, requirements, and what to farm next.'],
+  ['Drop Calculator', '/tools/drop-chance-calculator', 'Estimate attempts for rare class items, fragments, and boss drops.'],
   ['Boss Rush Guide', '/boss-rush', 'Floor breakpoints, reward planning, and pushing strategy.'],
 ];
 
-const classes = [
-  { name: 'Cursed King', rarity: 'Mythic', obtain: 'Boss Rush / Forge 50 Sukuna', mode: 'Boss Rush', href: '/classes/cursed-king' },
-  { name: 'Sinister Trigger', rarity: 'Exotic', obtain: 'Class roll ~0.05%', mode: 'Dungeon clear', href: '/classes/sinister-trigger' },
-  { name: 'Honored One', rarity: 'Mythic', obtain: 'Boss Rush / Forge 50 Gojo', mode: 'Solo', href: '/classes/honored-one' },
-  { name: 'Unrestricted', rarity: 'Secret', obtain: 'Lv75 + Honored One 25 + fragments', mode: 'Endgame', href: '/classes/unrestricted' },
-  { name: 'Awakened Devil EX', rarity: 'Secret', obtain: 'Azure Devil 50 + Devil Heart', mode: 'Burst', href: '/classes/awakened-devil-ex' },
-  { name: 'Dreadlord', rarity: 'Legendary', obtain: 'Underworld Glaive ~1%', mode: 'Survival', href: '/classes/dreadlord' },
-];
+const featuredSlugs = [
+  'cursed-king',
+  'sinister-trigger',
+  'honored-one',
+  'unrestricted',
+  'awakened-devil-ex',
+  'dreadlord',
+] as const;
+
+const featuredClasses = featuredSlugs
+  .map((slug) => classBySlug(slug))
+  .filter((item): item is NonNullable<typeof item> => Boolean(item));
 
 const guides = [
   ['How to Get Cursed King', '/guides/how-to-get-cursed-king', 'Floor 40+ Class Item or 50 Sukuna fragments.'],
@@ -67,11 +72,11 @@ export default function Home() {
             </div>
           </div>
           <aside className="hero-panel" aria-label="Recently verified">
-            <div className="panel-title">Recently verified</div>
+            <div className="panel-title">Community snapshot</div>
             <dl>
-              <div><dt>Patch</dt><dd>Community-tested</dd></div>
+              <div><dt>Patch</dt><dd>Community snapshot</dd></div>
               <div><dt>Priority</dt><dd>Boss Rush routes</dd></div>
-              <div><dt>Last checked</dt><dd>2026-09-06</dd></div>
+              <div><dt>Last checked</dt><dd>{CONTENT_LAST_CHECKED}</dd></div>
             </dl>
           </aside>
         </div>
@@ -130,10 +135,13 @@ export default function Home() {
               </tr>
             </thead>
             <tbody>
-              {classes.map((item) => (
-                <tr key={item.name}>
-                  <td><Link href={item.href}>{item.name}</Link></td>
-                  <td><span className="rarity">{item.rarity}</span></td>
+              {featuredClasses.map((item) => (
+                <tr key={item.slug}>
+                  <td><Link href={`/classes/${item.slug}`}>{item.name}</Link></td>
+                  <td>
+                    <span className="rarity">{item.rarity}</span>
+                    {item.rarityConflictNote ? ' · pending' : ''}
+                  </td>
                   <td>{item.obtain}</td>
                   <td>{item.mode}</td>
                 </tr>
@@ -142,11 +150,11 @@ export default function Home() {
           </table>
         </div>
         <div className="class-card-list mobile-cards" aria-label="Current class database">
-          {classes.map((item) => (
-            <Link className="class-card" href={item.href} key={item.name}>
+          {featuredClasses.map((item) => (
+            <Link className="class-card" href={`/classes/${item.slug}`} key={item.slug}>
               <div className="class-card-top">
                 <strong>{item.name}</strong>
-                <span className="rarity">{item.rarity}</span>
+                <span className="rarity">{item.rarity}{item.rarityConflictNote ? ' · pending' : ''}</span>
               </div>
               <div className="class-card-meta">
                 <span>Obtain: {item.obtain}</span>
@@ -155,30 +163,36 @@ export default function Home() {
             </Link>
           ))}
         </div>
+        <p>
+          <Link className="primary-action" href="/classes">Browse full class directory</Link>
+        </p>
       </section>
 
-      <section className="site-shell split-section">
-        <div>
+      <section className="site-shell section-grid">
+        <div className="section-heading">
           <p className="eyebrow">Unlock guides</p>
           <h2>Pick the next farm</h2>
-          <div className="stack">
-            {guides.map(([title, href, text]) => (
-              <Link className="row-link" href={href} key={href}>
-                <span>{title}</span>
-                <small>{text}</small>
-              </Link>
-            ))}
-          </div>
         </div>
-        <div>
+        <div className="card-grid four">
+          {guides.map(([title, href, text]) => (
+            <Link className="intent-card" href={href} key={href}>
+              <span>{title}</span>
+              <p>{text}</p>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      <section className="site-shell section-grid">
+        <div className="section-heading">
           <p className="eyebrow">Tools</p>
           <h2>Plan before grinding</h2>
-          <div className="tool-preview">
-            <span className="label">Drop chance formula</span>
-            <strong>P(at least once) = 1 - (1 - p)^n</strong>
-            <p>Use it for boss drops, class items, fragments, and any community-tested rare-rate estimate.</p>
-            <Link href="/tools/drop-chance-calculator">Calculate your runs</Link>
-          </div>
+        </div>
+        <div className="tool-preview content-panel">
+          <p className="codes-meta">Drop chance calculator</p>
+          <strong>Estimate attempts to 50% / 90% / 95% / 99%</strong>
+          <p>Use it for boss drops, class items, fragments, and any community-reported rare-rate estimate.</p>
+          <Link href="/tools/drop-chance-calculator">Calculate your runs</Link>
         </div>
       </section>
     </main>

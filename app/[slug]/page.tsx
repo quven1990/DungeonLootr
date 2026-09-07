@@ -37,7 +37,7 @@ function HubBody({ slug }: { slug: string }) {
   if (slug === 'progression-guide') {
     return (
       <section className="content-panel">
-        <h2>Fastest progression route</h2>
+        <h2>Suggested progression route</h2>
         <ol>
           <li>Early: roll a usable Epic/Legendary clearer (Boxer / Witch Gunner band) and stop rerolling until clears are stable.</li>
           <li>Mid: push the highest dungeon tier you can farm cleanly for EXP and coins.</li>

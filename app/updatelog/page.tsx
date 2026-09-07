@@ -23,8 +23,8 @@ export default function UpdateLogPage() {
         <div className="quick-answer wide">
           <span className="label">Quick Answer</span>
           <p>
-            This page lists the latest verified changes on the wiki: new codes, expired codes, build publishing, and
-            sitemap refreshes.
+            This page lists player-facing wiki changes: codes, data wording, and calculator updates. It is not a Google
+            indexing log.
           </p>
           <div className="hero-actions">
             <Link href="/codes">Working Codes</Link>

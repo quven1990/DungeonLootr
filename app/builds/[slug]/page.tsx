@@ -54,8 +54,8 @@ export default async function BuildPage({ params }: { params: Promise<{ slug: st
             profile
               ? [
                   ['Best mode', profile.bestMode],
-                  ['Best Aspect', profile.bestAspect],
-                  ['Alt Aspect', profile.altAspect],
+                  [publishReady ? 'Best Aspect' : 'Aspect direction', profile.bestAspect],
+                  [publishReady ? 'Alt Aspect' : 'Alt direction', profile.altAspect],
                   ['Stat priority', profile.statPriority],
                   ['Last checked', profile.lastChecked],
                   ['Patch', profile.patch],
@@ -63,7 +63,7 @@ export default async function BuildPage({ params }: { params: Promise<{ slug: st
                 ]
               : [
                   ['Mode', item.mode],
-                  ['Aspect', item.aspect],
+                  ['Aspect note', item.aspect],
                   ['Tier', item.tier],
                   ['Last checked', CONTENT_LAST_CHECKED],
                   ['Patch', CONTENT_PATCH],
@@ -125,11 +125,40 @@ export default async function BuildPage({ params }: { params: Promise<{ slug: st
             </>
           ) : (
             <section className="content-panel">
-              <h2>Build notes in progress</h2>
+              <h2>Build notes (not a Best Build claim)</h2>
               <p>
-                This page is available for internal linking, but it does not yet meet the publish bar for stats, Aspect,
-                gear focus, and rotation. Use the class overview and unlock guide until a full build is verified.
+                Concrete in-game Aspect names, point spreads, and verified clears are still pending. Treat the notes below
+                as pairing direction only — not a copy-ready Best Build. Use the class overview and unlock guide until a
+                publish-ready build is confirmed.
               </p>
+              {profile ? (
+                <dl className="facts">
+                  <div>
+                    <dt>Mode focus</dt>
+                    <dd>{profile.bestMode}</dd>
+                  </div>
+                  <div>
+                    <dt>Aspect direction</dt>
+                    <dd>{profile.bestAspect}</dd>
+                  </div>
+                  <div>
+                    <dt>Alt direction</dt>
+                    <dd>{profile.altAspect}</dd>
+                  </div>
+                  <div>
+                    <dt>Stat priority note</dt>
+                    <dd>{profile.statPriority}</dd>
+                  </div>
+                  <div>
+                    <dt>Gear focus note</dt>
+                    <dd>{profile.gearFocus}</dd>
+                  </div>
+                  <div>
+                    <dt>Rotation note</dt>
+                    <dd>{profile.rotation}</dd>
+                  </div>
+                </dl>
+              ) : null}
               <ul>
                 {item.buildNotes.map((note) => (
                   <li key={note}>{note}</li>
