@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { trackAnalyticsEvent } from '../../analytics-events';
 import { playUiSound, prefersReducedMotion } from '../../ui-feedback';
 
 function parseRate(raw: string) {
@@ -49,12 +50,30 @@ function formatAttempts(value: number) {
   return value.toFixed(1);
 }
 
+function rateBucket(rate: number) {
+  if (rate === 0) return '0';
+  if (rate <= 1) return '0.1-1';
+  if (rate <= 5) return '1.1-5';
+  if (rate <= 20) return '5.1-20';
+  if (rate < 100) return '20.1-99.9';
+  return '100';
+}
+
+function attemptsBucket(attempts: number) {
+  if (attempts <= 10) return '0-10';
+  if (attempts <= 50) return '11-50';
+  if (attempts <= 100) return '51-100';
+  if (attempts <= 500) return '101-500';
+  return '501+';
+}
+
 export default function DropCalculator() {
   const [rateRaw, setRateRaw] = useState('2');
   const [runsRaw, setRunsRaw] = useState('50');
   const [target, setTarget] = useState(0.9);
   const [flash, setFlash] = useState(false);
-  const firstPaint = useRef(true);
+  const analyticsReady = useRef(false);
+  const flashTimer = useRef<number | undefined>(undefined);
 
   const parsed = useMemo(() => {
     const rate = parseRate(rateRaw);
@@ -77,18 +96,39 @@ export default function DropCalculator() {
     };
   }, [rateRaw, runsRaw, target]);
 
+  function triggerInputFeedback(valid: boolean) {
+    playUiSound('tap');
+    if (!valid || prefersReducedMotion()) return;
+
+    if (flashTimer.current) window.clearTimeout(flashTimer.current);
+    setFlash(true);
+    flashTimer.current = window.setTimeout(() => setFlash(false), 320);
+  }
+
+  useEffect(
+    () => () => {
+      if (flashTimer.current) window.clearTimeout(flashTimer.current);
+    },
+    [],
+  );
+
   useEffect(() => {
-    if (firstPaint.current) {
-      firstPaint.current = false;
+    if (!analyticsReady.current) {
+      analyticsReady.current = true;
       return;
     }
     if (!parsed.ok) return;
-    playUiSound('tap');
-    if (prefersReducedMotion()) return;
-    setFlash(true);
-    const timer = window.setTimeout(() => setFlash(false), 320);
+
+    const timer = window.setTimeout(() => {
+      trackAnalyticsEvent('calculator_use', {
+        rate_bucket: rateBucket(parsed.ratePct),
+        attempts_bucket: attemptsBucket(parsed.n),
+        target_percent: Math.round(target * 100),
+      });
+    }, 700);
+
     return () => window.clearTimeout(timer);
-  }, [parsed]);
+  }, [parsed, target]);
 
   return (
     <section className="calculator" aria-label="Dungeon Lootr drop chance calculator">
@@ -102,7 +142,11 @@ export default function DropCalculator() {
             type="number"
             inputMode="decimal"
             value={rateRaw}
-            onChange={(event) => setRateRaw(event.target.value)}
+            onChange={(event) => {
+              const nextRate = event.target.value;
+              setRateRaw(nextRate);
+              triggerInputFeedback(parseRate(nextRate).ok && parseRuns(runsRaw).ok);
+            }}
           />
         </label>
         <label>
@@ -113,12 +157,22 @@ export default function DropCalculator() {
             type="number"
             inputMode="numeric"
             value={runsRaw}
-            onChange={(event) => setRunsRaw(event.target.value)}
+            onChange={(event) => {
+              const nextRuns = event.target.value;
+              setRunsRaw(nextRuns);
+              triggerInputFeedback(parseRate(rateRaw).ok && parseRuns(nextRuns).ok);
+            }}
           />
         </label>
         <label>
           Target probability (q)
-          <select value={target} onChange={(event) => setTarget(Number(event.target.value))}>
+          <select
+            value={target}
+            onChange={(event) => {
+              setTarget(Number(event.target.value));
+              triggerInputFeedback(parseRate(rateRaw).ok && parseRuns(runsRaw).ok);
+            }}
+          >
             <option value={0.5}>50%</option>
             <option value={0.75}>75%</option>
             <option value={0.9}>90%</option>

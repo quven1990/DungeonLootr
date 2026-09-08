@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { trackAnalyticsEvent } from './analytics-events';
 import { playUiSound } from './ui-feedback';
 
 async function copyText(value: string) {
@@ -35,9 +36,17 @@ export function CopyCodeButton({
       await copyText(code);
       setCopied(true);
       playUiSound('success');
+      trackAnalyticsEvent('code_copy', {
+        code,
+        code_status: muted ? 'expired' : 'active',
+        presentation: showCode ? 'code_and_button' : 'button_only',
+      });
       window.setTimeout(() => setCopied(false), 1600);
     } catch {
       setCopied(false);
+      trackAnalyticsEvent('code_copy_error', {
+        code_status: muted ? 'expired' : 'active',
+      });
     }
   }
 

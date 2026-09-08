@@ -1,6 +1,7 @@
 import Link from './native-link';
 import type { ReactNode } from 'react';
 import { CopyCodeButton } from './CopyCodeButton';
+import { TrackedVideoEmbed } from './TrackedVideoEmbed';
 import {
   classes,
   codesLastChecked,
@@ -233,7 +234,7 @@ export function RetentionPanel({
       {video ? (
         <div className="engagement-item video-item">
           <span className="label">Video</span>
-          <VideoEmbed video={video} compact />
+          <TrackedVideoEmbed videoId={video.id} label={video.label} compact />
           <p>{video.reason}</p>
         </div>
       ) : null}
@@ -251,7 +252,7 @@ export function FeaturedVideo({ title, videoQuery }: { title: string; videoQuery
         <h2>{video.heading}</h2>
         <p>{video.reason}</p>
       </div>
-      <VideoEmbed video={video} />
+      <TrackedVideoEmbed videoId={video.id} label={video.label} />
     </section>
   );
 }
@@ -262,23 +263,6 @@ type VideoChoice = {
   heading: string;
   reason: string;
 };
-
-function VideoEmbed({ video, compact = false }: { video: VideoChoice; compact?: boolean }) {
-  return (
-    <div className={compact ? 'video-embed compact' : 'video-embed'}>
-      <iframe
-        src={`https://www.youtube-nocookie.com/embed/${video.id}`}
-        title={video.label}
-        loading="lazy"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-        allowFullScreen
-      />
-      <a href={`https://www.youtube.com/watch?v=${video.id}`} target="_blank" rel="noreferrer">
-        Open on YouTube
-      </a>
-    </div>
-  );
-}
 
 function pickVideo(title: string, videoQuery: string): VideoChoice | null {
   const key = `${title} ${videoQuery}`.toLowerCase();

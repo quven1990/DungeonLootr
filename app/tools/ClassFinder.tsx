@@ -2,6 +2,7 @@
 
 import Link from '../native-link';
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { trackAnalyticsEvent } from '../analytics-events';
 import type { ClassEntry } from '../data';
 import { playUiSound, prefersReducedMotion } from '../ui-feedback';
 
@@ -13,7 +14,8 @@ export function ClassFinder({ classes }: { classes: ClassEntry[] }) {
   const [mode, setMode] = useState<(typeof modes)[number]>('All');
   const [query, setQuery] = useState('');
   const [pop, setPop] = useState(false);
-  const firstPaint = useRef(true);
+  const analyticsReady = useRef(false);
+  const popTimer = useRef<number | undefined>(undefined);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -25,17 +27,39 @@ export function ClassFinder({ classes }: { classes: ClassEntry[] }) {
     });
   }, [classes, tier, mode, query]);
 
-  useEffect(() => {
-    if (firstPaint.current) {
-      firstPaint.current = false;
-      return;
-    }
+  function triggerFilterFeedback() {
     playUiSound('tap');
     if (prefersReducedMotion()) return;
+
+    if (popTimer.current) window.clearTimeout(popTimer.current);
     setPop(true);
-    const timer = window.setTimeout(() => setPop(false), 280);
+    popTimer.current = window.setTimeout(() => setPop(false), 280);
+  }
+
+  useEffect(
+    () => () => {
+      if (popTimer.current) window.clearTimeout(popTimer.current);
+    },
+    [],
+  );
+
+  useEffect(() => {
+    if (!analyticsReady.current) {
+      analyticsReady.current = true;
+      return;
+    }
+
+    const timer = window.setTimeout(() => {
+      trackAnalyticsEvent('class_finder_use', {
+        tier,
+        mode,
+        has_query: query.trim().length > 0,
+        result_count: filtered.length,
+      });
+    }, 700);
+
     return () => window.clearTimeout(timer);
-  }, [tier, mode]);
+  }, [filtered.length, mode, query, tier]);
 
   return (
     <section className="content-panel">
@@ -50,7 +74,10 @@ export function ClassFinder({ classes }: { classes: ClassEntry[] }) {
           <select
             className={tier !== 'All' ? 'is-selected' : undefined}
             value={tier}
-            onChange={(e) => setTier(e.target.value as (typeof tiers)[number])}
+            onChange={(e) => {
+              setTier(e.target.value as (typeof tiers)[number]);
+              triggerFilterFeedback();
+            }}
           >
             {tiers.map((value) => <option key={value} value={value}>{value}</option>)}
           </select>
@@ -60,7 +87,10 @@ export function ClassFinder({ classes }: { classes: ClassEntry[] }) {
           <select
             className={mode !== 'All' ? 'is-selected' : undefined}
             value={mode}
-            onChange={(e) => setMode(e.target.value as (typeof modes)[number])}
+            onChange={(e) => {
+              setMode(e.target.value as (typeof modes)[number]);
+              triggerFilterFeedback();
+            }}
           >
             {modes.map((value) => <option key={value} value={value}>{value}</option>)}
           </select>
@@ -81,7 +111,19 @@ export function ClassFinder({ classes }: { classes: ClassEntry[] }) {
           <tbody>
             {filtered.map((item) => (
               <tr key={item.slug}>
-                <td><Link href={`/classes/${item.slug}`}>{item.name}</Link></td>
+                <td>
+                  <Link
+                    href={`/classes/${item.slug}`}
+                    onClick={() =>
+                      trackAnalyticsEvent('class_result_open', {
+                        class_slug: item.slug,
+                        result_view: 'table',
+                      })
+                    }
+                  >
+                    {item.name}
+                  </Link>
+                </td>
                 <td>{item.tier}</td>
                 <td><span className="rarity">{item.rarity}</span></td>
                 <td>{item.mode}</td>
@@ -93,7 +135,17 @@ export function ClassFinder({ classes }: { classes: ClassEntry[] }) {
       </div>
       <div className="class-card-list mobile-cards" aria-label="Filtered class list">
         {filtered.map((item) => (
-          <Link className="class-card" href={`/classes/${item.slug}`} key={item.slug}>
+          <Link
+            className="class-card"
+            href={`/classes/${item.slug}`}
+            key={item.slug}
+            onClick={() =>
+              trackAnalyticsEvent('class_result_open', {
+                class_slug: item.slug,
+                result_view: 'card',
+              })
+            }
+          >
             <div className="class-card-top">
               <strong>{item.name}</strong>
               <span className="rarity">{item.tier} · {item.rarity}</span>

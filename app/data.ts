@@ -842,6 +842,23 @@ export type UpdateLogEntry = {
 export const updateLog: UpdateLogEntry[] = [
   {
     date: '2026-09-09',
+    title: 'Privacy-safe interaction analytics',
+    summary:
+      'Added aggregate event tracking for the player actions that make the wiki useful without collecting search text or personal information.',
+    changes: [
+      'Tracks successful code copies as redemption intent; the wiki cannot observe whether Roblox accepts a code.',
+      'Tracks first video play and YouTube outbound clicks.',
+      'Tracks drop-calculator use with rate and attempt buckets instead of raw high-cardinality input.',
+      'Tracks Class Finder and Aspect Matcher use without sending typed search text.',
+    ],
+    hrefs: [
+      ['Working codes', '/codes'],
+      ['Drop calculator', '/tools/drop-chance-calculator'],
+      ['Class Finder', '/tools/class-finder'],
+    ],
+  },
+  {
+    date: '2026-09-09',
     title: 'Cursed King search intent and unlock guide update',
     summary:
       'Separated the Cursed King unlock guide from the class overview so each page answers a distinct player question.',

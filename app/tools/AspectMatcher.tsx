@@ -2,6 +2,7 @@
 
 import Link from '../native-link';
 import { useMemo, useState } from 'react';
+import { trackAnalyticsEvent } from '../analytics-events';
 import type { ClassEntry } from '../data';
 
 const goals = [
@@ -25,7 +26,14 @@ export function AspectMatcher({ classes }: { classes: ClassEntry[] }) {
       <div className="finder-controls">
         <label>
           Your goal
-          <select value={goal} onChange={(e) => setGoal(e.target.value as (typeof goals)[number]['id'])}>
+          <select
+            value={goal}
+            onChange={(e) => {
+              const nextGoal = e.target.value as (typeof goals)[number]['id'];
+              setGoal(nextGoal);
+              trackAnalyticsEvent('aspect_matcher_use', { goal: nextGoal });
+            }}
+          >
             {goals.map((item) => <option key={item.id} value={item.id}>{item.label}</option>)}
           </select>
         </label>
@@ -33,7 +41,17 @@ export function AspectMatcher({ classes }: { classes: ClassEntry[] }) {
       <ul className="check-list">
         {matches.map((item) => (
           <li key={item.slug}>
-            <Link href={`/classes/${item.slug}`}>{item.name}</Link>
+            <Link
+              href={`/classes/${item.slug}`}
+              onClick={() =>
+                trackAnalyticsEvent('aspect_result_open', {
+                  class_slug: item.slug,
+                  goal,
+                })
+              }
+            >
+              {item.name}
+            </Link>
             {' — '}
             start with <strong>{item.aspect}</strong> for {item.mode.toLowerCase()}.
           </li>
