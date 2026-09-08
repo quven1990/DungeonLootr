@@ -22,6 +22,7 @@ export default async function GuidePage({ params }: { params: Promise<{ slug: st
   const guide = guideBySlug(slug);
   if (!guide) notFound();
   const serp = guideSerp(guide);
+  const isCursedKingGuide = guide.slug === 'how-to-get-cursed-king';
 
   return (
     <main>
@@ -36,16 +37,66 @@ export default async function GuidePage({ params }: { params: Promise<{ slug: st
       <section className="site-shell page-hero">
         <p className="breadcrumb">Home / Guides / {guide.target}</p>
         <h1>{guide.title}</h1>
+        {isCursedKingGuide ? <p className="page-updated">Updated: September 9, 2026</p> : null}
         <div className="quick-answer wide">
           <span className="label">Quick Answer</span>
           <p>{guide.opening}</p>
-          <div className="hero-actions">
+          <div className="hero-actions" data-nosnippet>
             <Link href="#route">Suggested Route</Link>
             <Link className="secondary" href="/tools/drop-chance-calculator">
               Open Calculator
             </Link>
           </div>
         </div>
+        {isCursedKingGuide ? (
+          <section className="route-comparison" aria-labelledby="cursed-king-route-heading">
+            <h2 id="cursed-king-route-heading">Which Cursed King Route Should You Use?</h2>
+            <div className="route-comparison-grid">
+              <article className="route-card">
+                <h3>Class Item Drop</h3>
+                <dl>
+                  <div>
+                    <dt>Route</dt>
+                    <dd>Class Item Drop</dd>
+                  </div>
+                  <div>
+                    <dt>Requirement</dt>
+                    <dd>Boss Rush Floor 40+</dd>
+                  </div>
+                  <div>
+                    <dt>RNG</dt>
+                    <dd>Yes</dd>
+                  </div>
+                  <div>
+                    <dt>Best For</dt>
+                    <dd>Players farming Boss Rush and willing to rely on drops</dd>
+                  </div>
+                </dl>
+              </article>
+              <article className="route-card">
+                <h3>Forge</h3>
+                <dl>
+                  <div>
+                    <dt>Route</dt>
+                    <dd>Forge</dd>
+                  </div>
+                  <div>
+                    <dt>Requirement</dt>
+                    <dd>50 Sukuna fragments</dd>
+                  </div>
+                  <div>
+                    <dt>RNG</dt>
+                    <dd>Fragment-based progression</dd>
+                  </div>
+                  <div>
+                    <dt>Best For</dt>
+                    <dd>Players who prefer steady fragment progression</dd>
+                  </div>
+                </dl>
+              </article>
+            </div>
+          </section>
+        ) : null}
         <Facts
           facts={[
             ['Target', guide.target],
@@ -68,11 +119,25 @@ export default async function GuidePage({ params }: { params: Promise<{ slug: st
           </section>
           <section className="content-panel" id="route">
             <h2>Suggested farming route</h2>
-            <ol>
-              {guide.steps.map((item) => (
-                <li key={item}>{item}</li>
-              ))}
-            </ol>
+            {isCursedKingGuide ? (
+              <>
+                <p>{guide.steps[0]}</p>
+                <h3>Method 1: Floor 40+ Class Item</h3>
+                <p>{guide.steps[1]}</p>
+                <h3>Method 2: Fragments / Forge</h3>
+                <ol>
+                  {guide.steps.slice(2).map((item) => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ol>
+              </>
+            ) : (
+              <ol>
+                {guide.steps.map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
+              </ol>
+            )}
           </section>
           <section className="content-panel">
             <h2>Farming tips and common mistakes</h2>
@@ -93,6 +158,15 @@ export default async function GuidePage({ params }: { params: Promise<{ slug: st
               Floor 100 fragments to Forge), and use the calculator before long RNG farms.
             </p>
           </section>
+          {isCursedKingGuide ? (
+            <section className="content-panel">
+              <h2>Is Cursed King worth using?</h2>
+              <p>
+                Want to compare its combat role, current tier, strengths, weaknesses, and build direction?{' '}
+                <Link href="/classes/cursed-king">Cursed King Skills, Tier &amp; Build</Link>.
+              </p>
+            </section>
+          ) : null}
           <DataNote />
           <RelatedLinks title="Related pages" links={guideClusterLinks(guide)} />
           <NextSteps links={guideIntentNextSteps(guide)} eyebrow="Next steps after unlock" />

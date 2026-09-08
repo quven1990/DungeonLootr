@@ -13,6 +13,9 @@ export const URL_MAP_PATH = '/dl-lootr-urlmap.xml';
 /** Only bump lastmod when that URL's substance changed. */
 const LASTMOD_BY_PATH: Record<string, string> = {
   '/codes': '2026-09-06',
+  '/classes/cursed-king': '2026-09-09',
+  '/guides/how-to-get-cursed-king': '2026-09-09',
+  '/updatelog': '2026-09-09',
 };
 
 const BATCH_LASTMOD = '2026-09-07';

@@ -212,7 +212,7 @@ export const classes: ClassEntry[] = [
     tier: 'S',
     confidence: 'conflicting',
     opening:
-      'Cursed King is an S-tier Boss Rush powerhouse: get the Class Item from Floor 40+, or craft Cursed Shrine at the Forge with 50 Sukuna fragments.',
+      'Cursed King (Sukuna) is an S-tier Boss Rush class focused on high damage and AoE, with strong value once mastery is leveled. This overview covers its tier, combat role, strengths, weaknesses, and build direction.',
     strengths: ['Top-tier Boss Rush damage and AoE', 'Forge path removes pure RNG dependence', 'Strong once mastery is leveled'],
     weaknesses: ['Needs Floor 40+ or repeated Floor 100 fragment farms', 'Mastery investment before full kit value'],
     unlockSteps: [
@@ -526,9 +526,9 @@ export const guides: GuideEntry[] = [
   {
     slug: 'how-to-get-cursed-king',
     target: 'Cursed King',
-    title: 'How to Get Cursed King in Dungeon Lootr',
+    title: 'How to Get Cursed King (Sukuna) in Dungeon Lootr – 2 Ways',
     opening:
-      'Get Cursed King from Boss Rush Floor 40+ Class Item drops, or craft it at the Forge with 50 Sukuna fragments from Floor 100.',
+      'Cursed King (Sukuna) has two Boss Rush unlock routes: a Floor 40+ Class Item drop and a 50-fragment Forge route. The better choice depends on how far you can reliably push Boss Rush — compare both routes, requirements, and farming methods below.',
     requirements: [
       'Level 67+ for Boss Rush access',
       'A build that can reach Floor 40+ (drops) or Floor 100 (fragments)',
@@ -841,6 +841,22 @@ export type UpdateLogEntry = {
 
 export const updateLog: UpdateLogEntry[] = [
   {
+    date: '2026-09-09',
+    title: 'Cursed King search intent and unlock guide update',
+    summary:
+      'Separated the Cursed King unlock guide from the class overview so each page answers a distinct player question.',
+    changes: [
+      'The unlock guide now compares the existing Class Item and Forge routes before the detailed farming steps.',
+      'The class page now leads with tier, Boss Rush role, strengths, weaknesses, and build direction.',
+      'Added clearer links between the unlock guide and class overview, plus cleaner search-snippet controls for CTA text.',
+      'No new drop rates, damage values, or unverified skill names were added.',
+    ],
+    hrefs: [
+      ['Cursed King unlock guide', '/guides/how-to-get-cursed-king'],
+      ['Cursed King class overview', '/classes/cursed-king'],
+    ],
+  },
+  {
     date: '2026-09-07',
     title: 'Evidence and calculator wording pass',
     summary:
@@ -1021,6 +1037,16 @@ export function isIndexableClass(item: ClassEntry) {
 }
 
 export function classSerp(item: ClassEntry): Serp {
+  if (item.slug === 'cursed-king') {
+    return {
+      title: 'Dungeon Lootr Cursed King (Sukuna) – Skills, Tier & Build',
+      description:
+        'Review Cursed King (Sukuna) skills, S-tier placement, strengths and weaknesses, current build notes, and Boss Rush performance in Dungeon Lootr.',
+      intent: 'Class overview focused on role, tier, strengths, weaknesses, and build notes rather than unlock steps.',
+      primaryKeyword: 'Dungeon Lootr Cursed King',
+      searchIntent: 'entity',
+    };
+  }
   if (!isIndexableClass(item)) {
     return {
       title: `Dungeon Lootr ${item.name} - Tier Placement & What We Know`,
@@ -1071,6 +1097,16 @@ export function buildOpening(item: ClassEntry) {
 }
 
 export function guideSerp(guide: { slug: string; target: string; title: string; opening: string }): Serp {
+  if (guide.slug === 'how-to-get-cursed-king') {
+    return {
+      title: 'How to Get Cursed King (Sukuna) in Dungeon Lootr – 2 Ways',
+      description:
+        'Cursed King has 2 unlock routes in Dungeon Lootr. Compare the Floor 40+ Class Item method and the 50-fragment Forge route, including requirements, farming tips, and which route to choose.',
+      intent: 'How-to unlock page comparing the two existing Boss Rush routes.',
+      primaryKeyword: 'how to get Cursed King in Dungeon Lootr',
+      searchIntent: 'howto',
+    };
+  }
   if (guide.slug === 'devil-heart') {
     return {
       title: 'Devil Heart Drop Rate in Dungeon Lootr - Best Farm & Run Estimates',
