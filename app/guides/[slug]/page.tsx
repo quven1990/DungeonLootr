@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation';
 import Link from '../../native-link';
+import { Breadcrumbs } from '../../Breadcrumbs';
 import { DataNote, Facts, NextSteps, RelatedLinks, RetentionPanel } from '../../components';
 import { CONTENT_LAST_CHECKED, CONTENT_PATCH, guideBySlug, guideSerp, guides } from '../../data';
 import { JsonLd, howToJsonLd } from '../../jsonld';
@@ -35,7 +36,7 @@ export default async function GuidePage({ params }: { params: Promise<{ slug: st
         })}
       />
       <section className="site-shell page-hero">
-        <p className="breadcrumb">Home / Guides / {guide.target}</p>
+        <Breadcrumbs items={[{ name: 'Guides' }, { name: guide.target }]} />
         <h1>{guide.title}</h1>
         {isCursedKingGuide ? <p className="page-updated">Updated: September 9, 2026</p> : null}
         <div className="quick-answer wide">

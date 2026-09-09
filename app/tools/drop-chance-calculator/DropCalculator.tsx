@@ -92,7 +92,10 @@ export default function DropCalculator() {
       expected: expectedAttempts(p),
       targetRuns: runsForTarget(p, target),
       halfRuns: runsForTarget(p, 0.5),
+      p75Runs: runsForTarget(p, 0.75),
+      p90Runs: runsForTarget(p, 0.9),
       highRuns: runsForTarget(p, 0.95),
+      p99Runs: runsForTarget(p, 0.99),
     };
   }, [rateRaw, runsRaw, target]);
 
@@ -200,9 +203,9 @@ export default function DropCalculator() {
             <strong>{formatAttempts(parsed.targetRuns)}</strong>
           </div>
           <div className="metric">
-            <span>Attempts for 50% / 95%</span>
+            <span>Attempts for 50% / 75% / 90% / 95% / 99%</span>
             <strong>
-              {formatAttempts(parsed.halfRuns)} / {formatAttempts(parsed.highRuns)}
+              {formatAttempts(parsed.halfRuns)} / {formatAttempts(parsed.p75Runs)} / {formatAttempts(parsed.p90Runs)} / {formatAttempts(parsed.highRuns)} / {formatAttempts(parsed.p99Runs)}
             </strong>
           </div>
         </div>

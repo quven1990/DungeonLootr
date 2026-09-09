@@ -14,7 +14,7 @@ export const metadata = pageMetadata(
 export default function BossRushPage() {
   return (
     <main>
-      <PageHero entry={entry} cta={<div className="hero-actions"><Link href="/class-tier-list">See best classes</Link></div>} />
+      <PageHero entry={entry} crumbs="Home / Boss Rush" cta={<div className="hero-actions"><Link href="/class-tier-list">See ranked classes</Link></div>} />
       <section className="site-shell content-grid">
         <div className="article-stack">
           <section className="content-panel">

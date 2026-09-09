@@ -1,47 +1,47 @@
 import type { Metadata } from 'next';
 import Link from './native-link';
 import { FeaturedVideo } from './components';
-import { classBySlug, CONTENT_LAST_CHECKED } from './data';
+import {
+  UPDATE_1_CLASS_SLUGS,
+  UPDATE_1_RELEASED,
+  WIKI_PAGE_UPDATED,
+  classBySlug,
+  codesLastVerifiedAt,
+  dungeonLootrCodes,
+} from './data';
+import { formatDisplayDate, monthYear } from './format-date';
 import { pageMetadata } from './seo';
 
 export const metadata: Metadata = pageMetadata(
   {
-    title: 'Dungeon Lootr Wiki - Best Classes, Builds, Boss Rush & Codes',
+    title: 'Dungeon Lootr Wiki [UPDATE 1] – Classes, Tier List, Codes & Guides',
     description:
-      'Fast answers for Dungeon Lootr: class tier list, unlock routes, Boss Rush drops, working codes, and a drop-chance calculator.',
+      'Find Dungeon Lootr UPDATE 1 classes, tier lists, working codes, unlock guides, Boss Rush routes and drop tools, updated for September 2026.',
     intent: 'home',
   },
   '/',
 );
 
 const popular = [
-  ['Class Tier List', '/class-tier-list', 'Selected classes by Boss Rush, dungeon clear, solo value, and investment.'],
-  ['Cursed King Unlock', '/guides/how-to-get-cursed-king', 'Suggested route, requirements, and what to farm next.'],
-  ['Drop Calculator', '/tools/drop-chance-calculator', 'Estimate attempts for rare class items, fragments, and boss drops.'],
-  ['Boss Rush Guide', '/boss-rush', 'Floor breakpoints, reward planning, and pushing strategy.'],
+  ['UPDATE 1 Guide', '/update-1', 'New Exotic classes, codes, and what is still unconfirmed after September 7.'],
+  ['Class directory', '/classes', 'Full roster after UPDATE 1, including spin, Boss Rush, Forge, and quest unlocks.'],
+  ['Tier list', '/class-tier-list', 'Ranked classes by use case. UPDATE 1 names stay unrated until the kits are verified.'],
+  ['Working codes', '/codes', 'Copy active codes, including UPDATE1, from the last reconciled list.'],
 ];
-
-const featuredSlugs = [
-  'cursed-king',
-  'sinister-trigger',
-  'honored-one',
-  'unrestricted',
-  'awakened-devil-ex',
-  'dreadlord',
-] as const;
-
-const featuredClasses = featuredSlugs
-  .map((slug) => classBySlug(slug))
-  .filter((item): item is NonNullable<typeof item> => Boolean(item));
 
 const guides = [
   ['How to Get Cursed King', '/guides/how-to-get-cursed-king', 'Floor 40+ Class Item or 50 Sukuna fragments.'],
   ['How to Get Jetstream', '/guides/how-to-get-jetstream', 'Azure Devil quest, Devil Hearts, Exotic armor, 200K coins.'],
   ['How to Get Unrestricted', '/guides/how-to-get-unrestricted', 'Checklist: level, coins, Honored One, Heavenly Fragments.'],
-  ['Heavenly Fragments', '/guides/heavenly-fragments', '~5% Challenge Mode bosses every 10 waves.'],
+  ['Boss Rush floors', '/boss-rush', 'Floor 40 Class Items and Floor 100 fragment crafts.'],
 ];
 
 export default function Home() {
+  const updateClasses = UPDATE_1_CLASS_SLUGS.map((slug) => classBySlug(slug)).filter(
+    (item): item is NonNullable<typeof item> => Boolean(item),
+  );
+  const updateCode = dungeonLootrCodes.find((item) => item.code === 'UPDATE1' && item.status === 'active');
+
   return (
     <main>
       <section className="hero-stage">
@@ -49,65 +49,103 @@ export default function Home() {
           <div className="eyebrow">Dungeon Lootr Wiki</div>
           <div className="hero-copy">
             <div>
-              <p className="breadcrumb">Home / Fast answers / Current routes</p>
-              <h1>Dungeon Lootr Wiki: Best Classes, Builds, Boss Rush & Codes</h1>
-              <p className="serp-opening">
-                Need a main class, an unlock route, or a drop farm plan? Start here - then jump to the tier list, Boss Rush guide, or drop calculator.
+              <h1>Dungeon Lootr Wiki – UPDATE 1 Classes, Codes & Guides</h1>
+              <p className="page-updated">
+                Updated for UPDATE 1 · {monthYear(UPDATE_1_RELEASED)} · Page updated {formatDisplayDate(WIKI_PAGE_UPDATED)}
               </p>
-              <div className="hero-stat-row" aria-label="Site highlights">
-                <span>Working codes</span>
-                <span>Tracked class unlocks</span>
-                <span>Drop math tool</span>
-              </div>
+              <p className="serp-opening">
+                Dungeon Lootr UPDATE 1 is live. Use this wiki to check the latest classes, tier list, working codes, Boss
+                Rush routes, unlock guides and farming tools.
+              </p>
             </div>
             <div className="quick-answer">
-              <span className="label">Quick Answer</span>
+              <span className="label">Start here</span>
               <p>
-                Pick a class, open its unlock route, then run drop math before a long farm. Start with Cursed King, Boss Rush floors, or the calculator.
+                Four new Exotic classes landed on {formatDisplayDate(UPDATE_1_RELEASED)}: Spell Breaker, Cryomancer,
+                Coyote, and Dark Professor. Older ranked classes and Boss Rush unlocks are still documented below.
               </p>
               <div className="hero-actions">
-                <Link href="/classes">Browse Classes</Link>
-                <Link href="/tools/drop-chance-calculator" className="secondary">Open Drop Calculator</Link>
+                <Link href="/update-1">See UPDATE 1 Changes</Link>
+                <Link href="/classes" className="secondary">
+                  View All Classes
+                </Link>
               </div>
             </div>
           </div>
-          <aside className="hero-panel" aria-label="Recently verified">
-            <div className="panel-title">Community snapshot</div>
+          <aside className="hero-panel" aria-label="UPDATE 1 snapshot">
+            <div className="panel-title">UPDATE 1</div>
             <dl>
-              <div><dt>Patch</dt><dd>Community snapshot</dd></div>
-              <div><dt>Priority</dt><dd>Boss Rush routes</dd></div>
-              <div><dt>Last checked</dt><dd>{CONTENT_LAST_CHECKED}</dd></div>
+              <div>
+                <dt>Released</dt>
+                <dd>{formatDisplayDate(UPDATE_1_RELEASED)}</dd>
+              </div>
+              <div>
+                <dt>New classes</dt>
+                <dd>4 Exotic</dd>
+              </div>
+              <div>
+                <dt>Codes checked</dt>
+                <dd>{formatDisplayDate(codesLastVerifiedAt)}</dd>
+              </div>
             </dl>
           </aside>
         </div>
       </section>
 
-      <FeaturedVideo
-        title="Dungeon Lootr Wiki"
-        videoQuery="Dungeon Lootr beginner guide codes progression Roblox"
-      />
+      <section className="site-shell section-grid">
+        <div className="section-heading">
+          <p className="eyebrow">Latest update</p>
+          <h2>Dungeon Lootr UPDATE 1</h2>
+        </div>
+        <div className="content-panel">
+          <p>
+            Released {formatDisplayDate(UPDATE_1_RELEASED)}. Public coverage agrees on four new Exotic classes. Unlock
+            recipes still conflict across community guides, so this wiki does not invent shop prices or drop rates.
+          </p>
+          <div className="card-grid four">
+            {updateClasses.map((item) => (
+              <Link className="intent-card" href={`/classes/${item.slug}`} key={item.slug}>
+                <span>{item.name}</span>
+                <p>{item.bestFor}</p>
+              </Link>
+            ))}
+          </div>
+          {updateCode ? (
+            <p className="codes-meta">
+              Latest highlighted code: <Link href="/codes">{updateCode.code}</Link> — {updateCode.reward}
+            </p>
+          ) : null}
+          <div className="hero-actions" style={{ marginTop: 16 }}>
+            <Link href="/update-1">View UPDATE 1 Guide</Link>
+            <Link className="secondary" href="/codes">
+              Latest Codes
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      <FeaturedVideo title="Dungeon Lootr Wiki" videoQuery="Dungeon Lootr beginner guide codes progression Roblox" />
 
       <section className="site-shell search-band" aria-label="Popular shortcuts">
         <div className="search-box" role="navigation" aria-label="Jump links">
-          <Link href="/codes">Codes</Link>
+          <Link href="/update-1">UPDATE 1</Link>
+          <span aria-hidden="true">·</span>
+          <Link href="/classes">Classes</Link>
           <span aria-hidden="true">·</span>
           <Link href="/class-tier-list">Tier List</Link>
           <span aria-hidden="true">·</span>
-          <Link href="/boss-rush">Boss Rush</Link>
+          <Link href="/codes">Codes</Link>
           <span aria-hidden="true">·</span>
-          <Link href="/tools/class-finder">Class Finder</Link>
+          <Link href="/boss-rush">Boss Rush</Link>
           <span aria-hidden="true">·</span>
           <Link href="/tools/drop-chance-calculator">Calculator</Link>
         </div>
-        <div className="status-pill">Codes updated</div>
-        <div className="status-pill">Boss Rush routes</div>
-        <div className="status-pill">Drop math tool</div>
       </section>
 
       <section className="site-shell section-grid">
         <div className="section-heading">
-          <p className="eyebrow">Popular today</p>
-          <h2>Answer-first routes</h2>
+          <p className="eyebrow">Core pages</p>
+          <h2>Classes, ranks, codes, Boss Rush</h2>
         </div>
         <div className="card-grid four">
           {popular.map(([title, href, text]) => (
@@ -121,57 +159,8 @@ export default function Home() {
 
       <section className="site-shell section-grid">
         <div className="section-heading">
-          <p className="eyebrow">Classes</p>
-          <h2>Current class database</h2>
-        </div>
-        <div className="table-wrap desktop-table">
-          <table>
-            <thead>
-              <tr>
-                <th>Class</th>
-                <th>Rarity</th>
-                <th>Obtain</th>
-                <th>Best mode</th>
-              </tr>
-            </thead>
-            <tbody>
-              {featuredClasses.map((item) => (
-                <tr key={item.slug}>
-                  <td><Link href={`/classes/${item.slug}`}>{item.name}</Link></td>
-                  <td>
-                    <span className="rarity">{item.rarity}</span>
-                    {item.rarityConflictNote ? ' · pending' : ''}
-                  </td>
-                  <td>{item.obtain}</td>
-                  <td>{item.mode}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-        <div className="class-card-list mobile-cards" aria-label="Current class database">
-          {featuredClasses.map((item) => (
-            <Link className="class-card" href={`/classes/${item.slug}`} key={item.slug}>
-              <div className="class-card-top">
-                <strong>{item.name}</strong>
-                <span className="rarity">{item.rarity}{item.rarityConflictNote ? ' · pending' : ''}</span>
-              </div>
-              <div className="class-card-meta">
-                <span>Obtain: {item.obtain}</span>
-                <span>Best mode: {item.mode}</span>
-              </div>
-            </Link>
-          ))}
-        </div>
-        <p>
-          <Link className="primary-action" href="/classes">Browse full class directory</Link>
-        </p>
-      </section>
-
-      <section className="site-shell section-grid">
-        <div className="section-heading">
           <p className="eyebrow">Unlock guides</p>
-          <h2>Pick the next farm</h2>
+          <h2>Documented farms that still matter</h2>
         </div>
         <div className="card-grid four">
           {guides.map(([title, href, text]) => (
@@ -186,13 +175,18 @@ export default function Home() {
       <section className="site-shell section-grid">
         <div className="section-heading">
           <p className="eyebrow">Tools</p>
-          <h2>Plan before grinding</h2>
+          <h2>Drop math and class filters</h2>
         </div>
         <div className="tool-preview content-panel">
-          <p className="codes-meta">Drop chance calculator</p>
-          <strong>Estimate attempts to 50% / 90% / 95% / 99%</strong>
-          <p>Use it for boss drops, class items, fragments, and any community-reported rare-rate estimate.</p>
-          <Link href="/tools/drop-chance-calculator">Calculate your runs</Link>
+          <p className="codes-meta">Drop chance calculator + Class Finder</p>
+          <strong>Estimate attempts, then filter the roster without inventing drop rates.</strong>
+          <p>
+            The calculator uses real independent-trial math. Class Finder can surface UPDATE 1 names, but it will not
+            auto-recommend them until unlocks are confirmed.
+          </p>
+          <Link href="/tools/drop-chance-calculator">Open Drop Calculator</Link>
+          {' · '}
+          <Link href="/tools/class-finder">Open Class Finder</Link>
         </div>
       </section>
     </main>

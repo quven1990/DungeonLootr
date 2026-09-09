@@ -4,6 +4,7 @@ import Link from '../native-link';
 import { useMemo, useState } from 'react';
 import { trackAnalyticsEvent } from '../analytics-events';
 import type { ClassEntry } from '../data';
+import { hasClassPage } from '../data';
 
 const goals = [
   { id: 'Boss Rush', label: 'Boss Rush push' },
@@ -16,7 +17,11 @@ const goals = [
 export function AspectMatcher({ classes }: { classes: ClassEntry[] }) {
   const [goal, setGoal] = useState<(typeof goals)[number]['id']>('Boss Rush');
   const matches = useMemo(
-    () => classes.filter((item) => item.mode === goal || (goal === 'Dungeon clear' && item.mode.includes('clear'))).slice(0, 8),
+    () =>
+      classes
+        .filter(hasClassPage)
+        .filter((item) => item.mode === goal || (goal === 'Dungeon clear' && item.mode.includes('clear')))
+        .slice(0, 8),
     [classes, goal],
   );
 
@@ -39,7 +44,7 @@ export function AspectMatcher({ classes }: { classes: ClassEntry[] }) {
         </label>
       </div>
       <ul className="check-list">
-        {matches.map((item) => (
+        {matches.filter(hasClassPage).map((item) => (
           <li key={item.slug}>
             <Link
               href={`/classes/${item.slug}`}

@@ -8,12 +8,12 @@ import './globals.css';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://dungeonlootr.top'),
-  title: {
-    default: 'Dungeon Lootr Wiki - Best Classes, Builds, Boss Rush & Codes',
-    template: '%s',
-  },
-  description:
-    'Fast answers for Dungeon Lootr: class tier list, unlock routes, Boss Rush drops, working codes, and a drop-chance calculator.',
+    title: {
+      default: 'Dungeon Lootr Wiki [UPDATE 1] – Classes, Tier List, Codes & Guides',
+      template: '%s',
+    },
+    description:
+      'Find Dungeon Lootr UPDATE 1 classes, tier lists, working codes, unlock guides, Boss Rush routes and drop tools, updated for September 2026.',
   // Do not set a sitewide canonical here — 404 and missing routes must not inherit homepage `/`.
   icons: {
     icon: [
@@ -25,17 +25,17 @@ export const metadata: Metadata = {
     apple: [{ url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' }],
   },
   openGraph: {
-    title: 'Dungeon Lootr Wiki - Best Classes, Builds, Boss Rush & Codes',
+    title: 'Dungeon Lootr Wiki [UPDATE 1] – Classes, Tier List, Codes & Guides',
     description:
-      'Fast answers for Dungeon Lootr: class tier list, unlock routes, Boss Rush drops, working codes, and a drop-chance calculator.',
+      'Find Dungeon Lootr UPDATE 1 classes, tier lists, working codes, unlock guides, Boss Rush routes and drop tools, updated for September 2026.',
     images: ['/images/dungeon-lootr-hero.jpg'],
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Dungeon Lootr Wiki - Best Classes, Builds, Boss Rush & Codes',
+    title: 'Dungeon Lootr Wiki [UPDATE 1] – Classes, Tier List, Codes & Guides',
     description:
-      'Fast answers for Dungeon Lootr: class tier list, unlock routes, Boss Rush drops, working codes, and a drop-chance calculator.',
+      'Find Dungeon Lootr UPDATE 1 classes, tier lists, working codes, unlock guides, Boss Rush routes and drop tools, updated for September 2026.',
     images: ['/images/dungeon-lootr-hero.jpg'],
   },
 };
@@ -66,10 +66,10 @@ export default function RootLayout({
               <SoundToggle />
             </div>
             <div className="footer-links">
+              <Link href="/update-1">UPDATE 1</Link>
               <Link href="/classes">Classes</Link>
               <Link href="/class-tier-list">Tier List</Link>
               <Link href="/boss-rush">Boss Rush</Link>
-              <Link href="/drop-rates">Drops</Link>
               <Link href="/codes">Codes</Link>
               <Link href="/updatelog">Update Log</Link>
               <Link href="/tools/drop-chance-calculator">Calculator</Link>

@@ -1,7 +1,9 @@
 import { notFound } from 'next/navigation';
 import Link from '../native-link';
+import { Breadcrumbs } from '../Breadcrumbs';
 import { ClassTable, CodesPanel, DataNote, NextSteps, RelatedLinks, RetentionPanel } from '../components';
-import { codesLastChecked, demotedHubSlugs, hubBySlug, hubPages, hubSerp } from '../data';
+import { PageStatus } from '../PageStatus';
+import { WIKI_PAGE_UPDATED, codesLastChecked, demotedHubSlugs, hubBySlug, hubPages, hubSerp } from '../data';
 import { JsonLd, faqJsonLd } from '../jsonld';
 import { hubClusterLinks } from '../related';
 import { notFoundMetadata, pageMetadata } from '../seo';
@@ -16,6 +18,21 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   if (!page) return notFoundMetadata;
   return pageMetadata(hubSerp(page), `/${page.slug}`, { index: !demotedHubSlugs.has(page.slug) });
 }
+
+const codesFaqs = [
+  {
+    q: 'Where do I redeem Dungeon Lootr codes?',
+    a: 'Open the lobby Menu, go to More → Codes, paste a working code, then Claim. Join the required community group if the game asks for it.',
+  },
+  {
+    q: 'Why is my Dungeon Lootr code not working?',
+    a: 'Codes are case-sensitive and can expire. Copy from the active list, avoid expired codes, and try a fresh server if a valid code still fails.',
+  },
+  {
+    q: 'Is UPDATE1 an UPDATE 1 code?',
+    a: 'Yes. UPDATE1 was in the September 6, 2026 community roundup and is highlighted as an UPDATE 1 code. That list was reconciled the day before UPDATE 1 launched.',
+  },
+];
 
 function HubBody({ slug }: { slug: string }) {
   if (slug === 'codes') return <CodesPanel />;
@@ -43,6 +60,7 @@ function HubBody({ slug }: { slug: string }) {
           <li>Mid: push the highest dungeon tier you can farm cleanly for EXP and coins.</li>
           <li>Boss Rush unlock at 67+: decide between Floor 40+ Class Item farming and Floor 100 fragment crafting.</li>
           <li>Endgame chase order most accounts follow: Cursed King or Honored One → Unrestricted checklist, or Azure Devil → Awakened Devil EX / Dreadlord as side chases.</li>
+          <li>UPDATE 1 classes are optional extras until their unlocks are confirmed in your client.</li>
         </ol>
       </section>
     );
@@ -82,32 +100,34 @@ export default async function HubPage({ params }: { params: Promise<{ slug: stri
   const { slug } = await params;
   const page = hubBySlug(slug);
   if (!page) notFound();
+  const isCodes = slug === 'codes';
 
   return (
     <main>
-      {slug === 'codes' ? (
-        <JsonLd
-          data={faqJsonLd([
-            {
-              q: 'Where do I redeem Dungeon Lootr codes?',
-              a: 'Open the lobby Menu, go to More → Codes, paste a working code, then Claim. Join the required community group if the game asks for it.',
-            },
-            {
-              q: 'Why is my Dungeon Lootr code not working?',
-              a: 'Codes are case-sensitive and can expire. Copy from the active list, avoid expired codes, and try a fresh server if a valid code still fails.',
-            },
-          ])}
-        />
-      ) : null}
+      {isCodes ? <JsonLd data={faqJsonLd(codesFaqs)} /> : null}
       <section className="site-shell page-hero">
-        <p className="breadcrumb">Home / {page.title}</p>
+        <Breadcrumbs items={[{ name: page.title }]} />
         <h1>{page.title}</h1>
+        {isCodes ? <PageStatus updatedAt={WIKI_PAGE_UPDATED} verifiedForUpdate1={false} /> : null}
         <div className="quick-answer wide">
           <span className="label">Quick Answer</span>
           <p>{page.opening}</p>
-          <div className="hero-actions">
-            <Link href="/tools/drop-chance-calculator">Open Drop Calculator</Link>
-            <Link className="secondary" href="/classes">Browse Classes</Link>
+          <div className="hero-actions" data-nosnippet>
+            {isCodes ? (
+              <>
+                <Link href="/update-1">View UPDATE 1 Guide</Link>
+                <Link className="secondary" href="/classes">
+                  Browse Classes
+                </Link>
+              </>
+            ) : (
+              <>
+                <Link href="/tools/drop-chance-calculator">Open Drop Calculator</Link>
+                <Link className="secondary" href="/classes">
+                  Browse Classes
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </section>
@@ -116,31 +136,55 @@ export default async function HubPage({ params }: { params: Promise<{ slug: stri
           <section className="content-panel">
             <h2>What this page answers</h2>
             <ul>
-              {page.sections.map((section) => <li key={section}>{section}</li>)}
+              {page.sections.map((section) => (
+                <li key={section}>{section}</li>
+              ))}
             </ul>
           </section>
           <HubBody slug={slug} />
+          {isCodes ? (
+            <section className="content-panel">
+              <h2>FAQ</h2>
+              {codesFaqs.map((item) => (
+                <article key={item.q} className="faq-item">
+                  <h3>{item.q}</h3>
+                  <p>{item.a}</p>
+                </article>
+              ))}
+            </section>
+          ) : null}
           <DataNote />
           <RelatedLinks title="Related pages" links={hubClusterLinks(`/${page.slug}`)} />
-          <NextSteps links={[
-            ['Pick a class target', '/classes'],
-            ['Plan rare drops', '/tools/drop-chance-calculator'],
-            ['Check Boss Rush', '/boss-rush'],
-            ['Class tier list', '/class-tier-list'],
-          ]} />
+          <NextSteps
+            links={
+              isCodes
+                ? [
+                    ['UPDATE 1 changes', '/update-1', 'See which classes and event names landed with UPDATE 1.'],
+                    ['Class directory', '/classes', 'Pick a target after you redeem.'],
+                    ['Boss Rush', '/boss-rush', 'Spend chests and potions on documented floor breakpoints.'],
+                    ['Tier list', '/class-tier-list', 'Check whether your main is still worth the grind.'],
+                  ]
+                : [
+                    ['Class directory', '/classes'],
+                    ['Drop calculator', '/tools/drop-chance-calculator'],
+                    ['Boss Rush', '/boss-rush'],
+                    ['Tier list', '/class-tier-list'],
+                  ]
+            }
+          />
         </div>
         <aside className="side-rail">
           <RetentionPanel
             title={page.title}
             videoQuery={`${page.title} Roblox Dungeon Lootr guide`}
-            toolHref={slug === 'aspects' ? '/tools/aspect-matcher' : '/tools/drop-chance-calculator'}
-            toolLabel={slug === 'aspects' ? 'Match an Aspect' : 'Plan the next farm'}
+            toolHref={slug === 'aspects' ? '/tools/aspect-matcher' : isCodes ? '/update-1' : '/tools/drop-chance-calculator'}
+            toolLabel={slug === 'aspects' ? 'Match an Aspect' : isCodes ? 'Open UPDATE 1' : 'Open calculator'}
           />
           <div className="content-panel">
-            <h3>{slug === 'codes' ? 'Source note' : 'Keep verified'}</h3>
+            <h3>{isCodes ? 'Verified vs updated' : 'Keep current'}</h3>
             <p>
-              {slug === 'codes'
-                ? `Active and expired lists were last reconciled on ${codesLastChecked}. Cross-check Discord / group posts after each update.`
+              {isCodes
+                ? `Code rewards were last reconciled on ${codesLastChecked}. This page layout was updated later; that is not a new in-game audit.`
                 : 'Routes and rates can shift after Roblox updates. Prefer in-game UI and multiple community sources over a single rumor.'}
             </p>
           </div>

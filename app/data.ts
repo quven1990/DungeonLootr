@@ -7,6 +7,9 @@ export type SeoEntry = {
   type: 'hub' | 'database' | 'tier' | 'entity' | 'howto' | 'build' | 'tool' | 'guide';
 };
 
+export type ClassTier = 'S' | 'A' | 'B' | 'C' | 'D' | 'Unrated';
+export type ObtainGroup = 'spin' | 'boss-rush' | 'checklist' | 'quest' | 'dungeon-drop' | 'update-1' | 'unknown';
+
 export type ClassEntry = {
   slug: string;
   name: string;
@@ -16,14 +19,25 @@ export type ClassEntry = {
   obtain: string;
   mode: string;
   aspect: string;
-  tier: 'S' | 'A' | 'B' | 'C' | 'D';
+  tier: ClassTier;
   confidence: 'verified' | 'probable' | 'conflicting' | 'unverified';
   opening: string;
   strengths: string[];
   weaknesses: string[];
   unlockSteps: string[];
   buildNotes: string[];
+  /** Directory row only — do not generate a thin /classes/[slug] page. */
+  listingOnly?: boolean;
+  /** Patch label when the class was added, e.g. UPDATE 1. */
+  patch?: string;
+  bestFor?: string;
 };
+
+export const UPDATE_1_RELEASED = '2026-09-07';
+export const UPDATE_1_NAME = 'UPDATE 1';
+export const WIKI_PAGE_UPDATED = '2026-09-09';
+export const UPDATE_1_CLASS_SLUGS = ['spell-breaker', 'cryomancer', 'coyote', 'dark-professor'] as const;
+export const UPDATE_1_CLASS_NAMES = ['Spell Breaker', 'Cryomancer', 'Coyote', 'Dark Professor'] as const;
 
 /** Real build payload for /builds pages. Thin builds stay noindex. */
 export type BuildProfile = {
@@ -55,8 +69,53 @@ export type Serp = {
 export const CONTENT_LAST_CHECKED = '2026-09-06';
 export const CONTENT_PATCH = 'Community snapshot';
 
-/** UPD1 names reported by community media but not yet rated on this wiki. */
-export const UNRATED_CLASS_NAMES = ['Spell Breaker', 'Cryomancer', 'Coyote', 'Dark Professor'] as const;
+/** UPDATE 1 names reported by community media but not yet rated on this wiki. */
+export const UNRATED_CLASS_NAMES = UPDATE_1_CLASS_NAMES;
+
+export function hasClassPage(item: ClassEntry) {
+  return !item.listingOnly;
+}
+
+export function isUpdate1Class(item: ClassEntry) {
+  return item.patch === 'UPDATE 1' || (UPDATE_1_CLASS_SLUGS as readonly string[]).includes(item.slug);
+}
+
+export function obtainGroupOf(item: ClassEntry): ObtainGroup {
+  if (isUpdate1Class(item)) return 'update-1';
+  if (/Boss Rush|Forge with/.test(item.obtain)) return 'boss-rush';
+  if (/Class roll/.test(item.obtain)) return 'spin';
+  if (/NPC quest|Jetstream NPC/.test(item.obtain)) return 'quest';
+  if (/Glaive drop|Nightmare/.test(item.obtain) && /drop/i.test(item.obtain)) return 'dungeon-drop';
+  if (/Heavenly Fragments|Devil Heart|Honored One Lv/.test(item.obtain)) return 'checklist';
+  if (/No confirmed|Not confirmed|unconfirmed/i.test(item.obtain)) return 'unknown';
+  return 'unknown';
+}
+
+function dirClass(input: {
+  slug: string;
+  name: string;
+  rarity: string;
+  obtain: string;
+  mode?: string;
+  bestFor?: string;
+  confidence?: ClassEntry['confidence'];
+  rarityConflictNote?: string;
+}): ClassEntry {
+  return {
+    aspect: 'Not documented',
+    mode: input.mode ?? 'Not ranked',
+    tier: 'Unrated',
+    confidence: input.confidence ?? 'probable',
+    listingOnly: true,
+    opening: `${input.name} appears in the current Dungeon Lootr class roster. This wiki lists it in the directory once the name is confirmed, but does not invent skills, drop rates, or a ranking.`,
+    strengths: [],
+    weaknesses: [],
+    unlockSteps: [],
+    buildNotes: [],
+    bestFor: input.bestFor ?? 'Check the live Classes menu',
+    ...input,
+  };
+}
 
 const VAGUE_BUILD_RE =
   /prioritize consistency|use the class effectively|play aggressively|build around|lean into|hybrid|uptime aspect|damage aspect|control \/|endgame damage|burst aspect|sustain aspect|pure sustain|cleave uptime|aspect direction/i;
@@ -149,23 +208,33 @@ export function isIndexableBuild(item: ClassEntry) {
 export const seoEntries: SeoEntry[] = [
   {
     url: '/classes',
-    title: 'Dungeon Lootr Classes - Unlock Routes, Rarity & Best Modes',
+    title: 'Dungeon Lootr Classes [UPDATE 1] – All Classes & Unlocks',
     description:
-      'Pick your next Dungeon Lootr class fast: rarity, Boss Rush/Forge unlocks, best mode, and build links in one directory.',
+      'Browse the Dungeon Lootr class directory after UPDATE 1: Spell Breaker, Cryomancer, Coyote, Dark Professor, plus spin, Boss Rush, Forge and quest unlocks.',
     opening:
-      'Every tracked Dungeon Lootr class here shows rarity, unlock route, and best mode - spin, Boss Rush, Forge, and quest paths included. Pick your target before you farm.',
-    h1: 'Dungeon Lootr Classes: Unlock Routes, Rarity & Best Modes',
+      'Dungeon Lootr has expanded after UPDATE 1, which added Spell Breaker, Cryomancer, Coyote and Dark Professor. Use the directory below to compare classes and open individual unlock guides.',
+    h1: 'Dungeon Lootr Classes – All Classes After UPDATE 1',
     type: 'database',
   },
   {
     url: '/class-tier-list',
-    title: 'Dungeon Lootr Tier List - Selected Classes by Mode',
+    title: 'Dungeon Lootr Tier List [UPDATE 1] – Best Classes',
     description:
-      'Selected Dungeon Lootr class rankings for Boss Rush, dungeon clears, solo, and endgame value - community snapshot, not a full roster claim.',
+      'Dungeon Lootr class rankings after UPDATE 1 for Boss Rush, dungeon clear, solo, farming and endgame. New Exotic classes stay unrated until we have reliable combat information.',
     opening:
-      'This is a selected-class tier list for modes we track (Boss Rush, dungeon clear, solo, survival, endgame). New UPD1 classes without enough testing sit in Unrated below - not invented S/A placements.',
-    h1: 'Dungeon Lootr Class Tier List (Selected)',
+      'This ranking covers classes we can actually judge by mode. Spell Breaker, Cryomancer, Coyote and Dark Professor are listed separately until enough reliable UPDATE 1 gameplay is available.',
+    h1: 'Dungeon Lootr Tier List [UPDATE 1] – All Classes Ranked',
     type: 'tier',
+  },
+  {
+    url: '/update-1',
+    title: 'Dungeon Lootr UPDATE 1 – New Classes, Codes & Magic Unleashed',
+    description:
+      'Everything new in Dungeon Lootr UPDATE 1, including Spell Breaker, Cryomancer, Coyote, Dark Professor, new codes and confirmed update content.',
+    opening:
+      'UPDATE 1 launched on September 7, 2026 with four new Exotic classes — Spell Breaker, Cryomancer, Coyote and Dark Professor — plus related Magic Unleashed content and new codes.',
+    h1: 'Dungeon Lootr UPDATE 1 Guide',
+    type: 'guide',
   },
   {
     url: '/boss-rush',
@@ -189,9 +258,9 @@ export const seoEntries: SeoEntry[] = [
   },
   {
     url: '/tools/drop-chance-calculator',
-    title: 'Dungeon Lootr Drop Chance Calculator - Runs to 50%, 90%, 95%, 99%',
+    title: 'Dungeon Lootr Drop Chance Calculator – Estimate Runs',
     description:
-      'Stop guessing rare drops. Enter any drop rate and see your chance after N runs - plus attempts needed for 50/90/95/99%.',
+      'Enter a drop rate and target confidence to estimate expected attempts plus 50%, 75%, 90%, 95% and 99% thresholds.',
     opening:
       'Paste any constant drop rate and see expected wait vs cumulative chance across independent attempts. Default 2% is an example only — not a game drop claim.',
     h1: 'Dungeon Lootr Drop Chance Calculator',
@@ -509,6 +578,240 @@ export const classes: ClassEntry[] = [
     unlockSteps: ['Roll Epic until Boxer appears, or use it if it drops early.'],
     buildNotes: ['Keep a balanced damage/survival setup and swap once a higher tier unlock is ready.'],
   },
+  {
+    slug: 'spell-breaker',
+    name: 'Spell Breaker',
+    rarity: 'Exotic',
+    obtain: 'UPDATE 1 class. Community guides disagree on the exact unlock (Raid Shop currency vs Magic Unleashed weapon). Check the live shop / raid UI.',
+    mode: 'Melee',
+    aspect: 'Not documented',
+    tier: 'Unrated',
+    confidence: 'unverified',
+    patch: 'UPDATE 1',
+    bestFor: 'Testing melee UPDATE 1 kits',
+    opening:
+      'Spell Breaker is one of four Exotic classes added in Dungeon Lootr UPDATE 1 on September 7, 2026. Community write-ups treat it as a close-range option, but they do not agree on the unlock recipe, so this page does not publish a farm as fact.',
+    strengths: [
+      'Part of the current UPDATE 1 roster, so it is relevant to new-content searches.',
+      'Public coverage consistently frames it as a melee / physical UPDATE 1 class.',
+    ],
+    weaknesses: [
+      'Unlock method is still disputed across community guides.',
+      'No ranking, skill names, or damage numbers are confirmed on this wiki.',
+    ],
+    unlockSteps: [
+      'Read the UPDATE 1 guide for the current public picture, including conflicting shop vs event-weapon reports.',
+      'Confirm the live Classes, Raid Shop, or Magic Unleashed UI before spending currency.',
+      'Do not follow a guide that publishes skill multipliers this wiki has not checked in game.',
+    ],
+    buildNotes: [
+      'Skip copied “best Aspect” lists until an in-game kit is verified.',
+      'If you already own it, treat clears as testing — not a published build.',
+    ],
+  },
+  {
+    slug: 'cryomancer',
+    name: 'Cryomancer',
+    rarity: 'Exotic',
+    obtain: 'UPDATE 1 class. Community guides disagree on the exact unlock (Raid Shop currency vs Magic Unleashed wand). Check the live shop / raid UI.',
+    mode: 'Ranged / magic',
+    aspect: 'Not documented',
+    tier: 'Unrated',
+    confidence: 'unverified',
+    patch: 'UPDATE 1',
+    bestFor: 'Testing ranged UPDATE 1 kits',
+    opening:
+      'Cryomancer is an UPDATE 1 Exotic class. Public posts usually describe a ranged ice / magic identity, but they split on whether you buy it from a raid shop or unlock it by equipping a Magic Unleashed wand.',
+    strengths: [
+      'Named in every major UPDATE 1 class roundup we checked.',
+      'Consistently described as the ranged counterpart to Spell Breaker.',
+    ],
+    weaknesses: [
+      'Shop price, currency name, and weapon-unlock claims currently conflict.',
+      'Skill names and rankings are not confirmed here.',
+    ],
+    unlockSteps: [
+      'Use the UPDATE 1 guide to see which claims are in conflict.',
+      'Verify the live event shop and class panel before farming a currency that may not be the real cost.',
+      'Leave drop-rate math out of the plan until a single in-game source is confirmed.',
+    ],
+    buildNotes: [
+      'No Aspect recommendation is published until the kit is verified.',
+      'Compare it against existing ranged farmers such as Witch Gunner only after you own both.',
+    ],
+  },
+  {
+    slug: 'coyote',
+    name: 'Coyote',
+    rarity: 'Exotic',
+    obtain: 'UPDATE 1 class. Several community guides describe a paid bundle rather than a class spin. Bundle SKU and price are not confirmed here.',
+    mode: 'Magic',
+    aspect: 'Not documented',
+    tier: 'Unrated',
+    confidence: 'unverified',
+    patch: 'UPDATE 1',
+    bestFor: 'Only if you already have the bundle, or after in-game confirmation',
+    opening:
+      'Coyote is an UPDATE 1 Exotic class. Multiple community guides say it is bundle-locked instead of a normal spin, but this wiki has not confirmed the product name, price, or whether a free route exists.',
+    strengths: [
+      'Confirmed as one of the four UPDATE 1 class names.',
+      'If the bundle reports are right, it is not competing with spin pity for the other three.',
+    ],
+    weaknesses: [
+      'May be paywalled — unconfirmed.',
+      'No verified combat role, skills, or tier placement.',
+    ],
+    unlockSteps: [
+      'Check the live Roblox/game store before buying anything based on a third-party guide.',
+      'Do not assume a raid-farm alternative unless the in-game UI shows one.',
+      'If you already own Coyote, use the class page and UPDATE 1 notes rather than copied damage tables.',
+    ],
+    buildNotes: [
+      'No published rotation or Aspect until the kit is recorded in game.',
+    ],
+  },
+  {
+    slug: 'dark-professor',
+    name: 'Dark Professor',
+    rarity: 'Exotic',
+    obtain: 'UPDATE 1 class. Community reports describe a late-game raid chase, but raid name, difficulty, and drop rate currently conflict, so no rate is listed here.',
+    mode: 'Magic',
+    aspect: 'Not documented',
+    tier: 'Unrated',
+    confidence: 'unverified',
+    patch: 'UPDATE 1',
+    bestFor: 'Late-game testing after UPDATE 1 raids are confirmed',
+    opening:
+      'Dark Professor is the UPDATE 1 Exotic class most often described as a late raid chase. Guides disagree on the raid name, required difficulty, and drop rate, so this wiki does not publish a percentage or a skill list.',
+    strengths: [
+      'Widely listed as the hardest of the four UPDATE 1 classes to obtain.',
+      'Worth tracking if you are already pushing the new raid content.',
+    ],
+    weaknesses: [
+      'Unlock details are the most conflicted of the four new classes.',
+      'Skill names and multipliers circulating online are not treated as confirmed.',
+    ],
+    unlockSteps: [
+      'Open the UPDATE 1 guide for the conflicting raid-drop claims, then confirm against the live raid panel.',
+      'Do not plan a 0.5% farm from a third-party article until the in-game drop text matches.',
+      'Use the drop calculator only after you have a rate you personally confirmed.',
+    ],
+    buildNotes: [
+      'Ignore copied skill names (and any x damage multipliers) until they match the in-game kit.',
+    ],
+  },
+  dirClass({
+    slug: 'ronin',
+    name: 'Ronin',
+    rarity: 'Rare',
+    obtain: 'Class roll (Rare band, community ~70%). Also reported as the tutorial class.',
+    mode: 'Early progression',
+    bestFor: 'Starter clears',
+  }),
+  dirClass({
+    slug: 'greatsword',
+    name: 'Greatsword',
+    rarity: 'Rare',
+    obtain: 'Class roll (Rare band, community ~70%)',
+    mode: 'Early progression',
+    bestFor: 'Starter melee',
+  }),
+  dirClass({
+    slug: 'bowman',
+    name: 'Bowman',
+    rarity: 'Rare',
+    obtain: 'Class roll (Rare band, community ~70%)',
+    mode: 'Ranged clear',
+    bestFor: 'Starter ranged',
+  }),
+  dirClass({
+    slug: 'flame-bastion',
+    name: 'Flame Bastion',
+    rarity: 'Epic',
+    obtain: 'Class roll (Epic band, community ~20%)',
+    mode: 'Early progression',
+    bestFor: 'Early Epic option',
+  }),
+  dirClass({
+    slug: 'assassin',
+    name: 'Assassin',
+    rarity: 'Epic',
+    obtain: 'Class roll (Epic band, community ~20%)',
+    mode: 'Early progression',
+    bestFor: 'Early Epic option',
+  }),
+  dirClass({
+    slug: 'archer',
+    name: 'Archer',
+    rarity: 'Legendary',
+    obtain: 'Class roll (Legendary band, community ~8%)',
+    mode: 'Ranged clear',
+    bestFor: 'Spin-pool ranged',
+  }),
+  dirClass({
+    slug: 'shinobi',
+    name: 'Shinobi',
+    rarity: 'Legendary',
+    obtain: 'Class roll (Legendary band, community ~8%)',
+    mode: 'Dungeon clear',
+    bestFor: 'Spin-pool Legendary',
+  }),
+  dirClass({
+    slug: 'kage',
+    name: 'Kage',
+    rarity: 'Legendary',
+    obtain: 'Class roll (Legendary band, community ~8%)',
+    mode: 'Dungeon clear',
+    bestFor: 'Spin-pool Legendary',
+  }),
+  dirClass({
+    slug: 'divergent',
+    name: 'Divergent',
+    rarity: 'Mythic',
+    obtain: 'Class roll (Mythic band, community ~2%)',
+    mode: 'Not ranked',
+    bestFor: 'Spin-pool Mythic',
+  }),
+  dirClass({
+    slug: 'wanderer',
+    name: 'Wanderer',
+    rarity: 'Mythic',
+    obtain: 'Class roll (Mythic band, community ~2%)',
+    mode: 'Not ranked',
+    bestFor: 'Spin-pool Mythic',
+  }),
+  dirClass({
+    slug: 'cursed-child',
+    name: 'Cursed Child',
+    rarity: 'Mythic',
+    obtain: 'Class roll (Mythic band, community ~2%)',
+    mode: 'Not ranked',
+    bestFor: 'Spin-pool Mythic',
+  }),
+  dirClass({
+    slug: 'vacio',
+    name: 'Vacio',
+    rarity: 'Celestial',
+    obtain: 'Class roll (Celestial band, community ~0.5%)',
+    mode: 'Not ranked',
+    bestFor: 'Spin-pool Celestial',
+  }),
+  dirClass({
+    slug: 'founder',
+    name: 'Founder',
+    rarity: 'Unconfirmed',
+    obtain: 'Not confirmed. Community lists include the name but do not agree on a reliable unlock.',
+    confidence: 'unverified',
+    bestFor: 'Unknown until the live panel is checked',
+  }),
+  dirClass({
+    slug: 'demonbane',
+    name: 'Demonbane',
+    rarity: 'Unconfirmed',
+    obtain: 'Not confirmed. Community tier lists mention the name; rarity and unlock currently disagree.',
+    confidence: 'unverified',
+    bestFor: 'Unknown until the live panel is checked',
+  }),
 ];
 
 export type GuideEntry = {
@@ -803,33 +1106,41 @@ export type CodeEntry = {
   reward: string;
   status: 'active' | 'expired';
   isNew?: boolean;
+  addedAt?: string;
+  verifiedAt: string;
+  source: string;
+  patch?: string;
 };
+
+const CODES_SOURCE = 'Community codes roundup';
 
 /** Redeem codes are public promo strings; rewards/status are community-checked and can expire without notice. */
 export const dungeonLootrCodes: CodeEntry[] = [
-  { code: 'UPDATE1', reward: '100 Mage Chests and 10 Normal Chests', status: 'active', isNew: true },
-  { code: 'WEEKENDBUFFS', reward: '2X of all Luck Potions', status: 'active', isNew: true },
-  { code: '15KCCU', reward: '5 Luck Potions III', status: 'active', isNew: true },
-  { code: 'COURAGE', reward: '5 Random GM Blessings', status: 'active', isNew: true },
-  { code: 'LOVETHISGAME', reward: '10 Aspect Gems', status: 'active', isNew: true },
-  { code: 'RAIDTIME', reward: '5 Forge Stones Bundle', status: 'active', isNew: true },
-  { code: 'LOOTR', reward: 'Random GM Blessing', status: 'active' },
-  { code: 'FORGESKIP', reward: '3 Forge Stone Bundles, 3 Reforge Stone Bundles', status: 'expired' },
-  { code: '8KLIKE', reward: 'Special rewards', status: 'expired' },
-  { code: '10KFAV', reward: 'Special rewards', status: 'expired' },
-  { code: 'FULLRELEASE', reward: '3 Luck Potion 3', status: 'expired' },
-  { code: 'LOOTRISBACK', reward: '3 Forge Stone Bundle', status: 'expired' },
-  { code: 'JACKPOT', reward: '5 Luck Potion 3', status: 'expired' },
-  { code: '20KPLAYERS', reward: '5 Reforge Stone Bundle', status: 'expired' },
-  { code: 'GIVEMEGEMSPLEASE', reward: '3 Aspect Gems', status: 'expired' },
-  { code: '3KLIKES', reward: 'Expired', status: 'expired' },
-  { code: '4KFAV', reward: 'Expired', status: 'expired' },
-  { code: 'EARLYACCESSYAY', reward: 'Expired', status: 'expired' },
-  { code: 'NEWASPECT', reward: 'Expired', status: 'expired' },
-  { code: 'BYEMETA', reward: 'Expired', status: 'expired' },
+  { code: 'UPDATE1', reward: '100 Mage Chests and 10 Normal Chests', status: 'active', isNew: true, addedAt: '2026-09-06', verifiedAt: '2026-09-06', source: CODES_SOURCE, patch: 'UPDATE 1' },
+  { code: 'WEEKENDBUFFS', reward: '2X of all Luck Potions', status: 'active', isNew: true, addedAt: '2026-09-06', verifiedAt: '2026-09-06', source: CODES_SOURCE },
+  { code: '15KCCU', reward: '5 Luck Potions III', status: 'active', isNew: true, addedAt: '2026-09-06', verifiedAt: '2026-09-06', source: CODES_SOURCE },
+  { code: 'COURAGE', reward: '5 Random GM Blessings', status: 'active', isNew: true, addedAt: '2026-09-06', verifiedAt: '2026-09-06', source: CODES_SOURCE },
+  { code: 'LOVETHISGAME', reward: '10 Aspect Gems', status: 'active', isNew: true, addedAt: '2026-09-06', verifiedAt: '2026-09-06', source: CODES_SOURCE },
+  { code: 'RAIDTIME', reward: '5 Forge Stones Bundle', status: 'active', isNew: true, addedAt: '2026-09-06', verifiedAt: '2026-09-06', source: CODES_SOURCE },
+  { code: 'LOOTR', reward: 'Random GM Blessing', status: 'active', verifiedAt: '2026-09-06', source: CODES_SOURCE },
+  { code: 'FORGESKIP', reward: '3 Forge Stone Bundles, 3 Reforge Stone Bundles', status: 'expired', verifiedAt: '2026-09-06', source: CODES_SOURCE },
+  { code: '8KLIKE', reward: 'Special rewards', status: 'expired', verifiedAt: '2026-09-06', source: CODES_SOURCE },
+  { code: '10KFAV', reward: 'Special rewards', status: 'expired', verifiedAt: '2026-09-06', source: CODES_SOURCE },
+  { code: 'FULLRELEASE', reward: '3 Luck Potion 3', status: 'expired', verifiedAt: '2026-09-06', source: CODES_SOURCE },
+  { code: 'LOOTRISBACK', reward: '3 Forge Stone Bundle', status: 'expired', verifiedAt: '2026-09-06', source: CODES_SOURCE },
+  { code: 'JACKPOT', reward: '5 Luck Potion 3', status: 'expired', verifiedAt: '2026-09-06', source: CODES_SOURCE },
+  { code: '20KPLAYERS', reward: '5 Reforge Stone Bundle', status: 'expired', verifiedAt: '2026-09-06', source: CODES_SOURCE },
+  { code: 'GIVEMEGEMSPLEASE', reward: '3 Aspect Gems', status: 'expired', verifiedAt: '2026-09-06', source: CODES_SOURCE },
+  { code: '3KLIKES', reward: 'Expired', status: 'expired', verifiedAt: '2026-09-06', source: CODES_SOURCE },
+  { code: '4KFAV', reward: 'Expired', status: 'expired', verifiedAt: '2026-09-06', source: CODES_SOURCE },
+  { code: 'EARLYACCESSYAY', reward: 'Expired', status: 'expired', verifiedAt: '2026-09-06', source: CODES_SOURCE },
+  { code: 'NEWASPECT', reward: 'Expired', status: 'expired', verifiedAt: '2026-09-06', source: CODES_SOURCE },
+  { code: 'BYEMETA', reward: 'Expired', status: 'expired', verifiedAt: '2026-09-06', source: CODES_SOURCE },
 ];
 
+/** Last time the codes list was reconciled against community roundups. Not deploy time. */
 export const codesLastChecked = '2026-09-06';
+export const codesLastVerifiedAt = codesLastChecked;
 
 export type UpdateLogEntry = {
   date: string;
@@ -840,6 +1151,24 @@ export type UpdateLogEntry = {
 };
 
 export const updateLog: UpdateLogEntry[] = [
+  {
+    date: '2026-09-09',
+    title: 'UPDATE 1 wiki coverage',
+    summary:
+      'Repositioned the wiki around UPDATE 1: new pillar page, class directory expansion, and honest handling of conflicting new-class unlock reports.',
+    changes: [
+      'Added the UPDATE 1 guide covering Spell Breaker, Cryomancer, Coyote, Dark Professor, Magic Unleashed, and codes.',
+      'Expanded the class directory with confirmed roster names; listing-only rows do not get thin pages.',
+      'Codes page now stores verifiedAt separately from page copy updates, and highlights UPDATE1 without pretending a new in-game audit happened after September 6.',
+      'Tier list keeps UPDATE 1 classes unrated instead of inventing S/A placements.',
+    ],
+    hrefs: [
+      ['UPDATE 1 guide', '/update-1'],
+      ['Class directory', '/classes'],
+      ['Tier list', '/class-tier-list'],
+      ['Working codes', '/codes'],
+    ],
+  },
   {
     date: '2026-09-09',
     title: 'Privacy-safe interaction analytics',
@@ -911,9 +1240,9 @@ export const updateLog: UpdateLogEntry[] = [
 export const hubPages = [
   [
     'codes',
-    'Dungeon Lootr Codes',
-    'Redeem the newest Dungeon Lootr codes for chests, luck potions, Aspect gems, and Forge stones - skip anything marked expired.',
-    ['Working codes', 'Expired codes', 'How to redeem', 'Last checked'],
+    'Dungeon Lootr Codes [UPDATE 1]',
+    'Latest working Dungeon Lootr codes after UPDATE 1. Copy active codes for chests, luck potions, Aspect Gems, Forge Stones and other rewards.',
+    ['Latest codes', 'New UPDATE 1 codes', 'Expired codes', 'How to redeem'],
   ],
   [
     'builds',
@@ -1050,7 +1379,13 @@ function buildModeHook(mode: string) {
 }
 
 export function isIndexableClass(item: ClassEntry) {
+  if (item.listingOnly) return false;
+  if (isUpdate1Class(item)) return true;
   return item.confidence !== 'unverified';
+}
+
+export function classPages() {
+  return classes.filter(hasClassPage);
 }
 
 export function classSerp(item: ClassEntry): Serp {
@@ -1064,6 +1399,15 @@ export function classSerp(item: ClassEntry): Serp {
       searchIntent: 'entity',
     };
   }
+  if (isUpdate1Class(item)) {
+    return {
+      title: `${item.name} Dungeon Lootr – How to Get, Skills & Build`,
+      description: `${item.name} in Dungeon Lootr UPDATE 1: what is confirmed about rarity and unlock reports, why skill data is withheld, and how it compares to older classes.`,
+      intent: 'UPDATE 1 class page: update context and honest unknowns, not invented skills or drop rates.',
+      primaryKeyword: `${item.name} Dungeon Lootr`,
+      searchIntent: 'entity',
+    };
+  }
   if (!isIndexableClass(item)) {
     return {
       title: `Dungeon Lootr ${item.name} - Tier Placement & What We Know`,
@@ -1074,8 +1418,8 @@ export function classSerp(item: ClassEntry): Serp {
     };
   }
   return {
-    title: `Dungeon Lootr ${item.name} – How to Get It, Skills & Build Notes`,
-    description: `${item.name}: rarity, obtain overview, best mode, strengths/weaknesses, Aspect notes, and links to the unlock route and build notes.`,
+    title: `Dungeon Lootr ${item.name} – Skills, Tier & Build`,
+    description: `${item.name}: combat role, ${item.tier}-tier placement, strengths, weaknesses, and build notes. Unlock details live on the dedicated how-to page when one exists.`,
     intent: 'Entity overview for the class, not a full unlock tutorial or full build page.',
     primaryKeyword: `Dungeon Lootr ${item.name}`,
     searchIntent: 'entity',
@@ -1159,9 +1503,9 @@ export function guideSerp(guide: { slug: string; target: string; title: string; 
 
 const hubSerpBySlug: Record<string, { title: string; description: string }> = {
   codes: {
-    title: 'Dungeon Lootr Codes - Working Codes & Free Rewards (Updated)',
+    title: 'Dungeon Lootr Codes [UPDATE 1] – Working Codes (September 2026)',
     description:
-      'Newest Dungeon Lootr codes for chests, luck potions, Aspect gems, and Forge stones, plus expired codes to skip.',
+      'Latest working Dungeon Lootr codes for UPDATE 1. Copy active codes for chests, luck potions, Aspect Gems, Forge Stones and other rewards.',
   },
   builds: {
     title: 'Dungeon Lootr Builds - Copy-Ready Setups by Class & Mode',

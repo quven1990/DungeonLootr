@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation';
 import Link from '../../native-link';
+import { Breadcrumbs } from '../../Breadcrumbs';
 import { NextSteps, RelatedLinks } from '../../components';
 import { AspectMatcher } from '../AspectMatcher';
 import { ClassFinder } from '../ClassFinder';
@@ -25,7 +26,7 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
   return (
     <main>
       <section className="site-shell page-hero">
-        <p className="breadcrumb">Home / Tools / {tool.title}</p>
+        <Breadcrumbs items={[{ name: 'Tools', href: '/tools/drop-chance-calculator' }, { name: tool.title }]} />
         <h1>{tool.title}</h1>
         <div className="quick-answer wide">
           <span className="label">Quick Answer</span>

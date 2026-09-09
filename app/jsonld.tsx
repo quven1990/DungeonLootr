@@ -18,7 +18,40 @@ export function websiteJsonLd() {
     name: 'Dungeon Lootr Wiki',
     url: 'https://dungeonlootr.top',
     description:
-      'Unofficial Dungeon Lootr wiki for class unlocks, tier list, Boss Rush routes, codes, and drop-chance math.',
+      'Unofficial Dungeon Lootr wiki covering UPDATE 1, classes, tier list, codes, Boss Rush routes, unlock guides, and farming tools.',
+    publisher: {
+      '@type': 'Organization',
+      name: 'Dungeon Lootr Wiki',
+      url: 'https://dungeonlootr.top',
+    },
+  };
+}
+
+export function articleJsonLd(input: {
+  headline: string;
+  description: string;
+  url: string;
+  datePublished: string;
+  dateModified: string;
+}) {
+  const url = `https://dungeonlootr.top${input.url.replace(/\/$/, '') || ''}`;
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: input.headline,
+    description: input.description,
+    mainEntityOfPage: url,
+    datePublished: input.datePublished,
+    dateModified: input.dateModified,
+    author: {
+      '@type': 'Organization',
+      name: 'Dungeon Lootr Wiki',
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: 'Dungeon Lootr Wiki',
+      url: 'https://dungeonlootr.top',
+    },
   };
 }
 

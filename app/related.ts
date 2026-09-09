@@ -1,5 +1,5 @@
 import type { ClassEntry, GuideEntry } from './data';
-import { classes, guideBySlug, isIndexableClass } from './data';
+import { classes, guideBySlug, hasClassPage, isIndexableClass, isUpdate1Class } from './data';
 
 export type RelatedLink = [string, string, string?];
 
@@ -17,7 +17,7 @@ function dedupe(links: RelatedLink[], exclude: string[] = []) {
 
 /** Same-tier / same-mode alternatives for a class page. */
 export function relatedClassLinks(current: ClassEntry, limit = 4): RelatedLink[] {
-  const pool = classes.filter((item) => item.slug !== current.slug && isIndexableClass(item));
+  const pool = classes.filter((item) => item.slug !== current.slug && isIndexableClass(item) && hasClassPage(item));
   const scored = pool
     .map((item) => {
       let score = 0;
@@ -32,37 +32,64 @@ export function relatedClassLinks(current: ClassEntry, limit = 4): RelatedLink[]
 }
 
 export function classIntentNextSteps(item: ClassEntry): RelatedLink[] {
+  if (isUpdate1Class(item)) {
+    return dedupe(
+      [
+        ['UPDATE 1 guide', '/update-1', 'All four new Exotic classes and what is still unconfirmed.'],
+        ['Class directory', '/classes', 'Compare UPDATE 1 names with ranked older classes.'],
+        ['Tier list', '/class-tier-list', 'UPDATE 1 classes stay unrated until kits are verified.'],
+        ['Working codes', '/codes', 'Copy UPDATE1 and the rest of the active list.'],
+      ],
+      [`/classes/${item.slug}`],
+    );
+  }
   const unlock = guideBySlug(`how-to-get-${item.slug}`);
   const compare =
     item.slug === 'cursed-king'
-      ? (['Compare Cursed King vs Sinister Trigger →', '/comparisons/cursed-king-vs-sinister-trigger', 'Mode verdict before you pick one chase.'] as RelatedLink)
+      ? (['Compare Cursed King vs Sinister Trigger', '/comparisons/cursed-king-vs-sinister-trigger', 'Mode verdict before you pick one chase.'] as RelatedLink)
       : item.slug === 'honored-one'
-        ? (['Compare Honored One vs Unrestricted →', '/comparisons/honored-one-vs-unrestricted', 'See whether to stop at Honored One or push the checklist.'] as RelatedLink)
+        ? (['Compare Honored One vs Unrestricted', '/comparisons/honored-one-vs-unrestricted', 'See whether to stop at Honored One or push the checklist.'] as RelatedLink)
         : null;
 
   return dedupe(
     [
       unlock
-        ? ([`Still farming? Suggested ${item.name} unlock →`, `/guides/${unlock.slug}`, 'Requirements, Floor 40 / Forge path, and common mistakes.'] as RelatedLink)
+        ? ([`How to get ${item.name}`, `/guides/${unlock.slug}`, 'Requirements, Floor 40 / Forge path, and common mistakes.'] as RelatedLink)
         : null,
-      [`Already unlocked? Best ${item.name} build →`, `/builds/${item.slug}`, 'Stats, Aspect, gear focus, and mode setup.'],
+      [`${item.name} build notes`, `/builds/${item.slug}`, 'Stats, Aspect, gear focus, and mode setup.'],
       compare,
-      ['Estimate your farm with the calculator →', '/tools/drop-chance-calculator', 'Runs needed for 50% / 90% / 95% / 99%.'],
+      item.mode === 'Boss Rush' || /Boss Rush|Forge/.test(item.obtain)
+        ? (['Boss Rush floors', '/boss-rush', 'Floor 40 Class Items and Floor 100 fragments.'] as RelatedLink)
+        : (['Drop calculator', '/tools/drop-chance-calculator', 'Convert a confirmed rate into attempt targets.'] as RelatedLink),
     ].filter(Boolean) as RelatedLink[],
     [`/classes/${item.slug}`],
   ).slice(0, 4);
 }
 
 export function classClusterLinks(item: ClassEntry): RelatedLink[] {
+  if (isUpdate1Class(item)) {
+    return dedupe(
+      [
+        ['UPDATE 1 guide', '/update-1'],
+        ['Spell Breaker', '/classes/spell-breaker'],
+        ['Cryomancer', '/classes/cryomancer'],
+        ['Coyote', '/classes/coyote'],
+        ['Dark Professor', '/classes/dark-professor'],
+        ['Class directory', '/classes'],
+        ['Tier list', '/class-tier-list'],
+      ],
+      [`/classes/${item.slug}`],
+    ).slice(0, 6);
+  }
   const unlock = guideBySlug(`how-to-get-${item.slug}`);
   return dedupe(
     [
-      [`Best ${item.name} build →`, `/builds/${item.slug}`],
-      unlock ? [`How to get ${item.name} →`, `/guides/${unlock.slug}`] : null,
+      [`${item.name} build notes`, `/builds/${item.slug}`],
+      unlock ? [`How to get ${item.name}`, `/guides/${unlock.slug}`] : null,
       ['Class tier list', '/class-tier-list'],
-      ['Boss Rush guide', '/boss-rush'],
-      ['Drop rates', '/drop-rates'],
-      ['Drop chance calculator', '/tools/drop-chance-calculator'],
+      ['Class directory', '/classes'],
+      /Boss Rush|Forge/.test(item.obtain) ? ['Boss Rush guide', '/boss-rush'] : null,
+      /drop|%/.test(item.obtain) ? ['Drop chance calculator', '/tools/drop-chance-calculator'] : null,
     ].filter(Boolean) as RelatedLink[],
     [`/classes/${item.slug}`],
   ).slice(0, 6);
@@ -140,8 +167,8 @@ export function guideClusterLinks(guide: GuideEntry): RelatedLink[] {
 export function hubClusterLinks(current?: string): RelatedLink[] {
   return dedupe(
     [
+      ['UPDATE 1 guide', '/update-1'],
       ['Working codes', '/codes'],
-      ['Update log', '/updatelog'],
       ['Class directory', '/classes'],
       ['Class tier list', '/class-tier-list'],
       ['Boss Rush guide', '/boss-rush'],

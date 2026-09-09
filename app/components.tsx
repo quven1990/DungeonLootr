@@ -6,20 +6,24 @@ import {
   classes,
   codesLastChecked,
   dungeonLootrCodes,
+  hasClassPage,
   isIndexableClass,
   type ClassEntry,
   type SeoEntry,
 } from './data';
+import { formatDisplayDate } from './format-date';
 
 export function CodesPanel() {
   const active = dungeonLootrCodes.filter((item) => item.status === 'active');
   const expired = dungeonLootrCodes.filter((item) => item.status === 'expired');
+  const updateCodes = active.filter((item) => item.patch === 'UPDATE 1');
   return (
     <>
       <section className="content-panel">
-        <h2>Working codes</h2>
+        <h2>Latest Dungeon Lootr codes</h2>
         <p className="codes-meta">
-          Last checked: {codesLastChecked}. Codes are case-sensitive and can expire without notice.{' '}
+          Active list last reconciled {formatDisplayDate(codesLastChecked)}. UPDATE 1 released September 7, 2026; the
+          UPDATE1 code was already in that roundup. Rewards below were not re-audited after launch.{' '}
           <Link href="/updatelog">Update log</Link>
         </p>
         <div className="table-wrap desktop-table">
@@ -28,17 +32,20 @@ export function CodesPanel() {
               <tr>
                 <th>Code</th>
                 <th>Reward</th>
-                <th>Status</th>
-                <th>Copy</th>
+                <th></th>
               </tr>
             </thead>
             <tbody>
               {active.map((item) => (
                 <tr key={item.code}>
-                  <td><code className="code-chip">{item.code}</code></td>
+                  <td>
+                    <code className="code-chip">{item.code}</code>
+                    {item.isNew ? <span className="status-pill">NEW</span> : null}
+                  </td>
                   <td>{item.reward}</td>
-                  <td>{item.isNew ? 'Active · New' : 'Active'}</td>
-                  <td><CopyCodeButton code={item.code} showCode={false} /></td>
+                  <td>
+                    <CopyCodeButton code={item.code} showCode={false} />
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -49,18 +56,39 @@ export function CodesPanel() {
             <article className="code-card" key={item.code}>
               <div className="code-card-top">
                 <CopyCodeButton code={item.code} />
-                <span className="status-pill">{item.isNew ? 'Active · New' : 'Active'}</span>
+                <span className="status-pill">{item.isNew ? 'NEW' : 'Active'}</span>
               </div>
               <p className="code-card-reward">{item.reward}</p>
             </article>
           ))}
         </div>
       </section>
+      {updateCodes.length ? (
+        <section className="content-panel">
+          <h2>New UPDATE 1 Codes</h2>
+          <p>
+            Highlighted because the code name matches UPDATE 1. Status is still from the {formatDisplayDate(codesLastChecked)}{' '}
+            reconciliation.
+          </p>
+          <ul>
+            {updateCodes.map((item) => (
+              <li key={item.code}>
+                <code className="code-chip">{item.code}</code> — {item.reward} <span className="status-pill">NEW</span>
+              </li>
+            ))}
+          </ul>
+          <p>
+            <Link href="/update-1">View UPDATE 1 Guide</Link>
+          </p>
+        </section>
+      ) : null}
       <section className="content-panel">
         <h2>Expired codes</h2>
         <ul className="expired-codes">
           {expired.map((item) => (
-            <li key={item.code}><CopyCodeButton code={item.code} muted /></li>
+            <li key={item.code}>
+              <CopyCodeButton code={item.code} muted />
+            </li>
           ))}
         </ul>
       </section>
@@ -77,10 +105,10 @@ export function CodesPanel() {
   );
 }
 
-export function PageHero({ entry, cta }: { entry: SeoEntry; cta?: ReactNode }) {
+export function PageHero({ entry, cta, crumbs }: { entry: SeoEntry; cta?: ReactNode; crumbs?: string }) {
   return (
     <section className="site-shell page-hero">
-      <p className="breadcrumb">Home / {entry.type}</p>
+      <p className="breadcrumb">{crumbs ?? `Home / ${entry.h1}`}</p>
       <h1>{entry.h1}</h1>
       <div className="quick-answer wide">
         <span className="label">Quick Answer</span>
@@ -105,6 +133,7 @@ export function Facts({ facts }: { facts: [string, string][] }) {
 }
 
 export function ClassTable() {
+  const rows = classes.filter(hasClassPage);
   return (
     <>
       <div className="table-wrap desktop-table">
@@ -114,36 +143,33 @@ export function ClassTable() {
               <th>Class</th>
               <th>Tier</th>
               <th>Rarity</th>
-              <th>Obtain</th>
-              <th>Best mode</th>
-              <th>Confidence</th>
+              <th>How to Get</th>
+              <th>Best For</th>
             </tr>
           </thead>
           <tbody>
-            {classes.map((item) => (
+            {rows.map((item) => (
               <tr key={item.slug}>
                 <td><Link href={`/classes/${item.slug}`}>{item.name}</Link></td>
                 <td>{item.tier}</td>
-                <td><span className="rarity">{item.rarity}</span>{item.rarityConflictNote ? ' · pending confirm' : ''}</td>
+                <td><span className="rarity">{item.rarity}</span></td>
                 <td>{item.obtain}</td>
-                <td>{item.mode}</td>
-                <td>{item.confidence}</td>
+                <td>{item.bestFor ?? item.mode}</td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
       <div className="class-card-list mobile-cards" aria-label="Class list">
-        {classes.map((item) => (
+        {rows.map((item) => (
           <Link className="class-card" href={`/classes/${item.slug}`} key={item.slug}>
             <div className="class-card-top">
               <strong>{item.name}</strong>
-              <span className="rarity">{item.tier} · {item.rarity}{item.rarityConflictNote ? ' · pending' : ''}</span>
+              <span className="rarity">{item.tier} · {item.rarity}</span>
             </div>
             <div className="class-card-meta">
-              <span>Obtain: {item.obtain}</span>
-              <span>Best mode: {item.mode}</span>
-              <span>Confidence: {item.confidence}</span>
+              <span>How to get: {item.obtain}</span>
+              <span>Best for: {item.bestFor ?? item.mode}</span>
             </div>
           </Link>
         ))}
@@ -157,9 +183,9 @@ export function DataNote() {
     <section className="data-note">
       <span className="label">Data Note</span>
       <p>
-        Routes and rates are community-reported (not official patch notes). Fields marked probable, conflicting, or
-        unverified can shift after Roblox updates. Rarity labels that disagree across community guides are marked pending
-        in-game confirm — confirm against the live UI before long farms. Send correction notes via the{' '}
+        Routes and rates come from community reports, not official patch notes. When sources disagree, this wiki says so
+        in plain language instead of inventing a number. Confirm the live in-game UI before a long farm. Send corrections
+        via the{' '}
         <a href="https://github.com/quven1990/DungeonLootr/issues">GitHub issues</a> for this wiki.
       </p>
     </section>
@@ -299,12 +325,12 @@ function pickVideo(title: string, videoQuery: string): VideoChoice | null {
       reason: 'Check floor pacing and clear stability before camping Class Item or fragment breakpoints.',
     };
   }
-  if (key.includes('wiki') || key.includes('code') || key.includes('beginner') || key.includes('home')) {
+  if (key.includes('update 1') || key.includes('wiki') || key.includes('code') || key.includes('beginner') || key.includes('home')) {
     return {
       id: '2uE24Q7LeQQ',
       label: 'Dungeon Lootr beginner overview',
       heading: 'Beginner overview',
-      reason: 'Quick gameplay overview before you pick a class, unlock route, or farm plan.',
+      reason: 'A short look at dungeon pacing before you open classes, codes, or UPDATE 1.',
     };
   }
   if (key.includes('tier') || key.includes('aspect')) {
@@ -322,7 +348,7 @@ function pickVideo(title: string, videoQuery: string): VideoChoice | null {
 export function ClassFinderPreview({ current }: { current?: ClassEntry }) {
   const rows = current
     ? classes
-        .filter((item) => item.slug !== current.slug && isIndexableClass(item))
+        .filter((item) => item.slug !== current.slug && isIndexableClass(item) && hasClassPage(item))
         .map((item) => {
           let score = 0;
           if (item.tier === current.tier) score += 3;
@@ -333,7 +359,7 @@ export function ClassFinderPreview({ current }: { current?: ClassEntry }) {
         .sort((a, b) => b.score - a.score || a.item.name.localeCompare(b.item.name))
         .slice(0, 4)
         .map((row) => row.item)
-    : classes.filter(isIndexableClass).slice(0, 4);
+    : classes.filter((item) => isIndexableClass(item) && hasClassPage(item)).slice(0, 4);
 
   return (
     <section className="content-panel">

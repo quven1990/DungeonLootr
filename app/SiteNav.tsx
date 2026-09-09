@@ -4,10 +4,10 @@ import { useEffect, useId, useState } from 'react';
 import Link from './native-link';
 
 const navItems = [
+  ['UPDATE 1', '/update-1'],
   ['Classes', '/classes'],
   ['Tier List', '/class-tier-list'],
   ['Boss Rush', '/boss-rush'],
-  ['Drops', '/drop-rates'],
   ['Codes', '/codes'],
   ['Tools', '/tools/drop-chance-calculator'],
 ] as const;

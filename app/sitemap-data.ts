@@ -12,10 +12,20 @@ export const URL_MAP_PATH = '/dl-lootr-urlmap.xml';
 
 /** Only bump lastmod when that URL's substance changed. */
 const LASTMOD_BY_PATH: Record<string, string> = {
-  '/codes': '2026-09-06',
-  '/classes/cursed-king': '2026-09-09',
-  '/guides/how-to-get-cursed-king': '2026-09-09',
+  '/': '2026-09-09',
+  '/update-1': '2026-09-09',
+  '/classes': '2026-09-09',
+  '/class-tier-list': '2026-09-09',
+  '/codes': '2026-09-09',
   '/updatelog': '2026-09-09',
+  '/tools/drop-chance-calculator': '2026-09-09',
+  '/tools/class-finder': '2026-09-09',
+  '/classes/cursed-king': '2026-09-09',
+  '/classes/spell-breaker': '2026-09-09',
+  '/classes/cryomancer': '2026-09-09',
+  '/classes/coyote': '2026-09-09',
+  '/classes/dark-professor': '2026-09-09',
+  '/guides/how-to-get-cursed-king': '2026-09-09',
 };
 
 const BATCH_LASTMOD = '2026-09-07';
@@ -24,16 +34,10 @@ const DEFAULT_LASTMOD = '2026-09-06';
 function lastmodFor(path: string) {
   if (LASTMOD_BY_PATH[path]) return LASTMOD_BY_PATH[path];
   if (
-    path === '/' ||
-    path === '/updatelog' ||
-    path === '/classes' ||
-    path === '/class-tier-list' ||
-    path === '/tools/drop-chance-calculator' ||
-    path === '/tools/class-finder' ||
+    path.startsWith('/classes/') ||
     path === '/tools/aspect-matcher' ||
     path === '/guides/best-aspect-by-class' ||
     path === '/progression-guide' ||
-    path.startsWith('/classes/') ||
     path.startsWith('/guides/') ||
     path.startsWith('/builds/')
   ) {
@@ -45,7 +49,7 @@ function lastmodFor(path: string) {
 export function getIndexableUrls() {
   const indexableClasses = classes.filter(isIndexableClass);
   const indexableBuilds = classes.filter(isIndexableBuild);
-  return [
+  const urls = [
     '/',
     '/updatelog',
     ...seoEntries.map((entry) => entry.url),
@@ -58,6 +62,7 @@ export function getIndexableUrls() {
     ...toolPages.map((page) => `/tools/${page.slug}`),
     '/guides/best-aspect-by-class',
   ];
+  return [...new Set(urls)];
 }
 
 export function buildUrlMapXml() {

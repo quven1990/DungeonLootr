@@ -10,26 +10,28 @@ import {
   CONTENT_PATCH,
   getBuildProfile,
   guideBySlug,
+  hasClassPage,
   isIndexableBuild,
+  isUpdate1Class,
 } from '../../data';
 import { buildClusterLinks, buildIntentNextSteps } from '../../related';
 import { notFoundMetadata, pageMetadata } from '../../seo';
 
 export function generateStaticParams() {
-  return classes.map((item) => ({ slug: item.slug }));
+  return classes.filter((item) => hasClassPage(item) && !isUpdate1Class(item)).map((item) => ({ slug: item.slug }));
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const item = classBySlug(slug);
-  if (!item) return notFoundMetadata;
+  if (!item || item.listingOnly || isUpdate1Class(item)) return notFoundMetadata;
   return pageMetadata(buildSerp(item), `/builds/${item.slug}`, { index: isIndexableBuild(item) });
 }
 
 export default async function BuildPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const item = classBySlug(slug);
-  if (!item) notFound();
+  if (!item || item.listingOnly || isUpdate1Class(item)) notFound();
   const unlockGuide = guideBySlug(`how-to-get-${item.slug}`);
   const profile = getBuildProfile(item.slug);
   const publishReady = isIndexableBuild(item);
