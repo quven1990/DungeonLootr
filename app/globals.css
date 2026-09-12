@@ -82,6 +82,7 @@ a {
   gap: 10px;
   flex-shrink: 1;
   min-width: 0;
+  min-height: 44px;
   font-weight: 800;
 }
 
@@ -888,6 +889,10 @@ dd {
 }
 
 .search-box a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 4px;
   color: var(--accent);
   font-weight: 700;
   text-decoration: none;
@@ -1043,7 +1048,7 @@ dd {
 .footer-links a {
   display: inline-flex;
   align-items: center;
-  min-height: 40px;
+  min-height: 44px;
   padding: 0 10px;
   border-radius: 8px;
   border: 1px solid transparent;
