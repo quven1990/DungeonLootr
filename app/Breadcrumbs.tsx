@@ -15,15 +15,26 @@ function hrefToUrl(href: string) {
 
 export function breadcrumbJsonLd(items: Crumb[]) {
   const withHome = items[0]?.name === 'Home' ? items : [{ name: 'Home', href: '/' }, ...items];
+  // Google requires `item` on every ListItem except the last. Keep no-href
+  // intermediates in the visible nav, but omit them from JSON-LD so GSC does
+  // not flag "Missing field item (in itemListElement)".
+  const schemaItems = withHome.filter((item, index) => {
+    const isLast = index === withHome.length - 1;
+    return isLast || Boolean(item.href);
+  });
+
   return {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
-    itemListElement: withHome.map((item, index) => ({
-      '@type': 'ListItem',
-      position: index + 1,
-      name: item.name,
-      ...(item.href ? { item: hrefToUrl(item.href) } : {}),
-    })),
+    itemListElement: schemaItems.map((item, index) => {
+      const isLast = index === schemaItems.length - 1;
+      return {
+        '@type': 'ListItem',
+        position: index + 1,
+        name: item.name,
+        ...(!isLast && item.href ? { item: hrefToUrl(item.href) } : {}),
+      };
+    }),
   };
 }
 

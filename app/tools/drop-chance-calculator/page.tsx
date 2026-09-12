@@ -17,7 +17,7 @@ export default function CalculatorPage() {
   return (
     <main>
       <section className="site-shell page-hero">
-        <Breadcrumbs items={[{ name: 'Tools' }, { name: 'Drop Calculator' }]} />
+        <Breadcrumbs items={[{ name: 'Drop Calculator' }]} />
         <h1>{entry.h1}</h1>
         <PageStatus updatedAt={WIKI_PAGE_UPDATED} verifiedForUpdate1={false} />
         <div className="quick-answer wide">
