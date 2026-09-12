@@ -60,7 +60,7 @@ export default function Update1Page() {
       />
       <JsonLd data={faqJsonLd(faqs)} />
       <section className="site-shell page-hero">
-        <Breadcrumbs items={[{ name: 'UPDATE 1' }]} />
+        <Breadcrumbs items={[{ name: 'UPDATE 1' }]} currentPath="/update-1" />
         <h1>{entry.h1}</h1>
         <PageStatus updatedAt={WIKI_PAGE_UPDATED} verifiedForUpdate1={false} />
         <div className="quick-answer wide">
@@ -112,7 +112,9 @@ export default function Update1Page() {
                       <td>
                         <span className="rarity">{item.rarity}</span>
                       </td>
-                      <td>See UPDATE 1 notes on the class page</td>
+                      <td>
+                        <Link href={`/classes/${item.slug}`}>{item.obtain}</Link>
+                      </td>
                       <td>{item.bestFor}</td>
                     </tr>
                   ))}

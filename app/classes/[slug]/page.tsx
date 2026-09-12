@@ -104,25 +104,48 @@ export default async function ClassPage({ params }: { params: Promise<{ slug: st
     <main>
       {updateFaqs.length ? <JsonLd data={faqJsonLd(updateFaqs)} /> : null}
       <section className="site-shell page-hero">
-        <Breadcrumbs items={[{ name: 'Classes', href: '/classes' }, { name: item.name }]} />
+        <Breadcrumbs
+          items={[{ name: 'Classes', href: '/classes' }, { name: item.name }]}
+          currentPath={`/classes/${item.slug}`}
+        />
         <h1>{h1}</h1>
         <PageStatus updatedAt={WIKI_PAGE_UPDATED} verifiedForUpdate1={false} />
         <div className="quick-answer wide">
           <span className="label">{isCursedKing ? 'Class Overview' : 'Quick Answer'}</span>
           <p>{item.opening}</p>
+          {isUpdate1 ? (
+            <dl className="facts" style={{ marginTop: 12 }}>
+              <div>
+                <dt>Rarity</dt>
+                <dd>{item.rarity}</dd>
+              </div>
+              <div>
+                <dt>Added</dt>
+                <dd>UPDATE 1 · September 7, 2026</dd>
+              </div>
+              <div>
+                <dt>How to get</dt>
+                <dd>{item.obtain}</dd>
+              </div>
+              <div>
+                <dt>Skills / rates</dt>
+                <dd>Not verified on this wiki</dd>
+              </div>
+            </dl>
+          ) : null}
           <div className="hero-actions" data-nosnippet>
             {isCursedKing ? (
               <>
                 <Link href="#skills-and-build">Skills &amp; Build Notes</Link>
-                <Link className="secondary" href="#unlock">
-                  Unlock Guide
+                <Link className="secondary" href="/guides/how-to-get-cursed-king">
+                  How to Get Cursed King
                 </Link>
               </>
             ) : isUpdate1 ? (
               <>
-                <Link href="/update-1">UPDATE 1 Notes</Link>
-                <Link className="secondary" href="/classes">
-                  All Classes
+                <Link href="#how-to-get">How to Get</Link>
+                <Link className="secondary" href="/update-1">
+                  UPDATE 1 Hub
                 </Link>
               </>
             ) : (
@@ -135,7 +158,17 @@ export default async function ClassPage({ params }: { params: Promise<{ slug: st
             )}
           </div>
         </div>
-        <Facts facts={facts} />
+        {isUpdate1 ? null : <Facts facts={facts} />}
+        {!isUpdate1 ? null : (
+          <Facts
+            facts={[
+              ['Tier', 'Unrated'],
+              ['Play style', item.mode],
+              ['Patch', 'UPDATE 1'],
+              ['Data status', dataStatus],
+            ]}
+          />
+        )}
       </section>
       <section className="site-shell content-grid">
         <div className="article-stack">
@@ -154,13 +187,13 @@ export default async function ClassPage({ params }: { params: Promise<{ slug: st
             </section>
           ) : null}
 
-          <section className="content-panel" id={isCursedKing ? 'unlock' : undefined}>
+          <section className="content-panel" id={isCursedKing ? 'unlock' : isUpdate1 ? 'how-to-get' : undefined}>
             <h2>{isUpdate1 ? `How to Get ${item.name}` : isCursedKing ? 'How to Unlock Cursed King' : 'Obtain overview'}</h2>
             {isCursedKing ? (
               <p>
-                Cursed King can be unlocked through Boss Rush progression or Forge crafting. For the full step-by-step
-                route, requirements, and farming guide:{' '}
-                <Link href="/guides/how-to-get-cursed-king">How to Get Cursed King in Dungeon Lootr</Link>.
+                Unlock requirements, Floor 40+ drops, Floor 100 fragments, and Forge steps live on the dedicated guide:{' '}
+                <Link href="/guides/how-to-get-cursed-king">How to Get Cursed King in Dungeon Lootr</Link>. This class
+                page stays on skills, tier, strengths, weaknesses, and build direction.
               </p>
             ) : (
               <>
@@ -176,6 +209,16 @@ export default async function ClassPage({ params }: { params: Promise<{ slug: st
                   <p>
                     Full route, requirements, and mistakes:{' '}
                     <Link href={`/guides/${unlockGuide.slug}`}>How to get {item.name}</Link>.
+                  </p>
+                ) : null}
+                {isUpdate1 ? (
+                  <p>
+                    Drop-rate status:{' '}
+                    <Link href="/drop-rates">{item.name} is listed as Unknown</Link> until a single in-game source is
+                    confirmed. Related UPDATE 1 classes:{' '}
+                    <Link href="/classes/spell-breaker">Spell Breaker</Link>,{' '}
+                    <Link href="/classes/cryomancer">Cryomancer</Link>, <Link href="/classes/coyote">Coyote</Link>,{' '}
+                    <Link href="/classes/dark-professor">Dark Professor</Link>.
                   </p>
                 ) : null}
               </>

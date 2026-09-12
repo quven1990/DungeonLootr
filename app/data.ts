@@ -35,7 +35,7 @@ export type ClassEntry = {
 
 export const UPDATE_1_RELEASED = '2026-09-07';
 export const UPDATE_1_NAME = 'UPDATE 1';
-export const WIKI_PAGE_UPDATED = '2026-09-09';
+export const WIKI_PAGE_UPDATED = '2026-09-12';
 export const UPDATE_1_CLASS_SLUGS = ['spell-breaker', 'cryomancer', 'coyote', 'dark-professor'] as const;
 export const UPDATE_1_CLASS_NAMES = ['Spell Breaker', 'Cryomancer', 'Coyote', 'Dark Professor'] as const;
 
@@ -210,9 +210,9 @@ export const seoEntries: SeoEntry[] = [
     url: '/classes',
     title: 'Dungeon Lootr Classes [UPDATE 1] – All Classes & Unlocks',
     description:
-      'Browse the Dungeon Lootr class directory after UPDATE 1: Spell Breaker, Cryomancer, Coyote, Dark Professor, plus spin, Boss Rush, Forge and quest unlocks.',
+      'Dungeon Lootr class directory after UPDATE 1. Start with Spell Breaker, Cryomancer, Coyote, and Dark Professor, then browse spin, Boss Rush, Forge, and quest unlocks.',
     opening:
-      'Dungeon Lootr has expanded after UPDATE 1, which added Spell Breaker, Cryomancer, Coyote and Dark Professor. Use the directory below to compare classes and open individual unlock guides.',
+      'Start with the four UPDATE 1 Exotic classes (Spell Breaker, Cryomancer, Coyote, Dark Professor), then open older unlocks such as Cursed King or ranked spin classes.',
     h1: 'Dungeon Lootr Classes – All Classes After UPDATE 1',
     type: 'database',
   },
@@ -238,22 +238,22 @@ export const seoEntries: SeoEntry[] = [
   },
   {
     url: '/boss-rush',
-    title: 'Dungeon Lootr Boss Rush Guide - Key Floors, Class Drops & Best Push Classes',
+    title: 'Dungeon Lootr Boss Rush Guide – Floor 40 Class Items & Floor 100 Fragments',
     description:
-      'Hit the Boss Rush floors that drop classes and fragments, see farming routes, and pick a class that actually pushes deeper.',
+      'Boss Rush unlocks at level 67+. Farm Floor 40+ Class Items or Floor 100 fragments (8–18) for Cursed King, Honored One, and Anti Magic Forge crafts.',
     opening:
-      'Boss Rush is where endgame classes and fragments lock to floor milestones - miss the breakpoint and you farm the wrong loop for hours.',
+      'Boss Rush (level 67+) is the unlock loop for Cursed King, Honored One, and Anti Magic: Floor 40+ Class Items or Floor 100 fragments crafted at the Forge with 50 matching fragments.',
     h1: 'Dungeon Lootr Boss Rush Guide',
     type: 'hub',
   },
   {
     url: '/drop-rates',
-    title: 'Dungeon Lootr Drop Rates - Boss, Class Item & Fragment Chances',
+    title: 'Dungeon Lootr Drop Rates – Class Items, Fragments & Rare Materials',
     description:
-      'Check Dungeon Lootr drop rates for boss loot, class items, fragments, and rare materials, with last-checked patch dates and farming notes.',
+      'Dungeon Lootr drop-rate table for Boss Rush Class Items, Sukuna/Gojo/Asta fragments, Heavenly Fragments, Underworld Glaive, Devil Heart, and class spin bands. Unknown rates stay Unknown.',
     opening:
-      'Dungeon Lootr drop rates vary by boss, dungeon, difficulty, and reward condition, so the best farming route depends on exactly what you are chasing.',
-    h1: 'Dungeon Lootr Drop Rates',
+      'Use this table to check community-reported drop sources and rates. If a rate is not confirmed, it is listed as Unknown — not estimated.',
+    h1: 'Dungeon Lootr Drop Rate Database',
     type: 'database',
   },
   {
@@ -281,7 +281,7 @@ export const classes: ClassEntry[] = [
     tier: 'S',
     confidence: 'conflicting',
     opening:
-      'Cursed King (Sukuna) is an S-tier Boss Rush class focused on high damage and AoE, with strong value once mastery is leveled. This overview covers its tier, combat role, strengths, weaknesses, and build direction.',
+      'Cursed King (Sukuna) is an S-tier Boss Rush class for high damage and AoE. This page covers tier, combat role, strengths, weaknesses, and build direction — not the unlock tutorial.',
     strengths: ['Top-tier Boss Rush damage and AoE', 'Forge path removes pure RNG dependence', 'Strong once mastery is leveled'],
     weaknesses: ['Needs Floor 40+ or repeated Floor 100 fragment farms', 'Mastery investment before full kit value'],
     unlockSteps: [
@@ -829,12 +829,13 @@ export const guides: GuideEntry[] = [
   {
     slug: 'how-to-get-cursed-king',
     target: 'Cursed King',
-    title: 'How to Get Cursed King (Sukuna) in Dungeon Lootr – 2 Ways',
+    title: 'How to Get Cursed King in Dungeon Lootr – Unlock Requirements & Boss Rush',
     opening:
-      'Cursed King (Sukuna) has two Boss Rush unlock routes: a Floor 40+ Class Item drop and a 50-fragment Forge route. The better choice depends on how far you can reliably push Boss Rush — compare both routes, requirements, and farming methods below.',
+      'To unlock Cursed King (Sukuna) in Dungeon Lootr you need Boss Rush access (level 67+), then either farm a Floor 40+ Class Item drop or craft at the Forge with 50 Sukuna fragments from Floor 100 clears (8–18 fragments per win).',
     requirements: [
       'Level 67+ for Boss Rush access',
-      'A build that can reach Floor 40+ (drops) or Floor 100 (fragments)',
+      'A clear that can reach Floor 40+ (Class Item drop) or Floor 100 (fragments)',
+      'Sukuna selected as lobby main boss when farming fragments',
       '50 Sukuna fragments if using the Forge path',
     ],
     steps: [
@@ -846,9 +847,10 @@ export const guides: GuideEntry[] = [
     tips: [
       'Do not farm below Floor 40 if you only want the Class Item drop.',
       'Fragment path is slower but more deterministic than pure Class Item RNG.',
+      'Wrong lobby boss means wrong fragments — confirm Sukuna before Floor 100 runs.',
       'Join the ClickBytes group before redeeming codes that fund the grind.',
     ],
-    next: ['/builds/cursed-king', '/tools/drop-chance-calculator', '/boss-rush/floor-100'],
+    next: ['/classes/cursed-king', '/boss-rush', '/drop-rates', '/tools/drop-chance-calculator'],
   },
   {
     slug: 'how-to-get-honored-one',
@@ -1037,7 +1039,13 @@ export const guides: GuideEntry[] = [
 export type DropRateEntry = {
   item: string;
   source: string;
+  /** Boss, dungeon, or system label when known. */
+  location?: string;
+  difficulty?: string;
   rate: string;
+  usedFor?: string;
+  /** ISO date of last wiki reconciliation, or Unknown. */
+  verified: string;
   note: string;
   href: string;
 };
@@ -1045,59 +1053,132 @@ export type DropRateEntry = {
 export const dropRates: DropRateEntry[] = [
   {
     item: 'Boss Rush Class Item (Cursed King / Honored One / Anti Magic)',
-    source: 'Boss Rush Floor 40+',
+    source: 'Boss Rush',
+    location: 'Boss Rush Floor 40+',
+    difficulty: 'Boss Rush',
     rate: 'Starts at Floor 40; higher floors improve odds',
-    note: 'No Class Item drop expectation below Floor 40.',
+    usedFor: 'Unlock Cursed King, Honored One, or Anti Magic',
+    verified: '2026-09-06',
+    note: 'No Class Item drop expectation below Floor 40. Exact % not published here.',
     href: '/boss-rush/floor-40',
   },
   {
     item: 'Sukuna / Gojo / Asta Fragments',
-    source: 'Boss Rush Floor 100 main boss',
+    source: 'Boss Rush',
+    location: 'Boss Rush Floor 100 (matching lobby boss)',
+    difficulty: 'Boss Rush',
     rate: '8–18 fragments per clear',
-    note: '50 fragments craft the matching Class Item at the Forge.',
+    usedFor: 'Forge Class Item at 50 fragments',
+    verified: '2026-09-06',
+    note: 'Wrong lobby boss = wrong fragments.',
     href: '/boss-rush/floor-100',
   },
   {
     item: 'Heavenly Fragments',
-    source: 'Challenge Mode bosses every 10 waves',
+    source: 'Challenge Mode',
+    location: 'Challenge Mode bosses every 10 waves',
+    difficulty: 'Challenge Mode',
     rate: '~5%',
-    note: 'Need 10 for Unrestricted.',
+    usedFor: 'Unrestricted (need 10)',
+    verified: '2026-09-06',
+    note: 'Community-reported rate.',
     href: '/guides/heavenly-fragments',
   },
   {
-    item: 'Underworld Glaive (Dreadlord)',
-    source: 'Underworld Gate Nightmare',
+    item: 'Underworld Glaive',
+    source: 'Underworld Gate',
+    location: 'Underworld Gate Nightmare',
+    difficulty: 'Nightmare',
     rate: '~1%',
-    note: 'Long expected farm - use the calculator.',
+    usedFor: 'Dreadlord unlock',
+    verified: '2026-09-06',
+    note: 'Long expected farm — use the calculator.',
     href: '/guides/how-to-get-dreadlord',
   },
   {
     item: 'Devil Heart',
-    source: 'Awakened Devil in Frostspire',
+    source: 'Frostspire',
+    location: 'Awakened Devil in Frostspire',
+    difficulty: 'Nightmare (community)',
     rate: '~35% per clear (community)',
-    note: 'Need 1 for Awakened Devil EX; need 3 for Jetstream. Unlock Frostspire via Catacombs Hard.',
+    usedFor: 'Awakened Devil EX (1) / Jetstream (3)',
+    verified: '2026-09-06',
+    note: 'Unlock Frostspire via Catacombs Hard.',
     href: '/guides/devil-heart',
   },
   {
     item: 'Exotic class roll (Sinister Trigger band)',
-    source: 'Class rolls',
+    source: 'Class spins',
+    location: 'Class rolls',
     rate: '~0.05%',
-    note: 'No Forge bypass - budget rolls carefully.',
+    usedFor: 'Spin-pool Exotic classes',
+    verified: '2026-09-06',
+    note: 'No Forge bypass.',
     href: '/classes/sinister-trigger',
   },
   {
     item: 'Celestial class roll',
-    source: 'Class rolls',
+    source: 'Class spins',
+    location: 'Class rolls',
     rate: '~0.5%',
-    note: 'Azure Devil, Artemis, Forge Archon band.',
+    usedFor: 'Azure Devil / Artemis / Forge Archon band',
+    verified: '2026-09-06',
+    note: 'Community band estimate.',
     href: '/classes',
   },
   {
     item: 'Legendary class roll',
-    source: 'Class rolls',
+    source: 'Class spins',
+    location: 'Class rolls',
     rate: '~8%',
-    note: 'Witch Gunner sits in this band on current lists.',
+    usedFor: 'Legendary spin pool (e.g. Witch Gunner)',
+    verified: '2026-09-06',
+    note: 'Community band estimate.',
     href: '/classes/witch-gunner',
+  },
+  {
+    item: 'Spell Breaker',
+    source: 'UPDATE 1',
+    location: 'Raid Shop vs Magic Unleashed (conflicting)',
+    difficulty: 'UPDATE 1',
+    rate: 'Unknown',
+    usedFor: 'UPDATE 1 Exotic class unlock',
+    verified: 'Unknown',
+    note: 'Guides disagree on shop currency vs event weapon. No % listed.',
+    href: '/classes/spell-breaker',
+  },
+  {
+    item: 'Cryomancer',
+    source: 'UPDATE 1',
+    location: 'Raid Shop vs Magic Unleashed wand (conflicting)',
+    difficulty: 'UPDATE 1',
+    rate: 'Unknown',
+    usedFor: 'UPDATE 1 Exotic class unlock',
+    verified: 'Unknown',
+    note: 'Shop price and wand-unlock claims conflict.',
+    href: '/classes/cryomancer',
+  },
+  {
+    item: 'Coyote',
+    source: 'UPDATE 1',
+    location: 'Paid bundle reports (unconfirmed SKU/price)',
+    difficulty: 'UPDATE 1',
+    rate: 'Unknown',
+    usedFor: 'UPDATE 1 Exotic class unlock',
+    verified: 'Unknown',
+    note: 'May be bundle-locked — not confirmed as a drop %.',
+    href: '/classes/coyote',
+  },
+  {
+    item: 'Dark Professor',
+    source: 'UPDATE 1',
+    location: 'Late raid chase (raid name/difficulty conflict)',
+    difficulty: 'UPDATE 1',
+    rate: 'Unknown',
+    usedFor: 'UPDATE 1 Exotic class unlock',
+    verified: 'Unknown',
+    note: 'Do not plan farms from third-party % claims until the live raid UI matches.',
+    href: '/classes/dark-professor',
   },
 ];
 
@@ -1112,34 +1193,110 @@ export type CodeEntry = {
   patch?: string;
 };
 
-const CODES_SOURCE = 'Community codes roundup';
+const CODES_SOURCE = 'Multi-source community roundup (Sep 2026)';
 
-/** Redeem codes are public promo strings; rewards/status are community-checked and can expire without notice. */
+/**
+ * Redeem codes are public promo strings. Rewards often conflict across guides —
+ * when they do, reward text includes "Conflicting" and lists what this wiki keeps.
+ */
 export const dungeonLootrCodes: CodeEntry[] = [
-  { code: 'UPDATE1', reward: '100 Mage Chests and 10 Normal Chests', status: 'active', isNew: true, addedAt: '2026-09-06', verifiedAt: '2026-09-06', source: CODES_SOURCE, patch: 'UPDATE 1' },
-  { code: 'WEEKENDBUFFS', reward: '2X of all Luck Potions', status: 'active', isNew: true, addedAt: '2026-09-06', verifiedAt: '2026-09-06', source: CODES_SOURCE },
-  { code: '15KCCU', reward: '5 Luck Potions III', status: 'active', isNew: true, addedAt: '2026-09-06', verifiedAt: '2026-09-06', source: CODES_SOURCE },
-  { code: 'COURAGE', reward: '5 Random GM Blessings', status: 'active', isNew: true, addedAt: '2026-09-06', verifiedAt: '2026-09-06', source: CODES_SOURCE },
-  { code: 'LOVETHISGAME', reward: '10 Aspect Gems', status: 'active', isNew: true, addedAt: '2026-09-06', verifiedAt: '2026-09-06', source: CODES_SOURCE },
-  { code: 'RAIDTIME', reward: '5 Forge Stones Bundle', status: 'active', isNew: true, addedAt: '2026-09-06', verifiedAt: '2026-09-06', source: CODES_SOURCE },
-  { code: 'LOOTR', reward: 'Random GM Blessing', status: 'active', verifiedAt: '2026-09-06', source: CODES_SOURCE },
-  { code: 'FORGESKIP', reward: '3 Forge Stone Bundles, 3 Reforge Stone Bundles', status: 'expired', verifiedAt: '2026-09-06', source: CODES_SOURCE },
-  { code: '8KLIKE', reward: 'Special rewards', status: 'expired', verifiedAt: '2026-09-06', source: CODES_SOURCE },
-  { code: '10KFAV', reward: 'Special rewards', status: 'expired', verifiedAt: '2026-09-06', source: CODES_SOURCE },
-  { code: 'FULLRELEASE', reward: '3 Luck Potion 3', status: 'expired', verifiedAt: '2026-09-06', source: CODES_SOURCE },
-  { code: 'LOOTRISBACK', reward: '3 Forge Stone Bundle', status: 'expired', verifiedAt: '2026-09-06', source: CODES_SOURCE },
-  { code: 'JACKPOT', reward: '5 Luck Potion 3', status: 'expired', verifiedAt: '2026-09-06', source: CODES_SOURCE },
-  { code: '20KPLAYERS', reward: '5 Reforge Stone Bundle', status: 'expired', verifiedAt: '2026-09-06', source: CODES_SOURCE },
-  { code: 'GIVEMEGEMSPLEASE', reward: '3 Aspect Gems', status: 'expired', verifiedAt: '2026-09-06', source: CODES_SOURCE },
-  { code: '3KLIKES', reward: 'Expired', status: 'expired', verifiedAt: '2026-09-06', source: CODES_SOURCE },
-  { code: '4KFAV', reward: 'Expired', status: 'expired', verifiedAt: '2026-09-06', source: CODES_SOURCE },
-  { code: 'EARLYACCESSYAY', reward: 'Expired', status: 'expired', verifiedAt: '2026-09-06', source: CODES_SOURCE },
-  { code: 'NEWASPECT', reward: 'Expired', status: 'expired', verifiedAt: '2026-09-06', source: CODES_SOURCE },
-  { code: 'BYEMETA', reward: 'Expired', status: 'expired', verifiedAt: '2026-09-06', source: CODES_SOURCE },
+  {
+    code: 'UPDATE1',
+    reward: 'Conflicting across guides — often listed as Mage/Normal chests OR Event Chests + Reforge Stones + Exotic Ingots',
+    status: 'active',
+    isNew: true,
+    addedAt: '2026-09-06',
+    verifiedAt: '2026-09-12',
+    source: CODES_SOURCE,
+    patch: 'UPDATE 1',
+  },
+  {
+    code: 'WEEKENDBUFFS',
+    reward: 'Conflicting — “2X all Luck Potions” vs “2× Luck I/II/III (+ Reforge Stones in some lists)”',
+    status: 'active',
+    isNew: true,
+    addedAt: '2026-09-06',
+    verifiedAt: '2026-09-12',
+    source: CODES_SOURCE,
+  },
+  {
+    code: '15KCCU',
+    reward: 'Conflicting — “5 Luck Potions III” vs “100,000 Coins + 5 Luck Potion 3”',
+    status: 'active',
+    isNew: true,
+    addedAt: '2026-09-06',
+    verifiedAt: '2026-09-12',
+    source: CODES_SOURCE,
+  },
+  {
+    code: 'COURAGE',
+    reward: '5 Random GM Blessings (common across Sep 2026 lists)',
+    status: 'active',
+    isNew: true,
+    addedAt: '2026-09-06',
+    verifiedAt: '2026-09-12',
+    source: CODES_SOURCE,
+  },
+  {
+    code: 'LOVETHISGAME',
+    reward: '10 Aspect Gems (common across Sep 2026 lists)',
+    status: 'active',
+    isNew: true,
+    addedAt: '2026-09-06',
+    verifiedAt: '2026-09-12',
+    source: CODES_SOURCE,
+  },
+  {
+    code: 'RAIDTIME',
+    reward: 'Conflicting — “5 Forge Stones Bundle” vs “5 Forge Stone Bundles + 10 Reforge Stones”',
+    status: 'active',
+    isNew: true,
+    addedAt: '2026-09-06',
+    verifiedAt: '2026-09-12',
+    source: CODES_SOURCE,
+  },
+  {
+    code: 'LOOTR',
+    reward: 'Conflicting — “Random GM Blessing” vs “1,000 Coins + Random GM Blessing”',
+    status: 'active',
+    verifiedAt: '2026-09-12',
+    source: CODES_SOURCE,
+  },
+  {
+    code: '800LIKES',
+    reward: '2 Random GM Blessing chests (listed in some Sep 2026 roundups; not universal)',
+    status: 'active',
+    isNew: true,
+    addedAt: '2026-09-12',
+    verifiedAt: '2026-09-12',
+    source: CODES_SOURCE,
+  },
+  {
+    code: 'RELEASE',
+    reward: '1,000 Coins (listed in some Sep 2026 roundups; not universal)',
+    status: 'active',
+    isNew: true,
+    addedAt: '2026-09-12',
+    verifiedAt: '2026-09-12',
+    source: CODES_SOURCE,
+  },
+  { code: 'FORGESKIP', reward: '3 Forge Stone Bundles, 3 Reforge Stone Bundles', status: 'expired', verifiedAt: '2026-09-12', source: CODES_SOURCE },
+  { code: '8KLIKE', reward: 'Special rewards', status: 'expired', verifiedAt: '2026-09-12', source: CODES_SOURCE },
+  { code: '10KFAV', reward: 'Special rewards', status: 'expired', verifiedAt: '2026-09-12', source: CODES_SOURCE },
+  { code: 'FULLRELEASE', reward: '3 Luck Potion 3', status: 'expired', verifiedAt: '2026-09-12', source: CODES_SOURCE },
+  { code: 'LOOTRISBACK', reward: '3 Forge Stone Bundle', status: 'expired', verifiedAt: '2026-09-12', source: CODES_SOURCE },
+  { code: 'JACKPOT', reward: '5 Luck Potion 3', status: 'expired', verifiedAt: '2026-09-12', source: CODES_SOURCE },
+  { code: '20KPLAYERS', reward: '5 Reforge Stone Bundle', status: 'expired', verifiedAt: '2026-09-12', source: CODES_SOURCE },
+  { code: 'GIVEMEGEMSPLEASE', reward: '3 Aspect Gems', status: 'expired', verifiedAt: '2026-09-12', source: CODES_SOURCE },
+  { code: '3KLIKES', reward: 'Expired', status: 'expired', verifiedAt: '2026-09-12', source: CODES_SOURCE },
+  { code: '4KFAV', reward: 'Expired', status: 'expired', verifiedAt: '2026-09-12', source: CODES_SOURCE },
+  { code: 'EARLYACCESSYAY', reward: 'Expired', status: 'expired', verifiedAt: '2026-09-12', source: CODES_SOURCE },
+  { code: 'NEWASPECT', reward: 'Expired', status: 'expired', verifiedAt: '2026-09-12', source: CODES_SOURCE },
+  { code: 'BYEMETA', reward: 'Expired', status: 'expired', verifiedAt: '2026-09-12', source: CODES_SOURCE },
 ];
 
 /** Last time the codes list was reconciled against community roundups. Not deploy time. */
-export const codesLastChecked = '2026-09-06';
+export const codesLastChecked = '2026-09-12';
 export const codesLastVerifiedAt = codesLastChecked;
 
 export type UpdateLogEntry = {
@@ -1151,6 +1308,24 @@ export type UpdateLogEntry = {
 };
 
 export const updateLog: UpdateLogEntry[] = [
+  {
+    date: '2026-09-12',
+    title: 'GSC-driven CTR and entity SEO pass',
+    summary:
+      'Optimized the Cursed King unlock guide for low-CTR “how to get” queries, strengthened UPDATE 1 entity pages and hubs, expanded the drop-rate table without inventing percentages, and reconciled codes with conflicting reward notes.',
+    changes: [
+      'Rewrote Cursed King guide title/description/quick answer to match how-to-get intent while keeping unlock facts unchanged.',
+      'BreadcrumbList now emits item URLs for every crumb that has a path, including the current page.',
+      'Drop Rate Database adds location/used-for/verified columns plus Unknown rows for UPDATE 1 classes.',
+      'Codes list rechecked Sep 12; conflicting rewards marked instead of picking one unverified package.',
+    ],
+    hrefs: [
+      ['Cursed King unlock guide', '/guides/how-to-get-cursed-king'],
+      ['Drop rates', '/drop-rates'],
+      ['UPDATE 1 guide', '/update-1'],
+      ['Working codes', '/codes'],
+    ],
+  },
   {
     date: '2026-09-09',
     title: 'UPDATE 1 wiki coverage',
@@ -1241,7 +1416,7 @@ export const hubPages = [
   [
     'codes',
     'Dungeon Lootr Codes [UPDATE 1]',
-    'Latest working Dungeon Lootr codes after UPDATE 1. Copy active codes for chests, luck potions, Aspect Gems, Forge Stones and other rewards.',
+    'Active codes first. Redeem in-game, then check Conflicting reward notes — community lists still disagree on several packages. Last reconciled September 12, 2026.',
     ['Latest codes', 'New UPDATE 1 codes', 'Expired codes', 'How to redeem'],
   ],
   [
@@ -1402,8 +1577,8 @@ export function classSerp(item: ClassEntry): Serp {
   if (isUpdate1Class(item)) {
     return {
       title: `${item.name} Dungeon Lootr – How to Get, Skills & Build`,
-      description: `${item.name} in Dungeon Lootr UPDATE 1: what is confirmed about rarity and unlock reports, why skill data is withheld, and how it compares to older classes.`,
-      intent: 'UPDATE 1 class page: update context and honest unknowns, not invented skills or drop rates.',
+      description: `${item.name} in Dungeon Lootr UPDATE 1: Exotic rarity, what community guides report about unlocks, what is still unverified (skills, rates), and links to related UPDATE 1 classes.`,
+      intent: 'UPDATE 1 entity page for “[class] dungeon lootr” queries: obtain status + honest unknowns.',
       primaryKeyword: `${item.name} Dungeon Lootr`,
       searchIntent: 'entity',
     };
@@ -1460,11 +1635,11 @@ export function buildOpening(item: ClassEntry) {
 export function guideSerp(guide: { slug: string; target: string; title: string; opening: string }): Serp {
   if (guide.slug === 'how-to-get-cursed-king') {
     return {
-      title: 'How to Get Cursed King (Sukuna) in Dungeon Lootr – 2 Ways',
+      title: 'How to Get Cursed King in Dungeon Lootr – Unlock Requirements & Boss Rush',
       description:
-        'Cursed King has 2 unlock routes in Dungeon Lootr. Compare the Floor 40+ Class Item method and the 50-fragment Forge route, including requirements, farming tips, and which route to choose.',
-      intent: 'How-to unlock page comparing the two existing Boss Rush routes.',
-      primaryKeyword: 'how to get Cursed King in Dungeon Lootr',
+        'Unlock Cursed King in Dungeon Lootr via Boss Rush: Floor 40+ Class Item drop, or Forge with 50 Sukuna fragments from Floor 100 (8–18 per clear). Level 67+ required.',
+      intent: 'How-to unlock page matching “how to get cursed king in dungeon lootr” with requirements and Boss Rush routes.',
+      primaryKeyword: 'how to get cursed king in dungeon lootr',
       searchIntent: 'howto',
     };
   }
@@ -1505,7 +1680,7 @@ const hubSerpBySlug: Record<string, { title: string; description: string }> = {
   codes: {
     title: 'Dungeon Lootr Codes [UPDATE 1] – Working Codes (September 2026)',
     description:
-      'Latest working Dungeon Lootr codes for UPDATE 1. Copy active codes for chests, luck potions, Aspect Gems, Forge Stones and other rewards.',
+      'Active Dungeon Lootr codes after UPDATE 1. Rewards that disagree across guides are marked Conflicting. Last reconciled September 12, 2026.',
   },
   builds: {
     title: 'Dungeon Lootr Builds - Copy-Ready Setups by Class & Mode',

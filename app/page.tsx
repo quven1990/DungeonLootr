@@ -132,13 +132,13 @@ export default function Home() {
           <span aria-hidden="true">·</span>
           <Link href="/classes">Classes</Link>
           <span aria-hidden="true">·</span>
-          <Link href="/class-tier-list">Tier List</Link>
-          <span aria-hidden="true">·</span>
-          <Link href="/codes">Codes</Link>
+          <Link href="/drop-rates">Drop Rates</Link>
           <span aria-hidden="true">·</span>
           <Link href="/boss-rush">Boss Rush</Link>
           <span aria-hidden="true">·</span>
-          <Link href="/tools/drop-chance-calculator">Calculator</Link>
+          <Link href="/guides/how-to-get-cursed-king">Cursed King</Link>
+          <span aria-hidden="true">·</span>
+          <Link href="/codes">Codes</Link>
         </div>
       </section>
 

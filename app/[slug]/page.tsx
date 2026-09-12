@@ -106,7 +106,7 @@ export default async function HubPage({ params }: { params: Promise<{ slug: stri
     <main>
       {isCodes ? <JsonLd data={faqJsonLd(codesFaqs)} /> : null}
       <section className="site-shell page-hero">
-        <Breadcrumbs items={[{ name: page.title }]} />
+        <Breadcrumbs items={[{ name: page.title }]} currentPath={`/${page.slug}`} />
         <h1>{page.title}</h1>
         {isCodes ? <PageStatus updatedAt={WIKI_PAGE_UPDATED} verifiedForUpdate1={false} /> : null}
         <div className="quick-answer wide">

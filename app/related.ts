@@ -126,19 +126,26 @@ export function buildClusterLinks(item: ClassEntry): RelatedLink[] {
 export function guideIntentNextSteps(guide: GuideEntry): RelatedLink[] {
   const classSlug = guide.slug.replace(/^how-to-get-/, '');
   const classPage = classes.find((item) => item.slug === classSlug);
+  const isCursedKing = guide.slug === 'how-to-get-cursed-king';
   return dedupe(
     [
       classPage
-        ? ([`Got ${classPage.name}? Build it next →`, `/builds/${classPage.slug}`, 'Stats, Aspect, gear, and rotation for after unlock.'] as RelatedLink)
+        ? ([
+            isCursedKing
+              ? `Cursed King skills, tier & build →`
+              : `Got ${classPage.name}? Build it next →`,
+            isCursedKing ? `/classes/${classPage.slug}` : `/builds/${classPage.slug}`,
+            isCursedKing
+              ? 'Combat role and build direction after unlock.'
+              : 'Stats, Aspect, gear, and rotation for after unlock.',
+          ] as RelatedLink)
         : null,
+      ['Boss Rush floors →', '/boss-rush', 'Floor 40 Class Items and Floor 100 fragments.'],
+      ['Drop Rate Database →', '/drop-rates', 'Rates and Unknown UPDATE 1 rows in one table.'],
       ['Still farming? Estimate your runs →', '/tools/drop-chance-calculator', 'Convert the drop rate into 90%/95% targets.'],
-      classPage
+      classPage && !isCursedKing
         ? ([`${classPage.name} class overview →`, `/classes/${classPage.slug}`, 'Rarity, strengths, weaknesses, and best mode.'] as RelatedLink)
         : null,
-      ...guide.next
-        .filter((href) => !href.includes('/tools/drop-chance') && !(classPage && href === `/builds/${classPage.slug}`))
-        .slice(0, 1)
-        .map((href): RelatedLink => [href.includes('/boss-rush') ? 'Boss Rush breakpoints →' : 'Next farm route →', href]),
     ].filter(Boolean) as RelatedLink[],
     [`/guides/${guide.slug}`],
   ).slice(0, 4);

@@ -12,20 +12,22 @@ export const URL_MAP_PATH = '/dl-lootr-urlmap.xml';
 
 /** Only bump lastmod when that URL's substance changed. */
 const LASTMOD_BY_PATH: Record<string, string> = {
-  '/': '2026-09-09',
-  '/update-1': '2026-09-09',
-  '/classes': '2026-09-09',
+  '/': '2026-09-12',
+  '/update-1': '2026-09-12',
+  '/classes': '2026-09-12',
   '/class-tier-list': '2026-09-09',
-  '/codes': '2026-09-09',
-  '/updatelog': '2026-09-09',
+  '/codes': '2026-09-12',
+  '/updatelog': '2026-09-12',
+  '/drop-rates': '2026-09-12',
+  '/boss-rush': '2026-09-12',
   '/tools/drop-chance-calculator': '2026-09-09',
   '/tools/class-finder': '2026-09-09',
-  '/classes/cursed-king': '2026-09-09',
-  '/classes/spell-breaker': '2026-09-09',
-  '/classes/cryomancer': '2026-09-09',
-  '/classes/coyote': '2026-09-09',
-  '/classes/dark-professor': '2026-09-09',
-  '/guides/how-to-get-cursed-king': '2026-09-09',
+  '/classes/cursed-king': '2026-09-12',
+  '/classes/spell-breaker': '2026-09-12',
+  '/classes/cryomancer': '2026-09-12',
+  '/classes/coyote': '2026-09-12',
+  '/classes/dark-professor': '2026-09-12',
+  '/guides/how-to-get-cursed-king': '2026-09-12',
 };
 
 const BATCH_LASTMOD = '2026-09-07';
